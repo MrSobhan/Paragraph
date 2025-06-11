@@ -16,9 +16,16 @@ exports.register = async (req, res) => {
     const { username, phone, email, password, name, bio, avatar, socialLinks } =
       req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phone }],
+    });
     if (existingUser) {
-      return res.status(400).json({ message: "ایمیل قبلاً ثبت شده است" });
+      return res.status(400).json({
+        message:
+          existingUser.email === email
+            ? "ایمیل قبلاً ثبت شده است"
+            : "شماره تلفن قبلاً ثبت شده است",
+      });
     }
 
     const user = new User({
@@ -57,9 +64,21 @@ exports.login = async (req, res) => {
     const user = await User.findOne({
       $or: [{ email }, { username: email }, { phone: email }],
     });
-    
+
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "ایمیل یا رمز عبور اشتباه است" });
+      return res
+        .status(401)
+        .json({
+          message: "ایمیل، نام کاربری، شماره تلفن یا رمز عبور اشتباه است",
+        });
+    }
+
+    if (user.isBanned) {
+      return res
+        .status(403)
+        .json({
+          message: "حساب شما مسدود شده است. لطفاً با پشتیبانی تماس بگیرید.",
+        });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {

@@ -8,6 +8,6 @@ const router = express.Router();
 router.post('/', authenticatedMiddleware, createComment);
 router.put('/:id', authenticatedMiddleware, updateComment);
 router.delete('/:id', authenticatedMiddleware, deleteComment);
-router.patch('/:id/approve', authenticatedMiddleware, adminMiddleware, approveComment);
+router.put('/:id/approve', authenticatedMiddleware, adminMiddleware, approveComment);
 
 module.exports = router;

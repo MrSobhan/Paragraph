@@ -9,11 +9,7 @@ exports.getUsers = async (req, res) => {
       query.name = { $regex: name, $options: "i" };
     }
 
-    const users = await User.find(query)
-      .select(
-        "name email avatar bio socialLinks followers followingUsers followingTopics createdAt"
-      )
-      .lean();
+    const users = await User.find(query).lean();
 
     res.status(200).json({ users });
   } catch (error) {
@@ -26,11 +22,7 @@ exports.getUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id)
-      .select(
-        "name email avatar bio socialLinks followers followingUsers followingTopics createdAt"
-      )
-      .lean();
+    const user = await User.findById(id).lean();
 
     if (!user) {
       return res.status(404).json({ message: "کاربر یافت نشد" });
@@ -47,22 +39,32 @@ exports.getUserById = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const allowedFields = [
+      "username",
+      "phone",
+      "name",
+      "bio",
+      "avatar",
+      "socialLinks",
+    ];
+
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+    updates.updatedAt = Date.now();
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).lean();
+
     if (!user) {
       return res.status(404).json({ message: "کاربر یافت نشد" });
     }
-
-    const { username, phone, name, bio, avatar, socialLinks } = req.body;
-    Object.assign(user, {
-      username,
-      name,
-      phone,
-      bio,
-      avatar,
-      socialLinks,
-      updatedAt: Date.now(),
-    });
-    await user.save();
 
     res.status(200).json({ message: "کاربر با موفقیت به‌روزرسانی شد", user });
   } catch (error) {
@@ -129,16 +131,12 @@ exports.followUser = async (req, res) => {
         );
       }
     } else {
-      return res
-        .status(400)
-        .json({ message: "شما قبلاً این کاربر را دنبال کرده‌اید." });
+      return res.status(400).json({ message: "شما قبلاً این کاربر را دنبال کرده‌اید." });
     }
 
     res.status(200).json({ message: "کاربر با موفقیت دنبال شد" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "خطا در دنبال کردن کاربر", error: error.message });
+    res.status(500).json({ message: "خطا در دنبال کردن کاربر", error: error.message });
   }
 };
 
@@ -191,7 +189,7 @@ exports.changeRole = async (req, res) => {
       return res.status(404).json({ message: "کاربر یافت نشد" });
     }
 
-    user.role = user.role === "admin" ? "user" : "admin";
+    user.role = (user.role === "admin") ? "user" : "admin";
     await user.save();
 
     res.status(200).json({ message: `نقش کاربر به ${user.role} تغییر یافت` });

@@ -26,8 +26,21 @@ exports.updateList = async (req, res) => {
     if (list.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'فقط مالک لیست می‌تواند آن را ویرایش کند' });
     }
-    Object.assign(list, req.body);
+
+    const allowedFields = ['name', 'description', 'isPrivate'];
+
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    updates.updatedAt = Date.now();
+
+    Object.assign(list, updates);
     await list.save();
+
     res.status(200).json({ message: 'لیست با موفقیت به‌روزرسانی شد', list });
   } catch (error) {
     res.status(500).json({ message: 'خطا در به‌روزرسانی لیست', error: error.message });
