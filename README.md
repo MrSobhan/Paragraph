@@ -199,12 +199,4 @@ Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) 🙌
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details 📄
 
----
-
-## 🙏 Acknowledgments
-
-- Thanks to the Node.js and Express communities for awesome tools! 🛠️
-- MongoDB Atlas for reliable database hosting 🗄️
-- Render for seamless deployment ☁️
-- Swagger for making API docs fun! 📖
 
