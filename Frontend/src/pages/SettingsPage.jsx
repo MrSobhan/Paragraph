@@ -1,0 +1,397 @@
+import React, { useState } from 'react';
+import { User, Bell, Shield, Palette, Globe, Download, Trash2, Save } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+
+const SettingsPage = () => {
+  const { theme, toggleTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState('profile');
+  const [settings, setSettings] = useState({
+    profile: {
+      name: 'یوسف محمدی',
+      email: 'yosef@example.com',
+      bio: 'توسعه‌دهنده و نویسنده',
+      website: 'https://example.com',
+      location: 'تهران، ایران'
+    },
+    notifications: {
+      emailNotifications: true,
+      pushNotifications: true,
+      weeklyDigest: false,
+      newFollowers: true,
+      comments: true,
+      likes: false
+    },
+    privacy: {
+      profileVisibility: 'public',
+      showEmail: false,
+      showLocation: true,
+      allowMessages: true
+    },
+    preferences: {
+      language: 'fa',
+      timezone: 'Asia/Tehran',
+      dateFormat: 'persian'
+    }
+  });
+
+  const handleInputChange = (section, field, value) => {
+    setSettings(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSave = () => {
+    // Save settings logic
+    alert('تنظیمات با موفقیت ذخیره شد');
+  };
+
+  const tabs = [
+    { id: 'profile', label: 'پروفایل', icon: User },
+    { id: 'notifications', label: 'اعلان‌ها', icon: Bell },
+    { id: 'privacy', label: 'حریم خصوصی', icon: Shield },
+    { id: 'preferences', label: 'تنظیمات', icon: Palette }
+  ];
+
+  return (
+    <div className="flex-1 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">تنظیمات</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            مدیریت حساب کاربری و تنظیمات شخصی
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row">
+        {/* Sidebar */}
+        <div className="lg:w-64 bg-white dark:bg-gray-800 border-b lg:border-b-0 lg:border-l border-gray-200 dark:border-gray-700">
+          <div className="p-6">
+            <nav className="space-y-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg text-right transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 bg-gray-50 dark:bg-gray-900">
+          <div className="p-6">
+            {/* Profile Tab */}
+            {activeTab === 'profile' && (
+              <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    اطلاعات پروفایل
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        نام و نام خانوادگی
+                      </label>
+                      <input
+                        type="text"
+                        value={settings.profile.name}
+                        onChange={(e) => handleInputChange('profile', 'name', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        ایمیل
+                      </label>
+                      <input
+                        type="email"
+                        value={settings.profile.email}
+                        onChange={(e) => handleInputChange('profile', 'email', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        بیوگرافی
+                      </label>
+                      <textarea
+                        value={settings.profile.bio}
+                        onChange={(e) => handleInputChange('profile', 'bio', e.target.value)}
+                        rows="3"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        وبسایت
+                      </label>
+                      <input
+                        type="url"
+                        value={settings.profile.website}
+                        onChange={(e) => handleInputChange('profile', 'website', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        موقعیت
+                      </label>
+                      <input
+                        type="text"
+                        value={settings.profile.location}
+                        onChange={(e) => handleInputChange('profile', 'location', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Notifications Tab */}
+            {activeTab === 'notifications' && (
+              <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    تنظیمات اعلان‌ها
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    {Object.entries(settings.notifications).map(([key, value]) => (
+                      <div key={key} className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium text-gray-900 dark:text-white">
+                            {key === 'emailNotifications' && 'اعلان‌های ایمیل'}
+                            {key === 'pushNotifications' && 'اعلان‌های فوری'}
+                            {key === 'weeklyDigest' && 'خلاصه هفتگی'}
+                            {key === 'newFollowers' && 'دنبال‌کنندگان جدید'}
+                            {key === 'comments' && 'نظرات جدید'}
+                            {key === 'likes' && 'لایک‌های جدید'}
+                          </h3>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={(e) => handleInputChange('notifications', key, e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Privacy Tab */}
+            {activeTab === 'privacy' && (
+              <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    تنظیمات حریم خصوصی
+                  </h2>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        نمایش پروفایل
+                      </label>
+                      <select
+                        value={settings.privacy.profileVisibility}
+                        onChange={(e) => handleInputChange('privacy', 'profileVisibility', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="public">عمومی</option>
+                        <option value="followers">فقط دنبال‌کنندگان</option>
+                        <option value="private">خصوصی</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-white">نمایش ایمیل</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">ایمیل شما در پروفایل نمایش داده شود</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={settings.privacy.showEmail}
+                          onChange={(e) => handleInputChange('privacy', 'showEmail', e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-white">نمایش موقعیت</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">موقعیت شما در پروفایل نمایش داده شود</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={settings.privacy.showLocation}
+                          onChange={(e) => handleInputChange('privacy', 'showLocation', e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-white">اجازه پیام خصوصی</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">کاربران بتوانند برای شما پیام ارسال کنند</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={settings.privacy.allowMessages}
+                          onChange={(e) => handleInputChange('privacy', 'allowMessages', e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Preferences Tab */}
+            {activeTab === 'preferences' && (
+              <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    تنظیمات عمومی
+                  </h2>
+                  
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-white">حالت تاریک</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">تغییر ظاهر به حالت تاریک یا روشن</p>
+                      </div>
+                      <button
+                        onClick={toggleTheme}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                          theme === 'dark'
+                            ? 'bg-gray-700 text-white'
+                            : 'bg-gray-200 text-gray-900'
+                        }`}
+                      >
+                        {theme === 'dark' ? 'تاریک' : 'روشن'}
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        زبان
+                      </label>
+                      <select
+                        value={settings.preferences.language}
+                        onChange={(e) => handleInputChange('preferences', 'language', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="fa">فارسی</option>
+                        <option value="en">English</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        منطقه زمانی
+                      </label>
+                      <select
+                        value={settings.preferences.timezone}
+                        onChange={(e) => handleInputChange('preferences', 'timezone', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="Asia/Tehran">تهران</option>
+                        <option value="UTC">UTC</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        فرمت تاریخ
+                      </label>
+                      <select
+                        value={settings.preferences.dateFormat}
+                        onChange={(e) => handleInputChange('preferences', 'dateFormat', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="persian">شمسی</option>
+                        <option value="gregorian">میلادی</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Data Management */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    مدیریت داده‌ها
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    <button className="flex items-center space-x-3 space-x-reverse w-full p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
+                      <Download className="w-5 h-5" />
+                      <div className="text-right">
+                        <div className="font-medium">دانلود داده‌ها</div>
+                        <div className="text-sm opacity-75">دریافت کپی از تمام اطلاعات شما</div>
+                      </div>
+                    </button>
+
+                    <button className="flex items-center space-x-3 space-x-reverse w-full p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                      <Trash2 className="w-5 h-5" />
+                      <div className="text-right">
+                        <div className="font-medium">حذف حساب کاربری</div>
+                        <div className="text-sm opacity-75">حذف دائمی حساب و تمام داده‌ها</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Save Button */}
+            <div className="flex justify-end mt-8">
+              <button
+                onClick={handleSave}
+                className="inline-flex items-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                <Save className="w-5 h-5" />
+                <span>ذخیره تغییرات</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SettingsPage;

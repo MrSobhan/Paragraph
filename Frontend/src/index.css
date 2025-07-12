@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Persian font styling */
+/* @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap'); */
+
+@font-face {
+    font-family: "moraba";
+    src: url("./src/fonts/Morabba/woff2/Morabba-Medium.woff2");
+    /* IE9 Compat Modes */
+}
+
+@font-face {
+    font-family: "dana";
+    src: url("./src/fonts/Dana/woff2/DanaFaNum-Medium.woff2");
+    /* IE9 Compat Modes */
+}
+@font-face {
+    font-family: "dana-blod";
+    src: url("./src/fonts/Dana/woff2/DanaFaNum-DemiBold.woff2");
+    /* IE9 Compat Modes */
+}
+
+body {
+    font-family: "dana-blod";
+    overflow-x: hidden;
+}
+
+.moraba {
+    font-family: "moraba" !important;
+}
+
+.dana-blod {
+    font-family: "dana-blod" !important;
+}
+
+.dana {
+    font-family: "dana" !important;
+}
+
+/* Dark mode styles */
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* RTL specific styles */
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .line-clamp-2 {
+    -webkit-line-clamp: 1;
+  }
+  
+  .line-clamp-3 {
+    -webkit-line-clamp: 2;
+  }
+}
+
+/* Persian number styling */
+.persian-numbers {
+  font-variant-numeric: oldstyle-nums;
+}
+
+/* Focus styles for accessibility */
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+/* Hover effects */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+/* Loading animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom gradient backgrounds */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Backdrop blur for glass effect */
+.backdrop-blur-glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Custom shadow styles */
+.shadow-soft {
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.dark .shadow-soft {
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+}
