@@ -8,6 +8,12 @@ import AuthModal from './AuthModal';
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { navigate } = useRouter();
+  return (
+    <>
+      <header>
+        <div>
+          <div>
+            <div>
               {isLoggedIn ? (
                 <>
                   <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -58,7 +64,7 @@ const Header = () => {
                   >
                     ثبت‌نام
                   </button>
-              />
+                </div>
               )}
             </div>
           </div>
@@ -117,7 +123,6 @@ const Header = () => {
             </button>
           </div>
         </div>
-      </div>
       </header>
 
       <AuthModal
