@@ -161,7 +161,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
-              <>
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     نام کاربری
@@ -180,22 +180,22 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   </div>
                 </div>
 
-              </>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  نام و نام خانوادگی
-                </label>
-                <div className="relative">
-                  <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-4 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="نام خود را وارد کنید"
-                  />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    نام و نام خانوادگی
+                  </label>
+                  <div className="relative">
+                    <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full pl-4 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="نام خود را وارد کنید"
+                    />
+                  </div>
                 </div>
               </div>
             )}
