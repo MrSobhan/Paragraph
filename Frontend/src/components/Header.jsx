@@ -17,6 +17,7 @@ const Header = () => {
     setAuthMode(mode);
     setIsAuthModalOpen(true);
   };
+  
 
   const handleLogout = () => {
     LogOut();
