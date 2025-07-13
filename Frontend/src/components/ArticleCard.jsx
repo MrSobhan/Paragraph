@@ -23,7 +23,7 @@ const ArticleCard = ({
           <img 
             src={image} 
             alt={title}
-            className="w-full h-48 object-cover rounded-t-xl hover:opacity-90 transition-opacity"
+            className="!w-full h-88 object-cover rounded-t-xl hover:opacity-90 transition-opacity"
           />
         </button>
         {featured && (
@@ -61,7 +61,7 @@ const ArticleCard = ({
             onClick={() => navigate(`/post/${id}`)}
             className="text-right w-full hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-relaxed">
+            <h2 className="text-xl moraba font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-relaxed">
               {title}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 leading-relaxed">

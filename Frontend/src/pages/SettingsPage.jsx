@@ -302,7 +302,7 @@ const SettingsPage = () => {
                             : 'bg-gray-200 text-gray-900'
                         }`}
                       >
-                        {theme === 'dark' ? 'تاریک' : 'روشن'}
+                        {theme === 'dark' ? 'روشن' : 'تاریک'}
                       </button>
                     </div>
 
