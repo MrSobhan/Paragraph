@@ -1,0 +1,124 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const baseUrl = 'https://virgool.onrender.com';
+  const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(false);
+
+  const setLocalStorage = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  const getLocalStorage = (key) => {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  };
+
+  const axiosInstance = axios.create({
+    baseURL: baseUrl,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  axiosInstance.interceptors.request.use((config) => {
+    const token = getLocalStorage('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  const LoginUser = async (credentials) => {
+    try {
+      const response = await axiosInstance.post('/v1/auth/login', credentials);
+      const { token } = response.data;
+      
+      setLocalStorage('token', token);
+      await getMe();
+      setIsLogin(true);
+      
+      return { success: true, data: response.data };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data?.message || 'خطا در ورود' 
+      };
+    }
+  };
+
+  const RegisterUser = async (userData) => {
+    try {
+      const response = await axiosInstance.post('/v1/auth/register', userData);
+      const { token } = response.data;
+      
+      setLocalStorage('token', token);
+      await getMe();
+      setIsLogin(true);
+      
+      return { success: true, data: response.data };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data?.message || 'خطا در ثبت‌نام' 
+      };
+    }
+  };
+
+  const getMe = async () => {
+    try {
+      const response = await axiosInstance.get('/v1/auth/me');
+      setUser(response.data);
+      setIsLogin(true);
+      return response.data;
+    } catch (error) {
+      LogOut();
+      return null;
+    }
+  };
+
+  const LogOut = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setIsLogin(false);
+  };
+
+  useEffect(() => {
+    const token = getLocalStorage('token');
+    if (token) {
+      getMe();
+    }
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        baseUrl,
+        user,
+        setLocalStorage,
+        getLocalStorage,
+        isLogin,
+        LoginUser,
+        RegisterUser,
+        LogOut,
+        getMe,
+        axiosInstance,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth باید داخل AuthProvider استفاده شود');
+  }
+  return context;
+};
+
+export default AuthContext;

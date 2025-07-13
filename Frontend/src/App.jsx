@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { RouterProvider, useRouter } from './hooks/useRouter';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -42,9 +43,11 @@ const AppContent = () => {
 function App() {
   return (
     <ThemeProvider>
-      <RouterProvider>
-        <AppContent />
-      </RouterProvider>
+      <AuthProvider>
+        <RouterProvider>
+          <AppContent />
+        </RouterProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

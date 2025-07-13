@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, Github, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
+  const { LoginUser, RegisterUser } = useAuth();
   const [mode, setMode] = useState(initialMode);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
+    username: '',
     name: '',
     email: '',
     phone: '',
@@ -14,29 +19,82 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setError('');
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    onClose();
+    setLoading(true);
+    setError('');
+
+    try {
+      if (mode === 'login') {
+        const result = await LoginUser({
+          email: formData.email,
+          password: formData.password
+        });
+        
+        if (result.success) {
+          onClose();
+          setFormData({
+            username: '',
+            name: '',
+            email: '',
+            phone: '',
+            password: '',
+            confirmPassword: ''
+          });
+        } else {
+          setError(result.message);
+        }
+      } else {
+        if (formData.password !== formData.confirmPassword) {
+          setError('رمز عبور و تکرار آن یکسان نیستند');
+          return;
+        }
+
+        const result = await RegisterUser({
+          username: formData.username,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password
+        });
+        
+        if (result.success) {
+          onClose();
+          setFormData({
+            username: '',
+            name: '',
+            email: '',
+            phone: '',
+            password: '',
+            confirmPassword: ''
+          });
+        } else {
+          setError(result.message);
+        }
+      }
+    } catch (err) {
+      setError('خطای غیرمنتظره رخ داد');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSocialLogin = (provider) => {
     console.log(`Login with ${provider}`);
-    // Handle social login
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -44,7 +102,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       ></div>
       
       {/* Modal */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -57,6 +115,12 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {error && (
+          <div className="mx-6 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+          </div>
+        )}
 
         {/* Content */}
         <div className="p-6">
@@ -97,6 +161,26 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    نام کاربری
+                  </label>
+                  <div className="relative">
+                    <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full pl-4 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="نام کاربری خود را وارد کنید"
+                    />
+                  </div>
+                </div>
+
+              </>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   نام و نام خانوادگی
@@ -201,9 +285,14 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors"
+              disabled={loading}
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
             >
-              {mode === 'login' ? 'ورود' : 'ثبت‌نام'}
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                mode === 'login' ? 'ورود' : 'ثبت‌نام'
+              )}
             </button>
           </form>
 
