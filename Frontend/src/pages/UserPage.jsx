@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { MapPin, Calendar, Link as LinkIcon, Users, BookOpen, Heart, MessageCircle, Eye, Settings, UserPlus, UserCheck } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { mockUsers, mockArticles } from '../data/mockData';
 import ArticleCard from '../components/ArticleCard';
+import { useApi } from '../hooks/useApi';
+import Loader from '../components/Loader';
 
 const UserPage = () => {
   const { params, navigate } = useRouter();
+  const { fetchUserProfile, updateUserProfile } = useApi();
   const [activeTab, setActiveTab] = useState('posts');
   const [isFollowing, setIsFollowing] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userPosts, setUserPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  const user = mockUsers.find(u => u.username === params.username);
+  useEffect(() => {
+    
+    if (params.userId) {
+      loadUserProfile();
+    }
+  }, [params.userId]);
+
+  const loadUserProfile = async () => {
+    setLoading(true);
+    const result = await fetchUserProfile(params.userId);
+    if (result.success) {
+      setUser(result.data.user);
+      setUserPosts(result.data.posts || []);
+    }
+    setLoading(false);
+  };
   
+  if (loading) {
+    return (
+      <div className="flex-1 max-w-4xl mx-auto p-6">
+        <Loader text="در حال بارگذاری پروفایل..." />
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="flex-1 max-w-4xl mx-auto p-6">
@@ -27,7 +56,6 @@ const UserPage = () => {
     );
   }
 
-  const userPosts = mockArticles.filter(article => article.author.id === user.id);
 
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
@@ -54,7 +82,7 @@ const UserPage = () => {
               <div className="text-center md:text-right">
                 <div className="flex items-center justify-center md:justify-start space-x-2 space-x-reverse mb-2">
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                    {user.name}
+                    {user.name || user.username}
                   </h1>
                   {user.verified && (
                     <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
@@ -64,7 +92,7 @@ const UserPage = () => {
                     </div>
                   )}
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-2">@{user.username}</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-2">@{user.username || user.email}</p>
                 {user.bio && (
                   <p className="text-gray-700 dark:text-gray-300 max-w-md">{user.bio}</p>
                 )}
@@ -93,15 +121,15 @@ const UserPage = () => {
           {/* User Stats */}
           <div className="flex items-center justify-center md:justify-start space-x-8 space-x-reverse mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="text-center">
-              <div className="text-xl font-bold text-gray-900 dark:text-white">{user.posts}</div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{user.postsCount || 0}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">مقاله</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-gray-900 dark:text-white">{user.followers}</div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{user.followersCount || 0}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">دنبال‌کننده</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-gray-900 dark:text-white">{user.following}</div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{user.followingCount || 0}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">دنبال شده</div>
             </div>
           </div>
@@ -116,7 +144,7 @@ const UserPage = () => {
             )}
             <div className="flex items-center space-x-1 space-x-reverse">
               <Calendar className="w-4 h-4" />
-              <span>عضو از {user.joinDate}</span>
+              <span>عضو از {new Date(user.createdAt).toLocaleDateString('fa-IR')}</span>
             </div>
             {user.website && (
               <div className="flex items-center space-x-1 space-x-reverse">
@@ -223,7 +251,9 @@ const UserPage = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">تاریخ عضویت:</span>
-                      <span className="text-gray-900 dark:text-white">{user.joinDate}</span>
+                      <span className="text-gray-900 dark:text-white">
+                        {new Date(user.createdAt).toLocaleDateString('fa-IR')}
+                      </span>
                     </div>
                     {user.location && (
                       <div className="flex justify-between">
@@ -245,15 +275,15 @@ const UserPage = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">تعداد مقالات:</span>
-                      <span className="text-gray-900 dark:text-white">{user.posts}</span>
+                      <span className="text-gray-900 dark:text-white">{user.postsCount || 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">دنبال‌کنندگان:</span>
-                      <span className="text-gray-900 dark:text-white">{user.followers}</span>
+                      <span className="text-gray-900 dark:text-white">{user.followersCount || 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500 dark:text-gray-400">دنبال شده‌ها:</span>
-                      <span className="text-gray-900 dark:text-white">{user.following}</span>
+                      <span className="text-gray-900 dark:text-white">{user.followingCount || 0}</span>
                     </div>
                   </div>
                 </div>

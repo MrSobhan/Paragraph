@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import { User, Bell, Shield, Palette, Globe, Download, Trash2, Save } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useApi } from '../hooks/useApi';
 
 const SettingsPage = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user, getMe } = useAuth();
+  const { updateUserProfile } = useApi();
   const [activeTab, setActiveTab] = useState('profile');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
   const [settings, setSettings] = useState({
     profile: {
-      name: 'یوسف محمدی',
-      email: 'yosef@example.com',
-      bio: 'توسعه‌دهنده و نویسنده',
-      website: 'https://example.com',
-      location: 'تهران، ایران'
+      name: user?.name || '',
+      email: user?.email || '',
+      bio: user?.bio || '',
+      avatar: user?.avatar || ''
     },
     notifications: {
       emailNotifications: true,
@@ -42,11 +47,31 @@ const SettingsPage = () => {
         [field]: value
       }
     }));
+    setMessage(''); // Clear any previous messages
   };
 
-  const handleSave = () => {
-    // Save settings logic
-    alert('تنظیمات با موفقیت ذخیره شد');
+  const handleSave = async () => {
+    if (activeTab === 'profile') {
+      setLoading(true);
+      setMessage('');
+      
+      try {
+        const result = await updateUserProfile(settings.profile , user._id);
+        if (result.success) {
+          setMessage('پروفایل با موفقیت به‌روزرسانی شد');
+          // Refresh user data
+          await getMe();
+        } else {
+          setMessage(result.message || 'خطا در به‌روزرسانی پروفایل');
+        }
+      } catch (error) {
+        setMessage('خطای غیرمنتظره رخ داد');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert('تنظیمات با موفقیت ذخیره شد');
+    }
   };
 
   const tabs = [
@@ -94,6 +119,17 @@ const SettingsPage = () => {
         {/* Content */}
         <div className="flex-1 bg-gray-50 dark:bg-gray-900">
           <div className="p-6">
+            {/* Success/Error Message */}
+            {message && (
+              <div className={`mb-6 p-4 rounded-lg ${
+                message.includes('موفقیت') 
+                  ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
+                  : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
+              }`}>
+                {message}
+              </div>
+            )}
+
             {/* Profile Tab */}
             {activeTab === 'profile' && (
               <div className="space-y-6">
@@ -103,6 +139,28 @@ const SettingsPage = () => {
                   </h2>
                   
                   <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        تصویر پروفایل
+                      </label>
+                      <div className="flex items-center space-x-4 space-x-reverse">
+                        <img 
+                          src={settings.profile.avatar || "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"} 
+                          alt="Profile" 
+                          className="w-16 h-16 rounded-full object-cover"
+                        />
+                        <div className="flex-1">
+                          <input
+                            type="url"
+                            value={settings.profile.avatar}
+                            onChange={(e) => handleInputChange('profile', 'avatar', e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="لینک تصویر پروفایل..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         نام و نام خانوادگی
@@ -139,7 +197,7 @@ const SettingsPage = () => {
                       />
                     </div>
 
-                    <div>
+                    {/* <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         وبسایت
                       </label>
@@ -161,7 +219,7 @@ const SettingsPage = () => {
                         onChange={(e) => handleInputChange('profile', 'location', e.target.value)}
                         className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -381,10 +439,11 @@ const SettingsPage = () => {
             <div className="flex justify-end mt-8">
               <button
                 onClick={handleSave}
-                className="inline-flex items-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                disabled={loading}
+                className="inline-flex items-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-colors"
               >
                 <Save className="w-5 h-5" />
-                <span>ذخیره تغییرات</span>
+                <span>{loading ? 'در حال ذخیره...' : 'ذخیره تغییرات'}</span>
               </button>
             </div>
           </div>

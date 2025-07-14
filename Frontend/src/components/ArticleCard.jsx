@@ -11,48 +11,49 @@ const ArticleCard = ({
   stats,
   publishedAt,
   tags = [],
-  featured = false
+  readTime = 1
 }) => {
   const { navigate } = useRouter();
 
+  const defaultAvatar = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop";
   return (
-    <article className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700 ${featured ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''}`}>
+    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
       {/* Article Image */}
-      <div className="relative">
-        <button onClick={() => navigate(`/post/${id}`)}>
-          <img 
-            src={image} 
-            alt={title}
-            className="!w-full h-88 object-cover rounded-t-xl hover:opacity-90 transition-opacity"
-          />
-        </button>
-        {featured && (
-          <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-            ویژه
-          </div>
-        )}
-      </div>
+      {image && (
+        <div className="relative">
+          <button onClick={() => navigate(`/post/${id}`)}>
+            <img 
+              src={image} 
+              alt={title}
+              className="!w-full h-88 object-cover rounded-t-xl hover:opacity-90 transition-opacity"
+            />
+          </button>
+        </div>
+      )}
 
       <div className="p-6">
         {/* Author Info */}
         <div className="flex items-center space-x-3 space-x-reverse mb-4">
-          <button onClick={() => navigate(`/user/${author.username}`)}>
+          <button onClick={() => navigate(`/user/${author._id}`)}>
             <img 
-              src={author.avatar} 
+              src={author.avatar || defaultAvatar} 
               alt={author.name}
               className="w-10 h-10 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
             />
           </button>
           <div className="flex-1">
             <button 
-              onClick={() => navigate(`/user/${author.username}`)}
+              onClick={() => navigate(`/user/${author._id}`)}
               className="text-right hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               <h4 className="font-medium text-gray-900 dark:text-white text-sm">{author.name}</h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400">@{author.username}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">@{author.username || author.email}</p>
             </button>
           </div>
-          <span className="text-xs text-gray-400 dark:text-gray-500">{publishedAt}</span>
+          <div className="text-xs text-gray-400 dark:text-gray-500">
+            <div>{publishedAt}</div>
+            <div>{readTime} دقیقه مطالعه</div>
+          </div>
         </div>
 
         {/* Article Content */}

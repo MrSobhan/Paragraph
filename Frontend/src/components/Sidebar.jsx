@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, TrendingUp, Users, BookOpen, Hash, Star, Coffee } from 'lucide-react';
+import { Play, TrendingUp, Users, BookOpen, Hash, Star, Coffee, Info, Shield, Mail } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 
 const Sidebar = () => {
@@ -31,6 +31,30 @@ const Sidebar = () => {
           </p>
           <button className="bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 rounded-lg text-sm">
             مشاهده بیشتر
+          </button>
+        </div>
+
+        {/* Navigation Menu */}
+        <div>
+          <div className="space-y-2">
+            <button 
+              onClick={() => navigate('/notifications')}
+              className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+              اعلان‌ها
+            </button>
+          </div>
+        </div>
+
+        {/* Topics Navigation */}
+        <div>
+          <button 
+            onClick={() => navigate('/topics')}
+            className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <Hash className="w-4 h-4" />
+            موضوعات
           </button>
         </div>
 

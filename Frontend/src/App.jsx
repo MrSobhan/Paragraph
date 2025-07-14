@@ -6,6 +6,10 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import HomePage from './pages/HomePage';
 import PostPage from './pages/PostPage';
+import NotificationsPage from './pages/NotificationsPage';
+import CreatePostPage from './pages/CreatePostPage';
+import TopicsPage from './pages/TopicsPage';
+import TopicPostsPage from './pages/TopicPostsPage';
 import UserPage from './pages/UserPage';
 import AboutPage from './pages/AboutPage';
 import RulesPage from './pages/RulesPage';
@@ -19,6 +23,10 @@ const AppContent = () => {
   const renderPage = () => {
     if (currentPath === '/') return <HomePage />;
     if (currentPath.startsWith('/post/')) return <PostPage />;
+    if (currentPath === '/notifications') return <NotificationsPage />;
+    if (currentPath === '/create-post') return <CreatePostPage />;
+    if (currentPath === '/topics') return <TopicsPage />;
+    if (currentPath.startsWith('/topics/')) return <TopicPostsPage />;
     if (currentPath.startsWith('/user/')) return <UserPage />;
     if (currentPath === '/about') return <AboutPage />;
     if (currentPath === '/rules') return <RulesPage />;

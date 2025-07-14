@@ -25,8 +25,11 @@ export const RouterProvider = ({ children }) => {
     if (segments[0] === 'post' && segments[1]) {
       newParams.postId = segments[1];
     }
+    if (segments[0] === 'topics' && segments[1]) {
+      newParams.topicId = segments[1];
+    }
     if (segments[0] === 'user' && segments[1]) {
-      newParams.username = segments[1];
+      newParams.userId = segments[1];
     }
     
     setParams(newParams);

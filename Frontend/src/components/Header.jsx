@@ -47,21 +47,32 @@ const Header = () => {
               <button 
                 onClick={() => navigate('/')}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                title="صفحه اصلی"
               >
                 <Home className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
 
               {isLogin ? (
                 <>
-                  <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    onClick={() => navigate('/create-post')}
+                    title="نوشتن پست جدید"
+                  >
                     <Edit className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   </button>
                   
-                  <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <button 
+                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    title="نشان شده‌ها"
+                  >
                     <Bookmark className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   </button>
 
-                  <button className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <button 
+                    onClick={() => navigate('/notifications')}
+                    className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    title="اعلان‌ها"
+                  >
                     <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                     <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
                   </button>
@@ -75,7 +86,7 @@ const Header = () => {
 
                   <div className="relative group">
                     <button 
-                      onClick={() => navigate(`/user/${user?.username || 'profile'}`)}
+                      onClick={() => navigate(`/user/${user?._id || 'profile'}`)}
                       className="flex items-center space-x-2 space-x-reverse hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-1 transition-colors"
                     >
                       <img 
@@ -91,7 +102,7 @@ const Header = () => {
                     <div className="absolute left-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       <div className="p-2">
                         <button
-                          onClick={() => navigate(`/user/${user?.username || 'profile'}`)}
+                          onClick={() => navigate(`/user/${user?._id || 'profile'}`)}
                           className="w-full text-right px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                         >
                           پروفایل

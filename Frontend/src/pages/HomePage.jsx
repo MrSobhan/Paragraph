@@ -1,38 +1,55 @@
 import React from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import FeaturedSection from '../components/FeaturedSection';
 import Loader from '../components/Loader';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import { mockArticles } from '../data/mockData';
+import { useApi } from '../hooks/useApi';
 
 const HomePage = () => {
-  const [articles, setArticles] = useState(mockArticles);
+  const { fetchPosts } = useApi();
+  const [articles, setArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    loadInitialPosts();
+  }, []);
+
+  const loadInitialPosts = async () => {
+    setLoading(true);
+    const result = await fetchPosts(1, 5);
+    if (result.success) {
+      setArticles(result.data);
+      setPage(2);
+      if (result.data.length < 5) {
+        setHasMore(false);
+      }
+    }
+    setLoading(false);
+  };
   const fetchMoreArticles = useCallback(async () => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Simulate fetching more articles (in real app, this would be an API call)
-    const newArticles = mockArticles.map((article, index) => ({
-      ...article,
-      id: `${article.id}-page-${page}-${index}`,
-      title: `${article.title} - صفحه ${page + 1}`,
-    }));
-    
-    setArticles(prev => [...prev, ...newArticles]);
-    setPage(prev => prev + 1);
-    
-    // Stop loading after 5 pages for demo
-    if (page >= 5) {
-      setHasMore(false);
+    const result = await fetchPosts(page, 5);
+    if (result.success) {
+      if (result.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setArticles(prev => [...prev, ...result.data]);
+        setPage(prev => prev + 1);
+      }
     }
   }, [page]);
 
   const [isFetching] = useInfiniteScroll(fetchMoreArticles);
 
+  if (loading) {
+    return (
+      <main className="flex-1 max-w-4xl mx-auto p-6">
+        <Loader text="در حال بارگذاری..." />
+      </main>
+    );
+  }
   return (
     <main className="flex-1 max-w-4xl mx-auto p-6">
       <FeaturedSection />
@@ -40,16 +57,20 @@ const HomePage = () => {
       <div className="space-y-6">
         {articles.map((article) => (
           <ArticleCard
-            key={article.id}
-            id={article.id}
+            key={article._id}
+            id={article._id}
             title={article.title}
-            content={article.excerpt}
+            content={article.summary}
             author={article.author}
-            image={article.image}
-            stats={article.stats}
-            publishedAt={article.publishedAt}
+            image={article.coverImage}
+            stats={{
+              likes: article.likesCount || 0,
+              comments: article.commentsCount || 0,
+              views: article.views || 0
+            }}
+            publishedAt={new Date(article.createdAt).toLocaleDateString('fa-IR')}
             tags={article.tags}
-            featured={article.featured}
+            readTime={article.estimatedReadTime}
           />
         ))}
       </div>
