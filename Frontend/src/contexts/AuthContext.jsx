@@ -4,7 +4,7 @@ import axios from 'axios';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const baseUrl = 'https://virgool.onrender.com';
+  const baseUrl = 'https://virgool.onrender.com/v1';
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
 
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   const LoginUser = async (credentials) => {
     try {
-      const response = await axiosInstance.post('/v1/auth/login', credentials);
+      const response = await axiosInstance.post('/auth/login', credentials);
       const { token } = response.data;
       
       setLocalStorage('token', token);
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
 
   const RegisterUser = async (userData) => {
     try {
-      const response = await axiosInstance.post('/v1/auth/register', userData);
+      const response = await axiosInstance.post('/auth/register', userData);
       const { token } = response.data;
       
       setLocalStorage('token', token);
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   const getMe = async () => {
     try {
-      const response = await axiosInstance.get('/v1/auth/me');
+      const response = await axiosInstance.get('/auth/me');
       setUser(response.data);
       setIsLogin(true);
       return response.data;
