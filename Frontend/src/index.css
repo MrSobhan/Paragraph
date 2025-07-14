@@ -7,18 +7,18 @@
 
 @font-face {
     font-family: "moraba";
-    src: url("./src/fonts/Morabba/woff2/Morabba-Medium.woff2");
+    src: url("./fonts/Morabba/woff2/Morabba-Medium.woff2");
     /* IE9 Compat Modes */
 }
 
 @font-face {
     font-family: "dana";
-    src: url("./src/fonts/Dana/woff2/DanaFaNum-Medium.woff2");
+    src: url("./fonts/Dana/woff2/DanaFaNum-Medium.woff2");
     /* IE9 Compat Modes */
 }
 @font-face {
     font-family: "dana-blod";
-    src: url("./src/fonts/Dana/woff2/DanaFaNum-DemiBold.woff2");
+    src: url("./fonts/Dana/woff2/DanaFaNum-DemiBold.woff2");
     /* IE9 Compat Modes */
 }
 
