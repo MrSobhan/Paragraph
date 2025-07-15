@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Eye, Upload, X, Plus, Tag, Hash } from 'lucide-react';
+import { Save, Eye, X, Plus, Tag, Hash } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
+import FileUpload from '../components/FileUpload';
 
 const CreatePostPage = () => {
   const { navigate } = useRouter();
@@ -92,8 +93,8 @@ const CreatePostPage = () => {
   };
 
   const estimateReadTime = (content) => {
-    const wordsPerMinute = 200;
-    const wordCount = content.trim().split(/\s+/).length;
+    const wordsPerMinute = 100; // Persian reading speed
+    const wordCount = content.trim().split(/\s+/).filter(word => word.length > 0).length;
     return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
   };
 
@@ -181,35 +182,18 @@ const CreatePostPage = () => {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   تصویر کاور
                 </label>
-                <div className="flex space-x-3 space-x-reverse">
-                  <input
-                    type="url"
-                    name="coverImage"
-                    value={formData.coverImage}
-                    onChange={handleInputChange}
-                    className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="لینک تصویر کاور را وارد کنید..."
-                  />
-                  <button
-                    type="button"
-                    className="flex items-center space-x-2 space-x-reverse px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span>آپلود</span>
-                  </button>
-                </div>
-                {formData.coverImage && (
-                  <div className="mt-3">
-                    <img
-                      src={formData.coverImage}
-                      alt="Cover preview"
-                      className="w-full h-48 object-cover rounded-lg"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
+                <FileUpload
+                  fieldname="coverImage"
+                  postId={formData.postId || null}
+                  onUploadSuccess={(fileUrl) => {
+                    setFormData(prev => ({ ...prev, coverImage: fileUrl }));
+                  }}
+                  onUploadError={(error) => {
+                    alert(error);
+                  }}
+                  accept="image/*"
+                  maxSize={5 * 1024 * 1024}
+                />
               </div>
 
               {/* Content */}
@@ -234,15 +218,20 @@ const CreatePostPage = () => {
               {/* Podcast URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  لینک پادکست (اختیاری)
+                  فایل پادکست (اختیاری)
                 </label>
-                <input
-                  type="url"
-                  name="podcastUrl"
-                  value={formData.podcastUrl}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="لینک فایل صوتی پادکست..."
+                <FileUpload
+                  fieldname="podcast"
+                  postId={formData.postId || null}
+                  onUploadSuccess={(fileUrl) => {
+                    setFormData(prev => ({ ...prev, podcastUrl: fileUrl }));
+                  }}
+                  onUploadError={(error) => {
+                    alert(error);
+                  }}
+                  accept="audio/*"
+                  maxSize={50 * 1024 * 1024} // 50MB for audio
+                  showPreview={false}
                 />
               </div>
             </form>

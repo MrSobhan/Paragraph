@@ -62,6 +62,7 @@ const Header = () => {
                   </button>
                   
                   <button 
+                    onClick={() => navigate('/saved-posts')}
                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     title="نشان شده‌ها"
                   >

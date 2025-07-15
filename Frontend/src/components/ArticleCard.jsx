@@ -1,6 +1,8 @@
 import React from 'react';
+import { useState } from 'react';
 import { Heart, MessageCircle, Bookmark, Share, Eye } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
+import SavePostModal from './SavePostModal';
 
 const ArticleCard = ({
   id,
@@ -14,10 +16,12 @@ const ArticleCard = ({
   readTime = 1
 }) => {
   const { navigate } = useRouter();
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
-  const defaultAvatar = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop";
+  const defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
+    <>
+      <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
       {/* Article Image */}
       {image && (
         <div className="relative">
@@ -105,7 +109,10 @@ const ArticleCard = ({
           </div>
 
           <div className="flex items-center space-x-2 space-x-reverse">
-            <button className="p-1 text-gray-500 hover:text-blue-500 transition-colors">
+            <button 
+              onClick={() => setShowSaveModal(true)}
+              className="p-1 text-gray-500 hover:text-blue-500 transition-colors"
+            >
               <Bookmark className="w-4 h-4" />
             </button>
             <button className="p-1 text-gray-500 hover:text-green-500 transition-colors">
@@ -114,7 +121,15 @@ const ArticleCard = ({
           </div>
         </div>
       </div>
-    </article>
+      </article>
+
+      <SavePostModal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        postId={id}
+        postTitle={title}
+      />
+    </>
   );
 };
 

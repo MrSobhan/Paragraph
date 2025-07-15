@@ -3,6 +3,7 @@ import { User, Bell, Shield, Palette, Globe, Download, Trash2, Save } from 'luci
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../hooks/useApi';
+import FileUpload from '../components/FileUpload';
 
 const SettingsPage = () => {
   const { theme, toggleTheme } = useTheme();
@@ -143,20 +144,31 @@ const SettingsPage = () => {
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         تصویر پروفایل
                       </label>
-                      <div className="flex items-center space-x-4 space-x-reverse">
+                      <div className="flex items-start space-x-4 space-x-reverse">
                         <img 
-                          src={settings.profile.avatar || "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop"} 
+                          src={settings.profile.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                           alt="Profile" 
                           className="w-16 h-16 rounded-full object-cover"
                         />
                         <div className="flex-1">
-                          <input
-                            type="url"
-                            value={settings.profile.avatar}
-                            onChange={(e) => handleInputChange('profile', 'avatar', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="لینک تصویر پروفایل..."
-                          />
+                          <FileUpload
+                            fieldname="avatar"
+                            postId={null}
+                            onUploadSuccess={(fileUrl) => {
+                              handleInputChange('profile', 'avatar', fileUrl);
+                              setMessage('تصویر پروفایل با موفقیت به‌روزرسانی شد');
+                            }}
+                            onUploadError={(error) => {
+                              setMessage(error);
+                            }}
+                            accept="image/*"
+                            maxSize={2 * 1024 * 1024} // 2MB
+                            showPreview={false}
+                          >
+                            <div className="text-sm text-blue-500 hover:text-blue-600 cursor-pointer">
+                              تغییر تصویر پروفایل
+                            </div>
+                          </FileUpload>
                         </div>
                       </div>
                     </div>

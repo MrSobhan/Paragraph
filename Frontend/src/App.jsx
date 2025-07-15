@@ -16,6 +16,7 @@ import RulesPage from './pages/RulesPage';
 import ContactPage from './pages/ContactPage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import SavedPostsPage from './pages/SavedPostsPage';
 
 const AppContent = () => {
   const { currentPath } = useRouter();
@@ -32,6 +33,7 @@ const AppContent = () => {
     if (currentPath === '/rules') return <RulesPage />;
     if (currentPath === '/contact') return <ContactPage />;
     if (currentPath === '/settings') return <SettingsPage />;
+    if (currentPath === '/saved-posts') return <SavedPostsPage />;
     return <NotFoundPage />;
   };
 

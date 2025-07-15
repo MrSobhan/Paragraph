@@ -6,19 +6,19 @@ const AboutPage = () => {
     {
       name: 'علی احمدی',
       role: 'مدیر عامل و بنیان‌گذار',
-      image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
+      image: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
       bio: 'با بیش از ۱۰ سال تجربه در حوزه فناوری و رسانه'
     },
     {
       name: 'مریم رضایی',
       role: 'مدیر محصول',
-      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
+      image: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
       bio: 'متخصص تجربه کاربری و طراحی محصول'
     },
     {
       name: 'حسین مرادی',
       role: 'مدیر فنی',
-      image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop',
+      image: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
       bio: 'توسعه‌دهنده ارشد و معماری نرم‌افزار'
     }
   ];

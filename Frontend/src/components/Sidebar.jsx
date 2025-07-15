@@ -11,10 +11,10 @@ const Sidebar = () => {
   ];
 
   const trendingTopics = [
-    { title: 'پیشنهاد های اولیه بنی هنا', image: 'https://images.pexels.com/photos/1181605/pexels-photo-1181605.jpeg?auto=compress&cs=tinysrgb&w=100&h=60&fit=crop' },
-    { title: 'نمایش های مختلف کاوی', image: 'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=100&h=60&fit=crop' },
-    { title: 'اولیاء النعمة', image: 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=100&h=60&fit=crop' },
-    { title: 'ادنیا‌ی اطفا', image: 'https://images.pexels.com/photos/1181403/pexels-photo-1181403.jpeg?auto=compress&cs=tinysrgb&w=100&h=60&fit=crop' }
+    { title: 'پیشنهاد های اولیه بنی هنا', image: 'https://picsum.photos/100/60?random=6' },
+    { title: 'نمایش های مختلف کاوی', image: 'https://picsum.photos/100/60?random=7' },
+    { title: 'اولیاء النعمة', image: 'https://picsum.photos/100/60?random=8' },
+    { title: 'ادنیا‌ی اطفا', image: 'https://picsum.photos/100/60?random=9' }
   ];
 
   return (
@@ -131,14 +131,14 @@ const Sidebar = () => {
           </div>
           <div className="space-y-3">
             {[
-              { name: 'علی احمدی', bio: 'توسعه‌دهنده فرانت‌اند', followers: '۱.۲ هزار', username: 'ali-ahmadi' },
-              { name: 'مریم رضایی', bio: 'طراح رابط کاربری', followers: '۸۹۰', username: 'maryam-rezaei' },
-              { name: 'حسین مرادی', bio: 'متخصص هوش مصنوعی', followers: '۲.۱ هزار', username: 'hossein-moradi' }
+              { name: 'علی احمدی', bio: 'توسعه‌دهنده فرانت‌اند', followers: '۱.۲ هزار', username: 'ali-ahmadi', avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' },
+              { name: 'مریم رضایی', bio: 'طراح رابط کاربری', followers: '۸۹۰', username: 'maryam-rezaei', avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' },
+              { name: 'حسین مرادی', bio: 'متخصص هوش مصنوعی', followers: '۲.۱ هزار', username: 'hossein-moradi', avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }
             ].map((user, index) => (
               <div key={index} className="flex items-center space-x-3 space-x-reverse">
                 <button onClick={() => navigate(`/user/${user.username}`)}>
                   <img 
-                    src={`https://images.pexels.com/photos/${2203145 + index}/pexels-photo-${2203145 + index}.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop`}
+                    src={user.avatar}
                     alt={user.name}
                     className="w-10 h-10 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
                   />
@@ -166,20 +166,23 @@ const Sidebar = () => {
           <div className="space-y-2">
             <button 
               onClick={() => navigate('/about')}
-              className="block w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
+              <Info className="w-4 h-4 ml-3" />
               درباره ما
             </button>
             <button 
               onClick={() => navigate('/rules')}
-              className="block w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
+              <Shield className="w-4 h-4 ml-3" />
               قوانین و مقررات
             </button>
             <button 
               onClick={() => navigate('/contact')}
-              className="block w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
+              <Mail className="w-4 h-4 ml-3" />
               تماس با ما
             </button>
           </div>

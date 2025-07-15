@@ -1,5 +1,18 @@
 const List = require('../../models/List');
 
+
+
+
+exports.fetchUserList = async (req, res) => {
+  try {
+    const lists = await List.find().lean();
+
+    res.status(200).json({ lists });
+  } catch (error) {
+    res.status(500).json({ message: 'خطا در دریافت لیست', error: error.message });
+  }
+};
+
 exports.createList = async (req, res) => {
   try {
     const { name, description, isPrivate } = req.body;

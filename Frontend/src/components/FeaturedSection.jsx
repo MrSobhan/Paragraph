@@ -9,21 +9,21 @@ const FeaturedSection = () => {
     {
       title: 'درآمد پست مدرن مقاوم لودا',
       author: 'AbolfaslHoni',
-      image: 'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
+      image: 'https://picsum.photos/300/200?random=3',
       category: 'فناوری',
       id: '1'
     },
     {
       title: 'طراحی سیستم‌های فناوری تیمچی تلگرام',
       author: 'حبیب فرابی',
-      image: 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
+      image: 'https://picsum.photos/300/200?random=4',
       category: 'طراحی',
       id: '2'
     },
     {
       title: 'فلسفت رقابت',
       author: 'ستاره',
-      image: 'https://images.pexels.com/photos/1181605/pexels-photo-1181605.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop',
+      image: 'https://picsum.photos/300/200?random=5',
       category: 'فلسفه',
       id: '1'
     }
