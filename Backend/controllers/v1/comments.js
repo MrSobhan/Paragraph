@@ -1,23 +1,33 @@
 const { Comment, Post, Notification } = require('../../models');
 
+const mongoose = require('mongoose');
+
 exports.getAllComments = async (req, res) => {
   try {
     const { postId, status } = req.query;
     const query = {};
 
     if (postId) {
+      if (!mongoose.isValidObjectId(postId)) {
+        return res.status(400).json({
+          success: false,
+          message: 'شناسه پست نامعتبر است'
+        });
+      }
       query.postId = postId;
     }
 
-    if (status && req.user.role === 'admin') {
+    if (status && req.user?.role === 'admin') {
       query.status = status;
     }
-    
 
     const comments = await Comment.find(query)
-      .populate('author', 'name avatar')
+      .populate('userId', 'name avatar') 
       .populate('postId', 'title')
-      .populate('parentComment', 'content author')
+      .populate({
+        path: 'parentComment',
+        populate: { path: 'userId', select: 'name' }
+      })
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -25,6 +35,7 @@ exports.getAllComments = async (req, res) => {
       data: comments
     });
   } catch (error) {
+    console.error('Error in getAllComments:', error); 
     res.status(500).json({
       success: false,
       message: 'خطا در دریافت نظرات',
