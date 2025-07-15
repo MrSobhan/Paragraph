@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import FeaturedSection from '../components/FeaturedSection';
 import Loader from '../components/Loader';
+import InitialLoader from '../components/InitialLoader';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useApi } from '../hooks/useApi';
 
@@ -12,6 +13,7 @@ const HomePage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
     loadInitialPosts();
@@ -19,6 +21,12 @@ const HomePage = () => {
 
   const loadInitialPosts = async () => {
     setLoading(true);
+    
+    // نمایش لودر اولیه برای 2 ثانیه
+    setTimeout(() => {
+      setInitialLoad(false);
+    }, 2000);
+    
     const result = await fetchPosts(1, 5);
     if (result.success) {
       setArticles(result.data);
@@ -29,6 +37,7 @@ const HomePage = () => {
     }
     setLoading(false);
   };
+  
   const fetchMoreArticles = useCallback(async () => {
     const result = await fetchPosts(page, 5);
     if (result.success) {
@@ -43,6 +52,10 @@ const HomePage = () => {
 
   const [isFetching] = useInfiniteScroll(fetchMoreArticles);
 
+  if (initialLoad) {
+    return <InitialLoader />;
+  }
+
   if (loading) {
     return (
       <main className="flex-1 max-w-4xl mx-auto p-6">
@@ -50,6 +63,7 @@ const HomePage = () => {
       </main>
     );
   }
+  
   return (
     <main className="flex-1 max-w-4xl mx-auto p-6">
       <FeaturedSection />

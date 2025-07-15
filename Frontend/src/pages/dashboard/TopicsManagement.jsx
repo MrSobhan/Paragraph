@@ -133,13 +133,13 @@ const TopicsManagement = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center">
               <Hash className="w-8 h-8 text-blue-500" />
-              <div className="mr-3">
+              <div className="mr-2 sm:mr-3">
                 <p className="text-sm text-gray-600 dark:text-gray-400">کل موضوعات</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{topics.length}</p>
+                <p className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">{topics.length}</p>
               </div>
             </div>
           </div>
@@ -168,16 +168,16 @@ const TopicsManagement = () => {
         </div>
 
         {/* Topics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredTopics.map((topic) => (
-            <div key={topic._id} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <div key={topic._id} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3 space-x-reverse">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                    <Hash className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <Hash className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                       {topic.name}
                     </h3>
                     <span className={`text-xs px-2 py-1 rounded-full ${
