@@ -173,11 +173,9 @@ export const useApi = () => {
   const fetchUserLists = async () => {
     try {
       const response = await axiosInstance.get('/lists');
-      // console.log(response.data);
-      
       return {
         success: true,
-        data: response.data
+        data: response.data.lists
       };
     } catch (error) {
       return {
