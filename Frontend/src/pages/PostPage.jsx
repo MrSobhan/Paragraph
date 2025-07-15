@@ -20,7 +20,6 @@ const PostPage = () => {
   useEffect(() => {
     if (params.postId) {
       loadPost();
-      loadComments();
     }
   }, [params.postId]);
 
@@ -28,17 +27,11 @@ const PostPage = () => {
     const result = await fetchPost(params.postId);
     if (result.success) {
       setArticle(result.data.post);
+      setComments(result.data.comments)
     }
     setLoading(false);
   };
 
-  const loadComments = async () => {
-    const result = await fetchComments(params.postId);
-    if (result.success) {
-      setComments(result.data);
-    }
-  };
-  
   if (loading) {
     return (
       <div className="flex-1 max-w-4xl mx-auto p-6">
@@ -91,7 +84,7 @@ const PostPage = () => {
       content: newComment,
       postId: params.postId,
       parentComment: null,
-      rating: rating
+      rating
     };
 
     const result = await createComment(commentData);
@@ -99,8 +92,6 @@ const PostPage = () => {
       setNewComment('');
       setShowCommentForm(false);
       setRating(5);
-      // Reload comments
-      loadComments();
     }
   };
 
@@ -190,11 +181,11 @@ const PostPage = () => {
             </div>
             <div className="flex items-center space-x-1 space-x-reverse">
               <Heart className="w-4 h-4" />
-              <span className="text-sm">{article.likesCount || 0} پسند</span>
+              <span className="text-sm">{article.likeCount || 0} پسند</span>
             </div>
             <div className="flex items-center space-x-1 space-x-reverse">
               <MessageCircle className="w-4 h-4" />
-              <span className="text-sm">{article.commentsCount || 0} نظر</span>
+              <span className="text-sm">{comments?.length || 0} نظر</span>
             </div>
           </div>
         </div>
@@ -329,11 +320,11 @@ const PostPage = () => {
       <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <div className="p-6">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-            نظرات ({comments.length})
+            نظرات ({comments?.length ? comments.length : 0})
           </h3>
           
           <div className="space-y-6">
-            {comments.map((comment) => (
+            { comments?.length && comments.map((comment) => (
               <div key={comment._id} className="border-b border-gray-100 dark:border-gray-700 pb-6 last:border-b-0">
                 <div className="flex space-x-3 space-x-reverse">
                   <button onClick={() => navigate(`/user/${comment.author._id}`)}>

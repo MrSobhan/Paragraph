@@ -38,7 +38,7 @@ exports.createComment = async (req, res) => {
     const { content, postId, parentComment, rating } = req.body;
     const comment = new Comment({
       content,
-      author: req.user._id,
+      userId: req.user._id,
       postId,
       parentComment,
       status: 'pending'

@@ -23,8 +23,6 @@ export const useApi = () => {
   const fetchPost = async (id) => {
     try {
       const response = await axiosInstance.get(`/posts/${id}`);
-      console.log(response.data);
-      
       return {
         success: true,
         data: response.data
