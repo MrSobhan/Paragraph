@@ -25,6 +25,8 @@ const PostPage = () => {
 
   const loadPost = async () => {
     const result = await fetchPost(params.postId);
+    console.log(result.data);
+    
     if (result.success) {
       setArticle(result.data.post);
       setComments(result.data.comments)
