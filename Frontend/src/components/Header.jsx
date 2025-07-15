@@ -32,11 +32,16 @@ const Header = () => {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white moraba flex items-center justify-center gap-x-2"><Newspaper className='w-5 h-5' /> ویرگول</h1>
             </div>
 
-            <input
-              type="text"
-              placeholder="دنبال چی میگردی ..."
-              className="w-[300px] p-2 px-3 bg-white dark:bg-gray-800 rounded-lg text-sm shadow border border-gray-200 dark:border-gray-700 hidden md:block"
-            />
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="دنبال چی میگردی ..."
+                // value={searchTerm}
+                // onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-[300px] text-sm shadow pl-4 pr-10 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
             {/* Navigation */}
             <div className="flex items-center space-x-4 space-x-reverse">
@@ -126,7 +131,7 @@ const Header = () => {
                         </button>
                         <hr className="my-1 border-gray-200 dark:border-gray-600" />
                         <button
-                          onClick={()=>handleLogout()}
+                          onClick={() => handleLogout()}
                           className="flex items-center gap-x-1 w-full text-right px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                         >
                           <DoorOpen className="w-4 h-4 text-red-600 dark:text-red-400" />

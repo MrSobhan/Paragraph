@@ -41,7 +41,7 @@ exports.getTopics = async (req, res) => {
 exports.createTopic = async (req, res) => {
   try {
     const { name, description, parentTopic, isMainTopic } = req.body;
-    const topic = new Topic({ name, description, parentTopic, isMainTopic ,followers : [] });
+    const topic = new Topic({ name, description, parentTopic, isMainTopic });
     await topic.save();
     res.status(201).json({ message: "موضوع با موفقیت ایجاد شد", topic });
   } catch (error) {

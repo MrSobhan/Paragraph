@@ -131,7 +131,7 @@ const DashboardLayout = ({ children, activeTab }) => {
             </h2>
             <div className="hidden sm:flex items-center space-x-4 space-x-reverse">
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                خوش آمدید، {user?.name}
+                {user?.name} خوش آمدید 
               </span>
             </div>
           </div>
