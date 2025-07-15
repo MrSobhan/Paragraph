@@ -392,19 +392,7 @@ export const useApi = () => {
       };
     }
   };
-  // const fetchAllComments = async () => {
-  //   try {
-  //     await axiosInstance.delete(`/posts/${postId}`);
-  //     return {
-  //       success: true
-  //     };
-  //   } catch (error) {
-  //     return {
-  //       success: false,
-  //       message: error.response?.data?.message || 'خطا در حذف پست:'
-  //     };
-  //   }
-  // };
+
 
   return {
     fetchPosts,

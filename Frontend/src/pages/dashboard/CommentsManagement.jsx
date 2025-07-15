@@ -19,7 +19,8 @@ const CommentsManagement = () => {
       setLoading(true);
       
       const response = await axiosInstance.get('/comments');
-      setComments(response.data || []);
+      
+      setComments(response.data.data || []);
     } catch (error) {
       console.error('خطا در بارگذاری نظرات:', error);
     } finally {
@@ -47,7 +48,7 @@ const CommentsManagement = () => {
     }
   };
 
-  const filteredComments = comments.filter(comment => {
+  const filteredComments = comments?.filter(comment => {
     const matchesSearch = comment.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       comment.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || comment.status === statusFilter;

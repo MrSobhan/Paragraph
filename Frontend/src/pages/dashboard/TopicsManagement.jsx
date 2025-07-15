@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit, Trash2, Hash, Save, X } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
 import { useApi } from '../../hooks/useApi';
+import useAxios from '../../hooks/useAxios';
 
 const TopicsManagement = () => {
-  const { fetchTopics, axiosInstance } = useApi();
+  const { fetchTopics } = useApi();
+  const axiosInstance = useAxios();
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,6 +39,8 @@ const TopicsManagement = () => {
 
   const handleCreateTopic = async (e) => {
     e.preventDefault();
+    console.log(formData);
+    
     try {
       await axiosInstance.post('/topics', formData);
       loadTopics();
@@ -180,11 +184,10 @@ const TopicsManagement = () => {
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                       {topic.name}
                     </h3>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      topic.isMainTopic 
+                    <span className={`text-xs px-2 py-1 rounded-full ${topic.isMainTopic
                         ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                         : 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
-                    }`}>
+                      }`}>
                       {topic.isMainTopic ? 'موضوع اصلی' : 'زیر موضوع'}
                     </span>
                   </div>
@@ -206,19 +209,19 @@ const TopicsManagement = () => {
                   </button>
                 </div>
               </div>
-              
+
               {topic.description && (
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                   {topic.description}
                 </p>
               )}
-              
+
               {topic.parentTopic && (
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   زیر موضوع: {topic.parentTopic.name}
                 </p>
               )}
-              
+
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-xs text-gray-400 dark:text-gray-500">
                   ایجاد شده در {new Date(topic.createdAt).toLocaleDateString('fa-IR')}
@@ -241,7 +244,7 @@ const TopicsManagement = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              
+
               <form onSubmit={editingTopic ? handleUpdateTopic : handleCreateTopic} className="p-6">
                 <div className="space-y-4">
                   <div>
@@ -256,7 +259,7 @@ const TopicsManagement = () => {
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       توضیحات
@@ -268,7 +271,7 @@ const TopicsManagement = () => {
                       className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       موضوع والد
@@ -284,7 +287,7 @@ const TopicsManagement = () => {
                       ))}
                     </select>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2 space-x-reverse">
                     <input
                       type="checkbox"
@@ -298,7 +301,7 @@ const TopicsManagement = () => {
                     </label>
                   </div>
                 </div>
-                
+
                 <div className="flex space-x-3 space-x-reverse mt-6">
                   <button
                     type="submit"
