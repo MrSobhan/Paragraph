@@ -235,7 +235,7 @@ const PostPage = () => {
                 }`}
               >
                 <Heart className={`w-5 h-5 ${liked ? 'fill-current' : ''}`} />
-                <span>{article.likesCount + (liked ? 1 : 0)}</span>
+                <span>{article.likeCount + (liked ? 1 : 0)}</span>
               </button>
               
               <button 
