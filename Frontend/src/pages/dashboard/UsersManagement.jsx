@@ -4,7 +4,7 @@ import DashboardLayout from './DashboardLayout';
 import { useApi } from '../../hooks/useApi';
 
 const UsersManagement = () => {
-  const { axiosInstance } = useApi();
+  const { fetchAllUserProfile, banUser, unbanUser, changeRole, deleteUser } = useApi();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,7 +18,7 @@ const UsersManagement = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/auth');
+      const response = await fetchAllUserProfile();
       setUsers(response.data.users || []);
     } catch (error) {
       console.error('خطا در بارگذاری کاربران:', error);
@@ -28,39 +28,39 @@ const UsersManagement = () => {
   };
 
   const handleBanUser = async (userId) => {
-    try {
-      await axiosInstance.put(`/auth/${userId}/ban`);
+    const result = await banUser(userId);
+    if (result.success) {
       loadUsers();
-    } catch (error) {
-      console.error('خطا در مسدود کردن کاربر:', error);
+    } else {
+      console.error(result.message);
     }
   };
 
   const handleUnbanUser = async (userId) => {
-    try {
-      await axiosInstance.put(`/auth/${userId}/unban`);
+    const result = await unbanUser(userId);
+    if (result.success) {
       loadUsers();
-    } catch (error) {
-      console.error('خطا در رفع مسدودیت کاربر:', error);
+    } else {
+      console.error(result.message);
     }
   };
 
   const handleChangeRole = async (userId) => {
-    try {
-      await axiosInstance.put(`/auth/${userId}/change-role`);
+    const result = await changeRole(userId);
+    if (result.success) {
       loadUsers();
-    } catch (error) {
-      console.error('خطا در تغییر نقش کاربر:', error);
+    } else {
+      console.error(result.message);
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
-      try {
-        await axiosInstance.delete(`/auth/${userId}`);
+    if (window.confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+      const result = await deleteUser(userId);
+      if (result.success) {
         loadUsers();
-      } catch (error) {
-        console.error('خطا در حذف کاربر:', error);
+      } else {
+        console.error(result.message);
       }
     }
   };
@@ -178,8 +178,8 @@ const UsersManagement = () => {
                   <tr key={user._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <img 
-                          src={user.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                        <img
+                          src={user.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                           alt={user.name}
                           className="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
                         />
@@ -197,20 +197,18 @@ const UsersManagement = () => {
                       {user.email}
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.role === 'admin' 
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'admin'
                           ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-                      }`}>
+                        }`}>
                         {user.role === 'admin' ? 'مدیر' : 'کاربر'}
                       </span>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.isBanned 
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.isBanned
                           ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
                           : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                      }`}>
+                        }`}>
                         {user.isBanned ? 'مسدود' : 'فعال'}
                       </span>
                     </td>

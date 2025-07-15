@@ -1,5 +1,38 @@
 const { Comment, Post, Notification } = require('../../models');
 
+exports.getAllComments = async (req, res) => {
+  try {
+    const { postId, status } = req.query;
+    const query = {};
+
+    if (postId) {
+      query.postId = postId;
+    }
+
+    if (status && req.user.role === 'admin') {
+      query.status = status;
+    }
+    
+
+    const comments = await Comment.find(query)
+      .populate('author', 'name avatar')
+      .populate('postId', 'title')
+      .populate('parentComment', 'content author')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: comments
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت نظرات',
+      error: error.message
+    });
+  }
+};
+
 exports.createComment = async (req, res) => {
   try {
     const { content, postId, parentComment, rating } = req.body;

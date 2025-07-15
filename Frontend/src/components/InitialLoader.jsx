@@ -1,4 +1,5 @@
 import React from 'react';
+import { Newspaper } from 'lucide-react';
 
 const InitialLoader = () => {
   return (
@@ -10,7 +11,8 @@ const InitialLoader = () => {
             <div className="w-20 h-20 mx-auto mb-4 relative">
               <div className="absolute inset-0 bg-white rounded-full animate-pulse"></div>
               <div className="absolute inset-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl font-bold moraba">و</span>
+                <Newspaper className='w-7 h-7 text-white' />
+                {/* <img src="../images/logo.webp" alt="fegsdsdf" /> */}
               </div>
             </div>
             <h1 className="text-4xl font-bold text-white moraba mb-2">ویرگول</h1>

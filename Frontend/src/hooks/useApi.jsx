@@ -125,7 +125,6 @@ export const useApi = () => {
   const fetchTopics = async () => {
     try {
       const response = await axiosInstance.get('/topics');
-      
       return {
         success: true,
         data: response.data.topics
@@ -169,7 +168,6 @@ export const useApi = () => {
     }
   };
 
-  // Lists API
   const fetchUserLists = async () => {
     try {
       const response = await axiosInstance.get('/lists');
@@ -254,7 +252,6 @@ export const useApi = () => {
     }
   };
 
-  // File Upload API
   const uploadFile = async (file, fieldname, postId = null) => {
     try {
       const formData = new FormData();
@@ -281,7 +278,7 @@ export const useApi = () => {
     }
   };
 
-   const updateUserProfile = async (userData , userId) => {
+  const updateUserProfile = async (userData, userId) => {
     try {
       const response = await axiosInstance.put(`/auth/${userId}`, userData);
       return {
@@ -295,6 +292,119 @@ export const useApi = () => {
       };
     }
   };
+
+  const fetchAllUserProfile = async () => {
+    try {
+      const response = await axiosInstance.get('/auth');
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در دریافت پروفایل'
+      };
+    }
+  };
+
+  const banUser = async (userId) => {
+    try {
+      const response = await axiosInstance.put(`/auth/${userId}/ban`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در مسدود کردن کاربر'
+      };
+    }
+  };
+
+  const unbanUser = async (userId) => {
+    try {
+      const response = await axiosInstance.put(`/auth/${userId}/unban`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در رفع مسدودیت کاربر'
+      };
+    }
+  };
+
+  const changeRole = async (userId) => {
+    try {
+      const response = await axiosInstance.put(`/auth/${userId}/change-role`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در تغییر نقش کاربر'
+      };
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    try {
+      await axiosInstance.delete(`/auth/${userId}`);
+      return {
+        success: true
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در حذف کاربر'
+      };
+    }
+  };
+  const publishPost = async (postId) => {
+    try {
+      await axiosInstance.put(`/posts/${postId}/publish`);
+      return {
+        success: true
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در انتشار پست:'
+      };
+    }
+  };
+  const deletePost = async (postId) => {
+    try {
+      await axiosInstance.delete(`/posts/${postId}`);
+      return {
+        success: true
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در حذف پست:'
+      };
+    }
+  };
+  // const fetchAllComments = async () => {
+  //   try {
+  //     await axiosInstance.delete(`/posts/${postId}`);
+  //     return {
+  //       success: true
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       success: false,
+  //       message: error.response?.data?.message || 'خطا در حذف پست:'
+  //     };
+  //   }
+  // };
 
   return {
     fetchPosts,
@@ -315,7 +425,14 @@ export const useApi = () => {
     addPostToList,
     removePostFromList,
     uploadFile,
-    updateUserProfile
+    updateUserProfile,
+    fetchAllUserProfile,
+    banUser,
+    unbanUser,
+    changeRole,
+    deleteUser,
+    publishPost,
+    deletePost
   };
 };
 

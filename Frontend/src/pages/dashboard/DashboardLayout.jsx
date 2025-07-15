@@ -15,7 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const DashboardLayout = ({ children, activeTab }) => {
   const { navigate } = useRouter();
-  const { user, LogOut } = useAuth();
+  const { user, LogOutUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
@@ -27,12 +27,12 @@ const DashboardLayout = ({ children, activeTab }) => {
   ];
 
   const handleLogout = () => {
-    LogOut();
+    LogOutUser();
     navigate('/');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex w-full">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
@@ -104,7 +104,7 @@ const DashboardLayout = ({ children, activeTab }) => {
                 <span>تنظیمات</span>
               </button>
               <button
-                onClick={handleLogout}
+                onClick={()=>handleLogout()}
                 className="flex-1 flex items-center justify-center space-x-1 space-x-reverse px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
@@ -138,7 +138,7 @@ const DashboardLayout = ({ children, activeTab }) => {
         </div>
 
         {/* Page content */}
-        <div className="flex-1 p-4 sm:p-6 overflow-auto">
+        <div className="flex-1 p-4 sm:p-6 overflow-auto w-full">
           {children}
         </div>
       </div>

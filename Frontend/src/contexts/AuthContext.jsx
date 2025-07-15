@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const baseUrl = 'https://virgool.onrender.com/v1';
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setLocalStorage = (key, value) => {
     localStorage.setItem(key, JSON.stringify(value));
@@ -75,12 +76,11 @@ export const AuthProvider = ({ children }) => {
       setIsLogin(true);
       return response.data;
     } catch (error) {
-      LogOut();
       return null;
     }
   };
 
-  const LogOut = () => {
+  const LogOutUser = () => {
     localStorage.removeItem('token');
     setUser(null);
     setIsLogin(false);
@@ -89,7 +89,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = getLocalStorage('token');
     if (token) {
-      getMe();
+      setIsLoading(true);
+      getMe().then((data) => {
+        if (!data) {
+          LogOutUser();
+        }
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -101,9 +109,10 @@ export const AuthProvider = ({ children }) => {
         setLocalStorage,
         getLocalStorage,
         isLogin,
+        isLoading,
         LoginUser,
         RegisterUser,
-        LogOut,
+        LogOutUser,
         getMe,
         axiosInstance,
       }}

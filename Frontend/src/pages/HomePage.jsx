@@ -22,7 +22,7 @@ const HomePage = () => {
   const loadInitialPosts = async () => {
     setLoading(true);
     
-    // نمایش لودر اولیه برای 2 ثانیه
+    
     setTimeout(() => {
       setInitialLoad(false);
     }, 2000);

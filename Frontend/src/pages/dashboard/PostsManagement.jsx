@@ -4,7 +4,7 @@ import DashboardLayout from './DashboardLayout';
 import { useApi } from '../../hooks/useApi';
 
 const PostsManagement = () => {
-  const { fetchPosts, axiosInstance } = useApi();
+  const { fetchPosts, publishPost, deletePost } = useApi();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,21 +28,21 @@ const PostsManagement = () => {
   };
 
   const handlePublishPost = async (postId) => {
-    try {
-      await axiosInstance.put(`/posts/${postId}/publish`);
+    const result = await publishPost(postId);
+    if (result.success) {
       loadPosts();
-    } catch (error) {
-      console.error('خطا در انتشار پست:', error);
+    } else {
+      console.error(result.message);
     }
   };
 
   const handleDeletePost = async (postId) => {
     if (confirm('آیا از حذف این پست اطمینان دارید؟')) {
-      try {
-        await axiosInstance.delete(`/posts/${postId}`);
+      const result = await deletePost(postId);
+      if (result.success) {
         loadPosts();
-      } catch (error) {
-        console.error('خطا در حذف پست:', error);
+      } else {
+        console.error(result.message);
       }
     }
   };
@@ -160,8 +160,8 @@ const PostsManagement = () => {
                     <td className="px-3 sm:px-6 py-4">
                       <div className="flex items-center">
                         {post.coverImage && (
-                          <img 
-                            src={post.coverImage} 
+                          <img
+                            src={post.coverImage}
                             alt={post.title}
                             className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover ml-2 sm:ml-4"
                           />
@@ -178,8 +178,8 @@ const PostsManagement = () => {
                     </td>
                     <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <img 
-                          src={post.author?.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                        <img
+                          src={post.author?.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                           alt={post.author?.name}
                           className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ml-2 sm:ml-3"
                         />
@@ -189,11 +189,10 @@ const PostsManagement = () => {
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        post.isPublished 
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${post.isPublished
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                           : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
-                      }`}>
+                        }`}>
                         {post.isPublished ? 'منتشر شده' : 'پیش‌نویس'}
                       </span>
                     </td>

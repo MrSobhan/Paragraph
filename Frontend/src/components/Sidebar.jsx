@@ -18,7 +18,7 @@ const Sidebar = ({ className = "" }) => {
   ];
 
   return (
-    <aside className={`w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto ${className}`}>
+    <aside className={`w-96 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto ${className}`}>
       <div className="p-6 space-y-8">
         {/* Featured Content */}
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">
