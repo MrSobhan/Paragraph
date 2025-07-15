@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Search, CheckCircle, XCircle, Trash2, MessageCircle } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
-import { useApi } from '../../hooks/useApi';
+import useAxios from '../../hooks/useAxios';
 
 const CommentsManagement = () => {
-  const { axiosInstance } = useApi();
+  const axiosInstance = useAxios();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
