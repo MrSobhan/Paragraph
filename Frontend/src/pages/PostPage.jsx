@@ -27,7 +27,7 @@ const PostPage = () => {
   const loadPost = async () => {
     const result = await fetchPost(params.postId);
     if (result.success) {
-      setArticle(result.data);
+      setArticle(result.data.post);
     }
     setLoading(false);
   };

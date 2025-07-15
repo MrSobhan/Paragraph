@@ -20,8 +20,8 @@ exports.getPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("author", "name avatar socialLinks")
-      .populate("topics", "name")
+      .populate("author")
+      .populate("topics")
       .lean();
 
     const postIds = posts.map((post) => post._id);
@@ -90,8 +90,8 @@ exports.getPostById = async (req, res) => {
     }
 
     const post = await Post.findOne(query)
-      .populate("author", "name avatar socialLinks")
-      .populate("topics", "name")
+      .populate("author")
+      .populate("topics")
       .lean();
 
     if (!post) {
