@@ -6,14 +6,17 @@ import Loader from '../components/Loader';
 import InitialLoader from '../components/InitialLoader';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useApi } from '../hooks/useApi';
+import { useAuth } from '../contexts/AuthContext';
 
 const HomePage = () => {
   const { fetchPosts } = useApi();
+  const { isLogin } = useAuth();
   const [articles, setArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
+
 
   useEffect(() => {
     loadInitialPosts();
@@ -22,11 +25,10 @@ const HomePage = () => {
   const loadInitialPosts = async () => {
     setLoading(true);
     
-    
     setTimeout(() => {
       setInitialLoad(false);
     }, 2000);
-    
+
     const result = await fetchPosts(1, 5);
     if (result.success) {
       setArticles(result.data);
@@ -37,7 +39,7 @@ const HomePage = () => {
     }
     setLoading(false);
   };
-  
+
   const fetchMoreArticles = useCallback(async () => {
     const result = await fetchPosts(page, 5);
     if (result.success) {
@@ -52,7 +54,7 @@ const HomePage = () => {
 
   const [isFetching] = useInfiniteScroll(fetchMoreArticles);
 
-  if (initialLoad) {
+  if (initialLoad && !isLogin) {
     return <InitialLoader />;
   }
 
@@ -63,11 +65,11 @@ const HomePage = () => {
       </main>
     );
   }
-  
+
   return (
     <main className="flex-1 max-w-4xl mx-auto p-6">
       <FeaturedSection />
-      
+
       <div className="space-y-6">
         {articles.map((article) => (
           <ArticleCard
@@ -93,7 +95,7 @@ const HomePage = () => {
       {isFetching && hasMore && (
         <Loader text="در حال بارگذاری مطالب بیشتر..." />
       )}
-      
+
       {!hasMore && (
         <div className="text-center py-8">
           <p className="text-gray-500 dark:text-gray-400">

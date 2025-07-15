@@ -10,9 +10,9 @@ exports.getPosts = async (req, res) => {
 
     let query = {};
     if (title) {
-      query.title = { $regex: title, $options: 'i' };
+      query.title = { $regex: title, $options: "i" };
     }
-    if (req.user?.role !== 'admin') {
+    if (req.user?.role !== "admin") {
       query.isPublished = true;
     }
 
@@ -20,16 +20,16 @@ exports.getPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('author', 'name avatar socialLinks')
-      .populate('topics', 'name')
+      .populate("author", "name avatar socialLinks")
+      .populate("topics", "name")
       .lean();
 
-    const postIds = posts.map(post => post._id);
+    const postIds = posts.map((post) => post._id);
 
     // Get like counts
     const likeCounts = await Like.aggregate([
       { $match: { post: { $in: postIds } } },
-      { $group: { _id: '$post', count: { $sum: 1 } } }
+      { $group: { _id: "$post", count: { $sum: 1 } } },
     ]);
     const likeCountMap = likeCounts.reduce((map, item) => {
       if (item._id) {
@@ -40,10 +40,10 @@ exports.getPosts = async (req, res) => {
 
     // Get approved comments
     let commentQuery = { post: { $in: postIds } };
-    if (req.user?.role !== 'admin') {
-      commentQuery.status = 'approved';
+    if (req.user?.role !== "admin") {
+      commentQuery.status = "approved";
     }
-    const commentDetails = await Comment.find(commentQuery)
+    const commentDetails = await Comment.find(commentQuery);
 
     const commentMap = commentDetails.reduce((map, comment) => {
       if (comment.postId) {
@@ -54,13 +54,13 @@ exports.getPosts = async (req, res) => {
         map[postId].push({
           content: comment.content,
           author: comment.userId,
-          createdAt: comment.createdAt
+          createdAt: comment.createdAt,
         });
       }
       return map;
     }, {});
 
-    posts.forEach(post => {
+    posts.forEach((post) => {
       const postIdStr = post._id.toString();
       post.likeCount = likeCountMap[postIdStr] || 0;
       post.comments = commentMap[postIdStr] || [];
@@ -75,7 +75,9 @@ exports.getPosts = async (req, res) => {
       totalPosts,
     });
   } catch (error) {
-    res.status(500).json({ message: 'خطا در دریافت پست‌ها', error: error.message });
+    res
+      .status(500)
+      .json({ message: "خطا در دریافت پست‌ها", error: error.message });
   }
 };
 
@@ -108,9 +110,9 @@ exports.getPostById = async (req, res) => {
     post.likeCount = likeCount;
 
     // Get comments
-    const comments = await Comment.find({ post: id })
-      .select("content author createdAt")
-      .populate("author", "name")
+    const comments = await Comment.find({ postId: id })
+      .select("content userId createdAt")
+      .populate("userId", "name")
       .lean();
     post.comments = comments;
 

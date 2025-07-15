@@ -32,7 +32,7 @@ const Header = () => {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white moraba flex items-center justify-center gap-x-2"><Newspaper className='w-5 h-5' /> ویرگول</h1>
             </div>
 
-            <div className="relative">
+            <div className="relative hidden md:block">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
