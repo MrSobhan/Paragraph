@@ -90,8 +90,9 @@ const PostPage = () => {
     const result = await createComment(commentData);
     if (result.success) {
       setNewComment('');
-      setShowCommentForm(false);
+      // setShowCommentForm(false);
       setRating(5);
+      alert('نظر با موفقیت ایجاد شد و در انتظار تأیید است')
     }
   };
 

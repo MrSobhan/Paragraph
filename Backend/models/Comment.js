@@ -45,6 +45,7 @@ commentSchema.pre('save', function (next) {
 
 commentSchema.index({ post: 1, createdAt: -1 });
 commentSchema.index({ parentComment: 1 });
+commentSchema.index({ author: 1 });
 
 const Comment = mongoose.model('Comment', commentSchema);
 module.exports = Comment;
