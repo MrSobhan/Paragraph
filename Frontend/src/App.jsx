@@ -17,6 +17,11 @@ import ContactPage from './pages/ContactPage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SavedPostsPage from './pages/SavedPostsPage';
+import DashboardOverview from './pages/dashboard/DashboardOverview';
+import UsersManagement from './pages/dashboard/UsersManagement';
+import PostsManagement from './pages/dashboard/PostsManagement';
+import CommentsManagement from './pages/dashboard/CommentsManagement';
+import TopicsManagement from './pages/dashboard/TopicsManagement';
 
 const AppContent = () => {
   const { currentPath } = useRouter();
@@ -34,17 +39,25 @@ const AppContent = () => {
     if (currentPath === '/contact') return <ContactPage />;
     if (currentPath === '/settings') return <SettingsPage />;
     if (currentPath === '/saved-posts') return <SavedPostsPage />;
+    if (currentPath === '/dashboard') return <DashboardOverview />;
+    if (currentPath === '/dashboard/users') return <UsersManagement />;
+    if (currentPath === '/dashboard/posts') return <PostsManagement />;
+    if (currentPath === '/dashboard/comments') return <CommentsManagement />;
+    if (currentPath === '/dashboard/topics') return <TopicsManagement />;
     return <NotFoundPage />;
   };
 
-  const showSidebar = currentPath === '/' || currentPath.startsWith('/post/');
+  const showSidebar = (currentPath === '/' || currentPath.startsWith('/post/')) && !currentPath.startsWith('/dashboard');
+  const isDashboard = currentPath.startsWith('/dashboard');
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors" dir="rtl">
-      <Header />
+      {!isDashboard && <Header />}
       <div className="flex">
         {renderPage()}
-        {showSidebar && <Sidebar />}
+        {showSidebar && (
+          <Sidebar className="hidden lg:block" />
+        )}
       </div>
     </div>
   );

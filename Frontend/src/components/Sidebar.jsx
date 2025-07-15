@@ -2,7 +2,7 @@ import React from 'react';
 import { Play, TrendingUp, Users, BookOpen, Hash, Star, Coffee, Info, Shield, Mail } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 
-const Sidebar = () => {
+const Sidebar = ({ className = "" }) => {
   const { navigate } = useRouter();
   
   const popularTags = [
@@ -18,7 +18,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto">
+    <aside className={`w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto ${className}`}>
       <div className="p-6 space-y-8">
         {/* Featured Content */}
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">

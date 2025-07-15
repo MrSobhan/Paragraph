@@ -61,6 +61,16 @@ const Header = () => {
                     <Edit className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   </button>
                   
+                  {user?.role === 'admin' && (
+                    <button 
+                      onClick={() => navigate('/dashboard')}
+                      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      title="پنل مدیریت"
+                    >
+                      <Settings className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                    </button>
+                  )}
+                  
                   <button 
                     onClick={() => navigate('/saved-posts')}
                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
