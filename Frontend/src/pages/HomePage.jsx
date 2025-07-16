@@ -29,7 +29,7 @@ const HomePage = () => {
       setInitialLoad(false);
     }, 2000);
 
-    const result = await fetchPosts(1, 5);
+    const result = await fetchPosts(1, 5, '');
     if (result.success) {
       setArticles(result.data);
       setPage(2);
@@ -41,7 +41,7 @@ const HomePage = () => {
   };
 
   const fetchMoreArticles = useCallback(async () => {
-    const result = await fetchPosts(page, 5);
+    const result = await fetchPosts(page, 5, '');
     if (result.success) {
       if (result.data.length === 0) {
         setHasMore(false);

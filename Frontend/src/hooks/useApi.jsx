@@ -4,9 +4,13 @@ import { useAuth } from '../contexts/AuthContext';
 export const useApi = () => {
   const { axiosInstance } = useAuth();
 
-  const fetchPosts = async (page = 1, limit = 5) => {
+  const fetchPosts = async (page = 1, limit = 5, search = '') => {
     try {
-      const response = await axiosInstance.get(`/posts?page=${page}&limit=${limit}`);
+      let url = `/posts?page=${page}&limit=${limit}`;
+      if (search) {
+        url += `&title=${encodeURIComponent(search)}`;
+      }
+      const response = await axiosInstance.get(url);
       return {
         success: true,
         data: response.data.posts || response.data,
@@ -40,7 +44,7 @@ export const useApi = () => {
       const response = await axiosInstance.get('/notifications');
       return {
         success: true,
-        data: response.data.filter(notification => !notification.isRead)
+        data: response.data
       };
     } catch (error) {
       return {
@@ -52,7 +56,7 @@ export const useApi = () => {
 
   const markNotificationAsRead = async (id) => {
     try {
-      await axiosInstance.patch(`/notifications/${id}/read`);
+      await axiosInstance.put(`/notifications/${id}/read`);
       return { success: true };
     } catch (error) {
       return {
@@ -295,7 +299,8 @@ export const useApi = () => {
 
   const fetchAllUserProfile = async () => {
     try {
-      const response = await axiosInstance.get('/auth');
+      const response = await axiosInstance.get('/auth')
+      
       return {
         success: true,
         data: response.data

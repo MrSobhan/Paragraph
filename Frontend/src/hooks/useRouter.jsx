@@ -31,6 +31,9 @@ export const RouterProvider = ({ children }) => {
     if (segments[0] === 'user' && segments[1]) {
       newParams.userId = segments[1];
     }
+    if (segments[0] === 'saved-lists' && segments[1]) {
+      newParams.listId = segments[1];
+    }
     
     setParams(newParams);
   };

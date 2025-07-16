@@ -2,7 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import { Heart, MessageCircle, Bookmark, Share, Eye } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
+import { useAuth } from '../contexts/AuthContext';
 import SavePostModal from './SavePostModal';
+import AuthModal from './AuthModal';
 
 const ArticleCard = ({
   id,
@@ -16,7 +18,64 @@ const ArticleCard = ({
   readTime = 1
 }) => {
   const { navigate } = useRouter();
+  const { isLogin } = useAuth();
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  
+
+  const getTotalViews = (views) => {
+    if (Array.isArray(views)) {
+      return views.reduce((sum, view) => sum + view, 0);
+    }
+    return views || 0;
+  };
+
+  const getTimeAgo = (dateString) => {
+  if (!dateString || isNaN(new Date(dateString))) {
+    return 'تاریخ نامعتبر';
+  }
+
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInMs = now - date;
+
+  if (diffInMs < 0) {
+    return 'زمان آینده';
+  }
+
+  const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+  const diffInHours = Math.round(diffInMs / (1000 * 60 * 60));
+  const diffInDays = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInDays === 0) {
+    if (diffInHours === 0) {
+      return diffInMinutes <= 1 ? 'همین الان' : `${diffInMinutes} دقیقه پیش`;
+    }
+    return `${diffInHours} ساعت پیش`;
+  } else if (diffInDays === 1) {
+    return 'دیروز';
+  } else if (diffInDays < 7) {
+    return `${diffInDays} روز پیش`;
+  } else if (diffInDays < 30) {
+    const weeks = Math.round(diffInDays / 7);
+    return `${weeks} هفته پیش`;
+  } else if (diffInDays < 365) {
+    const months = Math.round(diffInDays / 30);
+    return `${months} ماه پیش`;
+  } else {
+    const years = Math.round(diffInDays / 365);
+    return `${years} سال پیش`;
+  }
+};
+
+  const handleSaveClick = () => {
+    if (!isLogin) {
+      setShowAuthModal(true);
+      return;
+    }
+    setShowSaveModal(true);
+  };
 
   const defaultAvatar = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
   return (
@@ -104,13 +163,13 @@ const ArticleCard = ({
             
             <div className="flex items-center space-x-1 space-x-reverse text-gray-500">
               <Eye className="w-4 h-4" />
-              <span className="text-sm">{stats.views}</span>
+              <span className="text-sm">{getTotalViews(stats.views)}</span>
             </div>
           </div>
 
           <div className="flex items-center space-x-2 space-x-reverse">
             <button 
-              onClick={() => setShowSaveModal(true)}
+              onClick={handleSaveClick}
               className="p-1 text-gray-500 hover:text-blue-500 transition-colors"
             >
               <Bookmark className="w-4 h-4" />
@@ -128,6 +187,12 @@ const ArticleCard = ({
         onClose={() => setShowSaveModal(false)}
         postId={id}
         postTitle={title}
+      />
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode="login"
       />
     </>
   );

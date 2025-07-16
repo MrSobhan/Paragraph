@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Check, User, Heart, MessageCircle, FileText, X } from 'lucide-react';
+import { Bell, Check, User, Heart, MessageCircle, FileText, X, Trash2 } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import Loader from '../components/Loader';
@@ -18,7 +18,8 @@ const NotificationsPage = () => {
     setLoading(true);
     const result = await fetchNotifications();
     if (result.success) {
-      setNotifications(result.data);
+      // Show all notifications (both read and unread)
+      setNotifications(result.data.notifications);
     }
     setLoading(false);
   };
@@ -26,6 +27,15 @@ const NotificationsPage = () => {
   const handleMarkAsRead = async (notificationId) => {
     const result = await markNotificationAsRead(notificationId);
     if (result.success) {
+      setNotifications(prev => prev.map(n => 
+        n._id === notificationId ? { ...n, isRead: true } : n
+      ));
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId) => {
+    if (confirm('آیا از حذف این اعلان اطمینان دارید؟')) {
+      // For now, just remove from UI - you can implement delete API later
       setNotifications(prev => prev.filter(n => n._id !== notificationId));
     }
   };
@@ -66,7 +76,9 @@ const NotificationsPage = () => {
     } else if (notification.relatedUser) {
       navigate(`/user/${notification.relatedUser._id || notification.relatedUser}`);
     }
-    handleMarkAsRead(notification._id);
+    if (!notification.isRead) {
+      handleMarkAsRead(notification._id);
+    }
   };
 
   if (loading) {
@@ -86,7 +98,7 @@ const NotificationsPage = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">اعلان‌ها</h1>
               <p className="text-gray-600 dark:text-gray-400 mt-2">
-                {notifications.length} اعلان خوانده نشده
+                {notifications.filter(n => !n.isRead).length} اعلان خوانده نشده از {notifications.length} اعلان
               </p>
             </div>
             <Bell className="w-8 h-8 text-blue-500" />
@@ -101,10 +113,10 @@ const NotificationsPage = () => {
             <div className="text-center py-12">
               <Bell className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
-                اعلان جدیدی ندارید
+                اعلانی ندارید
               </h3>
               <p className="text-gray-500 dark:text-gray-400">
-                تمام اعلان‌های شما خوانده شده است
+                هنوز اعلانی دریافت نکرده‌اید
               </p>
             </div>
           ) : (
@@ -112,7 +124,9 @@ const NotificationsPage = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className={`border rounded-xl p-4 transition-all hover:shadow-md ${getNotificationColor(notification.type)}`}
+                  className={`border rounded-xl p-4 transition-all hover:shadow-md ${getNotificationColor(notification.type)} ${
+                    notification.isRead ? 'opacity-60' : ''
+                  }`}
                 >
                   <div className="flex items-start space-x-4 space-x-reverse">
                     <div className="flex-shrink-0">
@@ -124,7 +138,7 @@ const NotificationsPage = () => {
                         onClick={() => handleNotificationClick(notification)}
                         className="text-right w-full hover:opacity-80 transition-opacity"
                       >
-                        <p className="text-gray-900 dark:text-white font-medium mb-1">
+                        <p className={`font-medium mb-1 ${notification.isRead ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white'}`}>
                           {notification.message}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -139,13 +153,22 @@ const NotificationsPage = () => {
                       </button>
                     </div>
 
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 flex space-x-2 space-x-reverse">
+                      {!notification.isRead && (
                       <button
                         onClick={() => handleMarkAsRead(notification._id)}
                         className="p-2 text-gray-400 hover:text-green-500 hover:bg-white dark:hover:bg-gray-700 rounded-lg transition-colors"
                         title="علامت‌گذاری به عنوان خوانده شده"
                       >
                         <Check className="w-4 h-4" />
+                      </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteNotification(notification._id)}
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-white dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        title="حذف اعلان"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
