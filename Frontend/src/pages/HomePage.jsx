@@ -7,6 +7,7 @@ import InitialLoader from '../components/InitialLoader';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const HomePage = () => {
   const { fetchPosts } = useApi();
@@ -24,18 +25,38 @@ const HomePage = () => {
 
   const loadInitialPosts = async () => {
     setLoading(true);
-    
+
     setTimeout(() => {
       setInitialLoad(false);
     }, 2000);
 
-    const result = await fetchPosts(1, 5, '');
-    if (result.success) {
-      setArticles(result.data);
-      setPage(2);
-      if (result.data.length < 5) {
-        setHasMore(false);
+    try {
+      const result = await fetchPosts(1, 5, '');
+      if (result.success) {
+        setArticles(result.data);
+        setPage(2);
+        if (result.data.length < 5) {
+          setHasMore(false);
+        }
+      } else {
+        toast.error('خطا در بارگذاری پست‌ها. لطفاً اتصال اینترنت خود را بررسی کنید.', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
+    } catch (error) {
+      toast.error('لطفاً اتصال اینترنت خود را بررسی کنید', {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
     setLoading(false);
   };

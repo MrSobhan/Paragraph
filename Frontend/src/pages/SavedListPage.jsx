@@ -4,6 +4,7 @@ import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import ArticleCard from '../components/ArticleCard';
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const SavedListPage = () => {
   const { params, navigate } = useRouter();
@@ -40,10 +41,27 @@ const SavedListPage = () => {
   };
 
   const handleRemovePost = async (postId) => {
-    if (confirm('آیا از حذف این پست از لیست اطمینان دارید؟')) {
-      const result = await removePostFromList(list._id, postId);
-      if (result.success) {
+    const result = await Swal.fire({
+      title: 'آیا مطمئن هستید؟',
+      text: 'این پست از لیست حذف خواهد شد!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'بله، حذف کن!',
+      cancelButtonText: 'انصراف'
+    });
+
+    if (result.isConfirmed) {
+      const removeResult = await removePostFromList(list._id, postId);
+      if (removeResult.success) {
         setPosts(prev => prev.filter(p => p._id !== postId));
+        await Swal.fire({
+          title: 'حذف شد!',
+          text: 'پست از لیست حذف شد.',
+          icon: 'success',
+          confirmButtonText: 'باشه'
+        });
       }
     }
   };

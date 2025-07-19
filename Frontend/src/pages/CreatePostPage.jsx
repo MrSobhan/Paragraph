@@ -3,6 +3,9 @@ import { Save, Eye, X, Plus, Tag, Hash } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import FileUpload from '../components/FileUpload';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import Swal from 'sweetalert2';
 
 const CreatePostPage = () => {
   const { navigate } = useRouter();
@@ -71,12 +74,22 @@ const CreatePostPage = () => {
     e.preventDefault();
 
     if (!formData.title.trim() || !formData.content.trim() || !formData.summary.trim()) {
-      alert('لطفاً تمام فیلدهای الزامی را پر کنید');
+      await Swal.fire({
+        title: 'خطا!',
+        text: 'لطفاً تمام فیلدهای الزامی را پر کنید',
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
       return;
     }
 
     if (formData.topics.length === 0) {
-      alert('لطفاً حداقل یک موضوع انتخاب کنید');
+      await Swal.fire({
+        title: 'خطا!',
+        text: 'لطفاً حداقل یک موضوع انتخاب کنید',
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
       return;
     }
 
@@ -84,10 +97,20 @@ const CreatePostPage = () => {
     const result = await createPost(formData);
 
     if (result.success) {
-      alert('پست با موفقیت ایجاد شد');
+      await Swal.fire({
+        title: 'موفقیت!',
+        text: 'پست با موفقیت ایجاد شد',
+        icon: 'success',
+        confirmButtonText: 'باشه'
+      });
       navigate(`/post/${result.data._id}`);
     } else {
-      alert(result.message);
+      await Swal.fire({
+        title: 'خطا!',
+        text: result.message,
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
     }
     setLoading(false);
   };
@@ -105,6 +128,22 @@ const CreatePostPage = () => {
       estimatedReadTime: readTime
     }));
   }, [formData.content]);
+
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const quillFormats = [
+    'header', 'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet', 'align', 'link', 'image'
+  ];
 
   return (
     <div className="flex-1 max-w-6xl mx-auto">
@@ -189,7 +228,12 @@ const CreatePostPage = () => {
                     setFormData(prev => ({ ...prev, coverImage: fileUrl }));
                   }}
                   onUploadError={(error) => {
-                    alert(error);
+                    Swal.fire({
+                      title: 'خطا!',
+                      text: error,
+                      icon: 'error',
+                      confirmButtonText: 'باشه'
+                    });
                   }}
                   accept="image/*"
                   maxSize={5 * 1024 * 1024}
@@ -201,14 +245,14 @@ const CreatePostPage = () => {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   محتوای پست *
                 </label>
-                <textarea
-                  name="content"
+                <ReactQuill
+                  theme="snow"
                   value={formData.content}
-                  onChange={handleInputChange}
-                  required
-                  rows="20"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-mono"
+                  onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+                  modules={quillModules}
+                  formats={quillFormats}
                   placeholder="محتوای پست خود را اینجا بنویسید... (از Markdown پشتیبانی می‌شود)"
+                  style={{ height: '400px', marginBottom: '50px' }}
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   زمان تخمینی مطالعه: {formData.estimatedReadTime} دقیقه
@@ -227,7 +271,12 @@ const CreatePostPage = () => {
                     setFormData(prev => ({ ...prev, podcastUrl: fileUrl }));
                   }}
                   onUploadError={(error) => {
-                    alert(error);
+                    Swal.fire({
+                      title: 'خطا!',
+                      text: error,
+                      icon: 'error',
+                      confirmButtonText: 'باشه'
+                    });
                   }}
                   accept="audio/*"
                   maxSize={50 * 1024 * 1024} // 50MB for audio
@@ -255,9 +304,11 @@ const CreatePostPage = () => {
               </p>
 
               <div className="prose prose-lg max-w-none dark:prose-invert">
-                <div className="whitespace-pre-line">
-                  {formData.content || 'محتوای پست اینجا نمایش داده می‌شود...'}
-                </div>
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: formData.content || 'محتوای پست اینجا نمایش داده می‌شود...' 
+                  }}
+                />
               </div>
             </div>
           )}

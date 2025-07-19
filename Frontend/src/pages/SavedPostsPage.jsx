@@ -3,6 +3,7 @@ import { Bookmark, Lock, Globe, Trash2, Edit3, Plus, Eye } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const SavedPostsPage = () => {
   const { navigate } = useRouter();
@@ -55,11 +56,28 @@ const SavedPostsPage = () => {
   };
 
   const handleDeleteList = async (listId) => {
-    if (!confirm('آیا از حذف این لیست اطمینان دارید؟')) return;
+    const result = await Swal.fire({
+      title: 'آیا مطمئن هستید؟',
+      text: 'این لیست برای همیشه حذف خواهد شد!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'بله، حذف کن!',
+      cancelButtonText: 'انصراف'
+    });
 
-    const result = await deleteList(listId);
-    if (result.success) {
-      setLists(prev => prev.filter(list => list._id !== listId));
+    if (result.isConfirmed) {
+      const deleteResult = await deleteList(listId);
+      if (deleteResult.success) {
+        setLists(prev => prev.filter(list => list._id !== listId));
+        await Swal.fire({
+          title: 'حذف شد!',
+          text: 'لیست با موفقیت حذف شد.',
+          icon: 'success',
+          confirmButtonText: 'باشه'
+        });
+      }
     }
   };
 

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { User, Bell, Shield, Palette, Globe, Download, Trash2, Save } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Bell, Shield, Palette, Globe, Download, Trash2, Save, BarChart3, Linkedin, Twitter, Github } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../hooks/useApi';
 import FileUpload from '../components/FileUpload';
+import Swal from 'sweetalert2';
+import AnalyticsTab from '../components/AnalyticsTab';
 
 const SettingsPage = () => {
   const { theme, toggleTheme } = useTheme();
@@ -17,7 +19,12 @@ const SettingsPage = () => {
       name: user?.name || '',
       email: user?.email || '',
       bio: user?.bio || '',
-      avatar: user?.avatar || ''
+      avatar: user?.avatar || '',
+      socialLinks: {
+        linkedin: user?.socialLinks?.linkedin || '',
+        twitter: user?.socialLinks?.twitter || '',
+        github: user?.socialLinks?.github || ''
+      }
     },
     notifications: {
       emailNotifications: true,
@@ -59,24 +66,45 @@ const SettingsPage = () => {
       try {
         const result = await updateUserProfile(settings.profile , user._id);
         if (result.success) {
-          setMessage('پروفایل با موفقیت به‌روزرسانی شد');
+          await Swal.fire({
+            title: 'موفقیت!',
+            text: 'پروفایل با موفقیت به‌روزرسانی شد',
+            icon: 'success',
+            confirmButtonText: 'باشه'
+          });
           // Refresh user data
           await getMe();
         } else {
-          setMessage(result.message || 'خطا در به‌روزرسانی پروفایل');
+          await Swal.fire({
+            title: 'خطا!',
+            text: result.message || 'خطا در به‌روزرسانی پروفایل',
+            icon: 'error',
+            confirmButtonText: 'باشه'
+          });
         }
       } catch (error) {
-        setMessage('خطای غیرمنتظره رخ داد');
+        await Swal.fire({
+          title: 'خطا!',
+          text: 'خطای غیرمنتظره رخ داد',
+          icon: 'error',
+          confirmButtonText: 'باشه'
+        });
       } finally {
         setLoading(false);
       }
     } else {
-      alert('تنظیمات با موفقیت ذخیره شد');
+      await Swal.fire({
+        title: 'موفقیت!',
+        text: 'تنظیمات با موفقیت ذخیره شد',
+        icon: 'success',
+        confirmButtonText: 'باشه'
+      });
     }
   };
 
   const tabs = [
     { id: 'profile', label: 'پروفایل', icon: User },
+    { id: 'analytics', label: 'آمار بازدید', icon: BarChart3 },
     { id: 'notifications', label: 'اعلان‌ها', icon: Bell },
     { id: 'privacy', label: 'حریم خصوصی', icon: Shield },
     { id: 'preferences', label: 'تنظیمات', icon: Palette }
@@ -156,10 +184,20 @@ const SettingsPage = () => {
                             postId={null}
                             onUploadSuccess={(fileUrl) => {
                               handleInputChange('profile', 'avatar', fileUrl);
-                              setMessage('تصویر پروفایل با موفقیت به‌روزرسانی شد');
+                              Swal.fire({
+                                title: 'موفقیت!',
+                                text: 'تصویر پروفایل با موفقیت به‌روزرسانی شد',
+                                icon: 'success',
+                                confirmButtonText: 'باشه'
+                              });
                             }}
                             onUploadError={(error) => {
-                              setMessage(error);
+                              Swal.fire({
+                                title: 'خطا!',
+                                text: error,
+                                icon: 'error',
+                                confirmButtonText: 'باشه'
+                              });
                             }}
                             accept="image/*"
                             maxSize={2 * 1024 * 1024} // 2MB
@@ -209,32 +247,78 @@ const SettingsPage = () => {
                       />
                     </div>
 
-                    {/* <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        وبسایت
-                      </label>
-                      <input
-                        type="url"
-                        value={settings.profile.website}
-                        onChange={(e) => handleInputChange('profile', 'website', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        موقعیت
+                        شبکه‌های اجتماعی
                       </label>
-                      <input
-                        type="text"
-                        value={settings.profile.location}
-                        onChange={(e) => handleInputChange('profile', 'location', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div> */}
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-3 space-x-reverse">
+                          <Linkedin className="w-5 h-5 text-blue-600" />
+                          <input
+                            type="url"
+                            value={settings.profile.socialLinks.linkedin}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              profile: {
+                                ...prev.profile,
+                                socialLinks: {
+                                  ...prev.profile.socialLinks,
+                                  linkedin: e.target.value
+                                }
+                              }
+                            }))}
+                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="LinkedIn Profile URL"
+                          />
+                        </div>
+                        <div className="flex items-center space-x-3 space-x-reverse">
+                          <Twitter className="w-5 h-5 text-blue-400" />
+                          <input
+                            type="url"
+                            value={settings.profile.socialLinks.twitter}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              profile: {
+                                ...prev.profile,
+                                socialLinks: {
+                                  ...prev.profile.socialLinks,
+                                  twitter: e.target.value
+                                }
+                              }
+                            }))}
+                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Twitter Profile URL"
+                          />
+                        </div>
+                        <div className="flex items-center space-x-3 space-x-reverse">
+                          <Github className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                          <input
+                            type="url"
+                            value={settings.profile.socialLinks.github}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              profile: {
+                                ...prev.profile,
+                                socialLinks: {
+                                  ...prev.profile.socialLinks,
+                                  github: e.target.value
+                                }
+                              }
+                            }))}
+                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="GitHub Profile URL"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* Analytics Tab */}
+            {activeTab === 'analytics' && (
+              <AnalyticsTab />
             )}
 
             {/* Notifications Tab */}

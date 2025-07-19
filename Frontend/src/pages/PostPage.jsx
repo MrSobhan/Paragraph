@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../hooks/useApi';
 import AuthModal from '../components/AuthModal';
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const PostPage = () => {
   const { params, navigate } = useRouter();
@@ -34,7 +35,6 @@ const PostPage = () => {
 
 
   const loadPost = async () => {
-    console.log("dewfew");
     // if(article?.length == 0){
       const result = await fetchPost(params.postId);
   
@@ -172,7 +172,12 @@ const PostPage = () => {
       setNewComment('');
       // setShowCommentForm(false);
       setRating(5);
-      alert('نظر با موفقیت ایجاد شد و در انتظار تأیید است')
+      await Swal.fire({
+        title: 'موفقیت!',
+        text: 'نظر با موفقیت ایجاد شد و در انتظار تأیید است',
+        icon: 'success',
+        confirmButtonText: 'باشه'
+      });
     }
   };
 
@@ -180,7 +185,13 @@ const PostPage = () => {
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
-      alert('لینک در کلیپ‌بورد کپی شد');
+      await Swal.fire({
+        title: 'کپی شد!',
+        text: 'لینک در کلیپ‌بورد کپی شد',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
     } catch (err) {
       // Fallback for older browsers
       const textArea = document.createElement('textarea');
@@ -189,7 +200,13 @@ const PostPage = () => {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('لینک در کلیپ‌بورد کپی شد');
+      await Swal.fire({
+        title: 'کپی شد!',
+        text: 'لینک در کلیپ‌بورد کپی شد',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
     }
   };
 
@@ -287,9 +304,10 @@ const PostPage = () => {
 
             {/* Article Body */}
             <div className="prose prose-lg max-w-none dark:prose-invert">
-              <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
-                {article.content}
-              </div>
+              <div 
+                className="text-gray-700 dark:text-gray-300 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+              />
             </div>
           </div>
         </div>

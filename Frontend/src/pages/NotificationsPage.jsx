@@ -3,6 +3,7 @@ import { Bell, Check, User, Heart, MessageCircle, FileText, X, Trash2 } from 'lu
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const NotificationsPage = () => {
   const { navigate } = useRouter();
@@ -34,9 +35,25 @@ const NotificationsPage = () => {
   };
 
   const handleDeleteNotification = async (notificationId) => {
-    if (confirm('آیا از حذف این اعلان اطمینان دارید؟')) {
-      // For now, just remove from UI - you can implement delete API later
+    const result = await Swal.fire({
+      title: 'آیا مطمئن هستید؟',
+      text: 'این اعلان حذف خواهد شد!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'بله، حذف کن!',
+      cancelButtonText: 'انصراف'
+    });
+
+    if (result.isConfirmed) {
       setNotifications(prev => prev.filter(n => n._id !== notificationId));
+      await Swal.fire({
+        title: 'حذف شد!',
+        text: 'اعلان با موفقیت حذف شد.',
+        icon: 'success',
+        confirmButtonText: 'باشه'
+      });
     }
   };
 
