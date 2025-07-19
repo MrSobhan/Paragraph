@@ -75,7 +75,7 @@ exports.deleteTopic = async (req, res) => {
     if (!topic) {
       return res.status(404).json({ message: "موضوع یافت نشد" });
     }
-    await topic.remove();
+    await Topic.deleteOne({ _id: id });
     res.status(200).json({ message: "موضوع با موفقیت حذف شد" });
   } catch (error) {
     res.status(500).json({ message: "خطا در حذف موضوع", error: error.message });

@@ -8,6 +8,7 @@ import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import { useRef } from 'react';
 
 const HomePage = () => {
   const { fetchPosts } = useApi();
@@ -17,10 +18,14 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
+  const hasLoadedRef = useRef(false);
 
 
   useEffect(() => {
-    loadInitialPosts();
+    if (!hasLoadedRef.current) {
+      hasLoadedRef.current = true;
+      loadInitialPosts();
+    }
   }, []);
 
   const loadInitialPosts = async () => {

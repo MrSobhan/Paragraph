@@ -7,6 +7,7 @@ import { useApi } from '../hooks/useApi';
 import AuthModal from '../components/AuthModal';
 import Loader from '../components/Loader';
 import Swal from 'sweetalert2';
+import { useRef } from 'react';
 
 const PostPage = () => {
   const { params, navigate } = useRouter();
@@ -22,17 +23,21 @@ const PostPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [rating, setRating] = useState(5);
+  const hasLoadedRef = useRef(false);
 
   useEffect(() => {
-  if (params.postId) {
-    loadPost();
-    loadRelatedPosts();
-    // Check if user has liked this post from localStorage
-    const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
-    setLiked(likedPosts.includes(params.postId));
-  }
-}, [params.postId]);
+    if (params.postId && !hasLoadedRef.current) {
+      hasLoadedRef.current = true;
+      loadPost();
+      loadRelatedPosts();
+      const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+      setLiked(likedPosts.includes(params.postId));
+    }
+  }, [params.postId]);
 
+  useEffect(() => {
+    hasLoadedRef.current = false;
+  }, [params.postId]);
 
   const loadPost = async () => {
     // if(article?.length == 0){

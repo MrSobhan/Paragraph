@@ -70,7 +70,7 @@ exports.deleteList = async (req, res) => {
     if (list.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'فقط مالک لیست می‌تواند آن را حذف کند' });
     }
-    await list.remove();
+    await List.deleteOne({ _id: id });
     res.status(200).json({ message: 'لیست با موفقیت حذف شد' });
   } catch (error) {
     res.status(500).json({ message: 'خطا در حذف لیست', error: error.message });
@@ -79,7 +79,8 @@ exports.deleteList = async (req, res) => {
 
 exports.addPostToList = async (req, res) => {
   try {
-    const { id, postId } = req.params;
+    const { id } = req.params;
+    const { postId } = req.body;
     const list = await List.findById(id);
     if (!list) {
       return res.status(404).json({ message: 'لیست یافت نشد' });

@@ -1,4 +1,5 @@
 const { Comment, Post, Notification } = require("../../models");
+const mongoose = require("mongoose");
 
 exports.getAllComments = async (req, res) => {
   try {
@@ -54,8 +55,6 @@ exports.createComment = async (req, res) => {
     });
     await comment.save();
 
-    // Update post comments array
-    await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });
 
     // Update post rating
     const postDoc = await Post.findById(postId);
@@ -87,7 +86,7 @@ exports.updateComment = async (req, res) => {
     if (!comment) {
       return res.status(404).json({ message: "نظر یافت نشد" });
     }
-    if (comment.author.toString() !== req.user._id.toString()) {
+    if (comment.userId.toString() !== req.user._id.toString()) {
       return res
         .status(403)
         .json({ message: "فقط نویسنده می‌تواند نظر را ویرایش کند" });
@@ -140,7 +139,6 @@ exports.deleteComment = async (req, res) => {
 
     await Comment.deleteOne({ _id: id });
 
-    await Post.findByIdAndUpdate(comment.postId, { $pull: { comments: id } });
 
     res.status(200).json({ message: "نظر با موفقیت حذف شد" });
   } catch (error) {
@@ -164,25 +162,25 @@ exports.approveComment = async (req, res) => {
 
     // Create notifications only after approval
     const postDoc = await Post.findById(comment.postId);
-    if (postDoc && postDoc.author.toString() !== comment.author.toString()) {
+    if (postDoc && postDoc.author.toString() !== comment.userId.toString()) {
       await Notification.create({
         user: postDoc.author._id,
         type: "newComment",
         message: "کامنت شما توسط مدیر سایت تایید شد",
         relatedPost: comment.postId,
-        relatedUser: comment.author._id,
+        relatedUser: comment.userId,
       });
     }
 
     if (comment.parentComment) {
       const parent = await Comment.findById(comment.parentComment);
-      if (parent && parent.author.toString() !== comment.author.toString()) {
+      if (parent && parent.userId.toString() !== comment.userId.toString()) {
         await Notification.create({
-          user: parent.author._id,
+          user: parent.userId,
           type: "newComment",
           message: "کامنت شما توسط مدیر سایت تایید شد",
           relatedPost: comment.postId,
-          relatedUser: comment.author._id,
+          relatedUser: comment.userId,
         });
       }
     }

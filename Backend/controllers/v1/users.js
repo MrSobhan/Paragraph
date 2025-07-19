@@ -1,4 +1,5 @@
 const { User, Notification } = require("../../models");
+const { Topic } = require("../../models");
 const sendEmail = require("../../utils/email");
 
 exports.getUsers = async (req, res) => {
@@ -113,14 +114,14 @@ exports.followUser = async (req, res) => {
       await User.findByIdAndUpdate(followerId, {
         $push: { followingUsers: userId },
       });
+
       await userToFollow.save();
 
       await Notification.create({
-        recipient: userId,
-        sender: followerId,
+        user: userId,
         type: "newFollower",
-        targetType: "user",
-        targetId: userId,
+        message: "کاربر جدیدی شما را دنبال کرد",
+        relatedUser: followerId,
       });
 
       if (userToFollow.email) {

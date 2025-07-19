@@ -1,5 +1,5 @@
 const { Post, Like, Notification, User, Comment } = require("../../models");
-const { sendEmail } = require("../../utils/email");
+const sendEmail = require("../../utils/email");
 
 exports.getPosts = async (req, res) => {
   try {
@@ -53,7 +53,7 @@ exports.getPosts = async (req, res) => {
         }
         map[postId].push({
           content: comment.content,
-          author: comment.userId,
+          userId: comment.userId,
           createdAt: comment.createdAt,
         });
       }
@@ -92,7 +92,7 @@ exports.getPostById = async (req, res) => {
     const post = await Post.findOne(query)
       .populate("author")
       .populate("topics")
-      .lean();
+      .exec();
 
     if (!post) {
       return res.status(404).json({ message: "پست یافت نشد" });
@@ -109,14 +109,12 @@ exports.getPostById = async (req, res) => {
     const likeCount = await Like.countDocuments({ post: id });
     post.likeCount = likeCount;
 
-    // Get comments
-    const comments = await Comment.find({ postId: id })
+    const comments = await Comment.find({ postId: id, status: "approved" })
       .select("content userId createdAt")
       .populate("userId", "name")
-      .lean();
-    post.comments = comments;
+      .exec();
 
-    res.status(200).json({ post });
+    res.status(200).json({ post, comments });
   } catch (error) {
     res
       .status(500)
@@ -251,19 +249,20 @@ exports.publishPost = async (req, res) => {
       recipient: post.author,
       sender: req.user._id,
       type: "newPost",
-      targetType: "post",
-      targetId: post._id,
+      message: "پست شما منتشر شد",
+      relatedPost: post._id,
+      relatedUser: req.user._id,
     });
 
     // Create notifications for followers
     const followers = author.followers || [];
     await Notification.insertMany(
       followers.map((followerId) => ({
-        recipient: followerId,
-        sender: post.author,
+        user: followerId,
         type: "newPost",
-        targetType: "post",
-        targetId: post._id,
+        message: "پست جدید از کاربری که دنبال می‌کنید",
+        relatedPost: post._id,
+        relatedUser: post.author,
       }))
     );
 
