@@ -68,12 +68,12 @@ const UserPage = () => {
         <div className="p-6">
           {/* Cover Image */}
           <div className="h-32 md:h-48 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl mb-6 relative">
-            <div className="absolute inset-0 bg-black/20 rounded-xl"></div>
+            <div className="absolute z-10 inset-0 bg-black/20 rounded-xl"></div>
           </div>
 
           {/* Profile Info */}
           <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 md:-mt-20">
-            <div className="flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-6 md:space-x-reverse">
+            <div className="flex z-30 flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-6 md:space-x-reverse">
               <img 
                 src={user.avatar} 
                 alt={user.name}

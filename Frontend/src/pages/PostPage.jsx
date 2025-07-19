@@ -48,6 +48,9 @@ const PostPage = () => {
         setComments(result.data.comments)
       }
     // }
+
+    console.log(result.data.comments);
+    
     setLoading(false);
   };
 
@@ -469,20 +472,20 @@ const PostPage = () => {
               {comments?.length && comments.map((comment) => (
                 <div key={comment._id} className="border-b border-gray-100 dark:border-gray-700 pb-6 last:border-b-0">
                   <div className="flex space-x-3 space-x-reverse">
-                    <button onClick={() => navigate(`/user/${comment.author._id}`)}>
+                    <button onClick={() => navigate(`/user/${comment.userId._id}`)}>
                       <img
-                        src={comment.author.avatar || defaultAvatar}
-                        alt={comment.author.name}
+                        src={comment.userId?.avatar || defaultAvatar}
+                        alt={comment.userId?.name}
                         className="w-10 h-10 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
                       />
                     </button>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 space-x-reverse mb-2">
                         <button
-                          onClick={() => navigate(`/user/${comment.author._id}`)}
+                          onClick={() => navigate(`/user/${comment.userId._id}`)}
                           className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
-                          {comment.author.name}
+                          {comment.userId?.name}
                         </button>
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                           {new Date(comment.createdAt).toLocaleDateString('fa-IR')}
