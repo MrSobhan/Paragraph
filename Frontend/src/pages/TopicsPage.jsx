@@ -17,6 +17,8 @@ const TopicsPage = () => {
   const loadTopics = async () => {
     setLoading(true);
     const result = await fetchTopics();
+    console.log(result.data);
+    
     if (result.success) {
       setTopics(result.data);
     }

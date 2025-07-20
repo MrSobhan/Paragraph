@@ -15,7 +15,7 @@ exports.getTopics = async (req, res) => {
 
     const topicIds = topics.map((topic) => topic._id);
     const postCounts = await Post.aggregate([
-      { $match: { topic: { $in: topicIds } } },
+      { $match: { topics: { $in: topicIds } } },
       { $group: { _id: "$topic", count: { $sum: 1 } } },
     ]);
 
