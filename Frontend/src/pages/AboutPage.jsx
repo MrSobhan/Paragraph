@@ -35,7 +35,7 @@ const AboutPage = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
         <div className="p-8 md:p-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">درباره ویرگول</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">درباره پاراگراف</h1>
           <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
             پلتفرم پیشرو نوشتن و خواندن محتوای فارسی
           </p>
@@ -47,8 +47,8 @@ const AboutPage = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">ماموریت ما</h2>
           <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed max-w-4xl mx-auto">
-            ویرگول با هدف ایجاد فضایی امن و حرفه‌ای برای نویسندگان و خوانندگان فارسی‌زبان راه‌اندازی شده است. 
-            ما معتقدیم که هر فردی داستان منحصر به فردی برای گفتن دارد و ویرگول بستری است تا این داستان‌ها 
+            پاراگراف با هدف ایجاد فضایی امن و حرفه‌ای برای نویسندگان و خوانندگان فارسی‌زبان راه‌اندازی شده است. 
+            ما معتقدیم که هر فردی داستان منحصر به فردی برای گفتن دارد و پاراگراف بستری است تا این داستان‌ها 
             به بهترین شکل ممکن به اشتراک گذاشته شوند.
           </p>
         </div>
@@ -132,7 +132,7 @@ const AboutPage = () => {
 
       {/* History Section */}
       <div className="bg-gray-50 dark:bg-gray-900 p-8 md:p-12">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">تاریخچه ویرگول</h2>
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">تاریخچه پاراگراف</h2>
         
         <div className="max-w-3xl mx-auto">
           <div className="space-y-8">
@@ -141,7 +141,7 @@ const AboutPage = () => {
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">۱۴۰۰ - آغاز راه</h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  ویرگول با هدف ایجاد پلتفرمی برای نویسندگان فارسی‌زبان راه‌اندازی شد.
+                  پاراگراف با هدف ایجاد پلتفرمی برای نویسندگان فارسی‌زبان راه‌اندازی شد.
                 </p>
               </div>
             </div>

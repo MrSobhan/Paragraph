@@ -135,7 +135,7 @@ const NotFoundPage = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="جستجو در ویرگول..."
+                placeholder="جستجو در پاراگراف..."
                 className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 pr-12 text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

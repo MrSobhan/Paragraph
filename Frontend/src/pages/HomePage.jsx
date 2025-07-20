@@ -37,7 +37,7 @@ const HomePage = () => {
     }, 2000);
 
     try {
-      const result = await fetchPosts(1, 5, '');
+      const result = await fetchPosts(1, 5);
       if (result.success) {
         setArticles(result.data);
         setPage(2);
@@ -69,7 +69,8 @@ const HomePage = () => {
 
   const fetchMoreArticles = useCallback(async () => {
     if (!hasMore) return;
-    const result = await fetchPosts(page, 5, '');
+    const result = await fetchPosts(page, 5);
+    
     if (result.success) {
       if (result.data.length === 0) {
         setHasMore(false);
@@ -95,7 +96,7 @@ const HomePage = () => {
   }
 
   return (
-    <main className="flex-1 max-w-4xl mx-auto p-6">
+    <main className="flex-1 max-w-4xl mx-auto p-6 overflow-x-hidden">
       <StoriesSection />
       <FeaturedSection />
 

@@ -8,7 +8,8 @@ import {
   Menu, 
   X,
   LogOut,
-  Settings
+  Settings,
+  Newspaper
 } from 'lucide-react';
 import { useRouter } from '../../hooks/useRouter';
 import { useAuth } from '../../contexts/AuthContext';
@@ -48,7 +49,7 @@ const DashboardLayout = ({ children, activeTab }) => {
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">پنل مدیریت</h1>
+            <h1 className="text-2xl moraba font-bold text-gray-900 dark:text-white cursor-pointer flex items-center gap-x-2" onClick={() => navigate('/')}><Newspaper className='w-5 h-5' /> پاراگراف</h1>
             <button
               onClick={() => setSidebarOpen(false)}
               className="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -127,7 +128,7 @@ const DashboardLayout = ({ children, activeTab }) => {
               <Menu className="w-5 h-5" />
             </button>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              داشبورد مدیریت ویرگول
+              داشبورد مدیریت پاراگراف
             </h2>
             <div className="hidden sm:flex items-center space-x-4 space-x-reverse">
               <span className="text-sm text-gray-500 dark:text-gray-400">

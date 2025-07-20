@@ -8,7 +8,7 @@ import Loader from '../components/Loader';
 
 const TopicPostsPage = () => {
   const { params, navigate } = useRouter();
-  const { fetchPostsByTopic, fetchTopics } = useApi();
+  const { fetchPostsByTopic, fetchTopics , fetchPosts } = useApi();
   const [topic, setTopic] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +32,11 @@ const TopicPostsPage = () => {
 
   const loadPosts = async () => {
     setLoading(true);
-    const result = await fetchPostsByTopic(params.topicId, 1, 10);
+    const result = await fetchPosts(1, 10);
+    
     if (result.success) {
-      setPosts(result.data);
+      const foundPost = result.data.filter(p => p.topics.find(t => t._id === params.topicId));
+      setPosts(foundPost);
       setPage(2);
       if (result.data.length < 10) {
         setHasMore(false);
@@ -44,12 +46,13 @@ const TopicPostsPage = () => {
   };
 
   const fetchMorePosts = useCallback(async () => {
-    const result = await fetchPostsByTopic(params.topicId, page, 10);
+    const result = await fetchPosts(page, 10);
     if (result.success) {
       if (result.data.length === 0) {
         setHasMore(false);
       } else {
-        setPosts(prev => [...prev, ...result.data]);
+        const foundPost = result.data.filter(p => p.topics.find(t => t._id === params.topicId));
+        setPosts(prev => [...prev, ...foundPost]);
         setPage(prev => prev + 1);
       }
     }

@@ -50,7 +50,7 @@ const ContactPage = () => {
       icon: MapPin,
       title: 'آدرس',
       value: 'تهران، خیابان ولیعصر، پلاک ۱۲۳',
-      description: 'دفتر مرکزی ویرگول'
+      description: 'دفتر مرکزی پاراگراف'
     },
     {
       icon: Clock,
@@ -271,10 +271,10 @@ const ContactPage = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
-              آیا استفاده از ویرگول رایگان است؟
+              آیا استفاده از پاراگراف رایگان است؟
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              بله، استفاده از ویرگول کاملاً رایگان است. ما همچنین طرح‌های پریمیوم با امکانات اضافی ارائه می‌دهیم.
+              بله، استفاده از پاراگراف کاملاً رایگان است. ما همچنین طرح‌های پریمیوم با امکانات اضافی ارائه می‌دهیم.
             </p>
           </div>
 

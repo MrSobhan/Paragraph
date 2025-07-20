@@ -124,13 +124,13 @@ exports.followUser = async (req, res) => {
         relatedUser: followerId,
       });
 
-      if (userToFollow.email) {
-        await sendEmail(
-          userToFollow.email,
-          "دنبال‌کننده جدید",
-          "کاربر جدیدی شما را در ویرگول دنبال کرد!"
-        );
-      }
+      // if (userToFollow.email) {
+      //   await sendEmail(
+      //     userToFollow.email,
+      //     "دنبال‌کننده جدید",
+      //     "کاربر جدیدی شما را در ویرگول دنبال کرد!"
+      //   );
+      // }
     } else {
       return res.status(400).json({ message: "شما قبلاً این کاربر را دنبال کرده‌اید." });
     }

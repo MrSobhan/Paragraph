@@ -38,8 +38,8 @@ const Sidebar = ({ className = "" }) => {
   ];
 
   return (
-    <aside className={`w-96 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto hidden lg:block ${className}`}>
-      <div className="p-6 space-y-8">
+    <aside className={`w-96 relative bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto hidden lg:block ${className}`}>
+      <div className="p-6 space-y-8 sticky max-h-max top-20 left-0">
         {/* Featured Content */}
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
@@ -54,33 +54,10 @@ const Sidebar = ({ className = "" }) => {
           </button>
         </div>
 
-        {/* Navigation Menu */}
-        <div>
-          <div className="space-y-2">
-            <button 
-              onClick={() => navigate('/notifications')}
-              className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <Mail className="w-4 h-4" />
-              اعلان‌ها
-            </button>
-          </div>
-        </div>
-
-        {/* Topics Navigation */}
-        <div>
-          <button 
-            onClick={() => navigate('/topics')}
-            className="flex items-center space-x-2 space-x-reverse w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <Hash className="w-4 h-4" />
-            موضوعات
-          </button>
-        </div>
 
         {/* Popular Tags */}
         <div>
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-4 cursor-pointer" onClick={() => navigate('/topics')}>
             <Hash className="w-5 h-5 text-gray-600 dark:text-gray-400 ml-2" />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">موضوعات پربحث</h3>
           </div>

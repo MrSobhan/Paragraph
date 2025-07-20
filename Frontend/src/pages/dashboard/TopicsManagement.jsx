@@ -121,7 +121,8 @@ const TopicsManagement = () => {
               className="flex items-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
-              <span>موضوع جدید</span>
+              <span className='hidden md:inline'>موضوع جدید</span>
+              <span className='inline md:hidden'>موضوع</span>
             </button>
             <div className="relative">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />

@@ -89,7 +89,7 @@ const RulesPage = () => {
         <div className="p-8 md:p-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">قوانین و مقررات</h1>
           <p className="text-xl md:text-2xl opacity-90">
-            راهنمای استفاده از پلتفرم ویرگول
+            راهنمای استفاده از پلتفرم پاراگراف
           </p>
         </div>
       </div>
@@ -101,7 +101,7 @@ const RulesPage = () => {
             <Info className="w-6 h-6 text-blue-500 mt-1 flex-shrink-0" />
             <div>
               <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-2">
-                خوش آمدید به ویرگول
+                خوش آمدید به پاراگراف
               </h3>
               <p className="text-blue-800 dark:text-blue-200">
                 این قوانین برای حفظ فضایی امن، سازنده و حرفه‌ای برای همه کاربران تدوین شده است. 

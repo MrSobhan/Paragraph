@@ -47,6 +47,16 @@ const PostsManagement = () => {
     }
   };
 
+  const getAllViews = () => {
+    let total = 0;
+    posts.forEach(p => {
+      if (Array.isArray(p.views)) {
+        total += p.views.reduce((sum, view) => sum + view, 0);
+      }
+    });
+    return total.toLocaleString();
+  };
+
   const filteredPosts = posts.filter(post =>
     post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     post.author?.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -121,7 +131,7 @@ const PostsManagement = () => {
               <div className="mr-3">
                 <p className="text-sm text-gray-600 dark:text-gray-400">کل بازدید</p>
                 <p className="text-xl font-bold text-gray-900 dark:text-white">
-                  {posts.reduce((sum, p) => sum + (p.views || 0), 0)}
+                  {getAllViews()}
                 </p>
               </div>
             </div>
@@ -190,14 +200,17 @@ const PostsManagement = () => {
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${post.isPublished
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
                         }`}>
                         {post.isPublished ? 'منتشر شده' : 'پیش‌نویس'}
                       </span>
                     </td>
                     <td className="hidden lg:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                      {post.views || 0}
+                      {
+                        Array.isArray(post.views) &&
+                        post.views.reduce((sum, view) => sum + view, 0) || 0
+                      }
                     </td>
                     <td className="hidden lg:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {new Date(post.createdAt).toLocaleDateString('fa-IR')}
