@@ -1,14 +1,16 @@
 import React, { useState , useEffect } from 'react';
 import { MapPin, Calendar, Link as LinkIcon, Users, BookOpen, Heart, MessageCircle, Eye, Settings, UserPlus, UserCheck } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
-import { mockUsers, mockArticles } from '../data/mockData';
 import ArticleCard from '../components/ArticleCard';
 import { useApi } from '../hooks/useApi';
+import { useAuth } from '../contexts/AuthContext';
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const UserPage = () => {
   const { params, navigate } = useRouter();
-  const { fetchUserProfile, updateUserProfile } = useApi();
+  const { fetchUserProfile, followUser, unfollowUser } = useApi();
+  const { user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('posts');
   const [isFollowing, setIsFollowing] = useState(false);
   const [user, setUser] = useState(null);
@@ -28,6 +30,10 @@ const UserPage = () => {
     if (result.success) {
       setUser(result.data.user);
       setUserPosts(result.data.posts || []);
+      // Check if current user is following this user
+      if (currentUser && result.data.user.followers) {
+        setIsFollowing(result.data.user.followers.includes(currentUser._id));
+      }
     }
     setLoading(false);
   };
@@ -57,8 +63,37 @@ const UserPage = () => {
   }
 
 
-  const handleFollow = () => {
-    setIsFollowing(!isFollowing);
+  const handleFollow = async () => {
+    if (!currentUser) {
+      await Swal.fire({
+        title: 'خطا!',
+        text: 'برای دنبال کردن کاربران ابتدا وارد شوید',
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
+      return;
+    }
+
+    const result = isFollowing 
+      ? await unfollowUser(params.userId)
+      : await followUser(params.userId);
+
+    if (result.success) {
+      setIsFollowing(!isFollowing);
+      setUser(prev => ({
+        ...prev,
+        followersCount: isFollowing 
+          ? (prev.followersCount || 0) - 1 
+          : (prev.followersCount || 0) + 1
+      }));
+    } else {
+      await Swal.fire({
+        title: 'خطا!',
+        text: result.message,
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
+    }
   };
 
   return (
@@ -100,22 +135,21 @@ const UserPage = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-3 space-x-reverse mt-4 md:mt-0">
-              <button 
-                onClick={handleFollow}
-                className={`flex items-center space-x-2 space-x-reverse px-6 py-2 rounded-lg font-medium transition-colors ${
-                  isFollowing
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                    : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }`}
-              >
-                {isFollowing ? <UserCheck className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                <span>{isFollowing ? 'دنبال می‌کنید' : 'دنبال کردن'}</span>
-              </button>
-              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                <Settings className="w-5 h-5" />
-              </button>
-            </div>
+            {currentUser && currentUser._id !== params.userId && (
+              <div className="flex items-center space-x-3 space-x-reverse mt-4 md:mt-0">
+                <button 
+                  onClick={handleFollow}
+                  className={`flex items-center space-x-2 space-x-reverse px-6 py-2 rounded-lg font-medium transition-colors ${
+                    isFollowing
+                      ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                      : 'bg-blue-500 hover:bg-blue-600 text-white'
+                  }`}
+                >
+                  {isFollowing ? <UserCheck className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
+                  <span>{isFollowing ? 'دنبال می‌کنید' : 'دنبال کردن'}</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* User Stats */}
@@ -124,14 +158,20 @@ const UserPage = () => {
               <div className="text-xl font-bold text-gray-900 dark:text-white">{user.postsCount || 0}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">مقاله</div>
             </div>
-            <div className="text-center">
+            <button 
+              onClick={() => navigate(`/user/${params.userId}/followers`)}
+              className="text-center hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors"
+            >
               <div className="text-xl font-bold text-gray-900 dark:text-white">{user.followersCount || 0}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">دنبال‌کننده</div>
-            </div>
-            <div className="text-center">
+            </button>
+            <button 
+              onClick={() => navigate(`/user/${params.userId}/following`)}
+              className="text-center hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors"
+            >
               <div className="text-xl font-bold text-gray-900 dark:text-white">{user.followingCount || 0}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">دنبال شده</div>
-            </div>
+            </button>
           </div>
 
           {/* User Details */}

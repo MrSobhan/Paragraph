@@ -253,3 +253,38 @@ exports.unfollowTopic = async (req, res) => {
       .json({ message: "خطا در لغو دنبال کردن موضوع", error: error.message });
   }
 };
+
+exports.unfollowUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const followerId = req.user._id;
+
+    if (userId === followerId.toString()) {
+      return res
+        .status(400)
+        .json({ message: "نمی‌توانید خودتان را لغو دنبال کنید" });
+    }
+
+    const userToUnfollow = await User.findById(userId);
+    if (!userToUnfollow) {
+      return res.status(404).json({ message: "کاربر یافت نشد" });
+    }
+
+    if (userToUnfollow.followers.includes(followerId)) {
+      userToUnfollow.followers = userToUnfollow.followers.filter(
+        (id) => !id.equals(followerId)
+      );
+      await User.findByIdAndUpdate(followerId, {
+        $pull: { followingUsers: userId },
+      });
+
+      await userToUnfollow.save();
+    } else {
+      return res.status(400).json({ message: "شما این کاربر را دنبال نکرده‌اید." });
+    }
+
+    res.status(200).json({ message: "کاربر با موفقیت لغو دنبال شد" });
+  } catch (error) {
+    res.status(500).json({ message: "خطا در لغو دنبال کردن کاربر", error: error.message });
+  }
+};

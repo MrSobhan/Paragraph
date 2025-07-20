@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import FeaturedSection from '../components/FeaturedSection';
+import StoriesSection from '../components/StoriesSection';
 import Loader from '../components/Loader';
 import InitialLoader from '../components/InitialLoader';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
@@ -67,6 +68,7 @@ const HomePage = () => {
   };
 
   const fetchMoreArticles = useCallback(async () => {
+    if (!hasMore) return;
     const result = await fetchPosts(page, 5, '');
     if (result.success) {
       if (result.data.length === 0) {
@@ -76,7 +78,7 @@ const HomePage = () => {
         setPage(prev => prev + 1);
       }
     }
-  }, [page]);
+  }, [page, hasMore]);
 
   const [isFetching] = useInfiniteScroll(fetchMoreArticles);
 
@@ -94,6 +96,7 @@ const HomePage = () => {
 
   return (
     <main className="flex-1 max-w-4xl mx-auto p-6">
+      <StoriesSection />
       <FeaturedSection />
 
       <div className="space-y-6">

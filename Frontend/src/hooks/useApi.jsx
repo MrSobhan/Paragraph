@@ -398,6 +398,66 @@ export const useApi = () => {
     }
   };
 
+  const followUser = async (userId) => {
+    try {
+      const response = await axiosInstance.post(`/auth/${userId}/follow`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در دنبال کردن کاربر'
+      };
+    }
+  };
+
+  const unfollowUser = async (userId) => {
+    try {
+      const response = await axiosInstance.post(`/auth/${userId}/unfollow`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در لغو دنبال کردن کاربر'
+      };
+    }
+  };
+
+  const followTopic = async (topicId) => {
+    try {
+      const response = await axiosInstance.post(`/auth/${topicId}/follow-topic`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در دنبال کردن موضوع'
+      };
+    }
+  };
+
+  const unfollowTopic = async (topicId) => {
+    try {
+      const response = await axiosInstance.post(`/auth/${topicId}/unfollow-topic`);
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در لغو دنبال کردن موضوع'
+      };
+    }
+  };
+
 
   return {
     fetchPosts,
@@ -425,7 +485,11 @@ export const useApi = () => {
     changeRole,
     deleteUser,
     publishPost,
-    deletePost
+    deletePost,
+    followUser,
+    unfollowUser,
+    followTopic,
+    unfollowTopic
   };
 };
 

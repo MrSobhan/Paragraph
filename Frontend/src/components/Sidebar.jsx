@@ -1,14 +1,34 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { Play, TrendingUp, Users, BookOpen, Hash, Star, Coffee, Info, Shield, Mail } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
+import { useApi } from '../hooks/useApi';
 
 const Sidebar = ({ className = "" }) => {
   const { navigate } = useRouter();
+  const { fetchTopics, fetchAllUserProfile } = useApi();
+  const [popularTopics, setPopularTopics] = useState([]);
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
   
-  const popularTags = [
-    'برنامه‌نویسی', 'هوش مصنوعی', 'تکنولوژی', 'علم داده', 
-    'طراحی', 'کسب و کار', 'فلسفه', 'ادبیات'
-  ];
+  useEffect(() => {
+    loadSidebarData();
+  }, []);
+
+  const loadSidebarData = async () => {
+    // Load popular topics
+    const topicsResult = await fetchTopics();
+    if (topicsResult.success) {
+      const shuffled = topicsResult.data.sort(() => 0.5 - Math.random());
+      setPopularTopics(shuffled.slice(0, 8));
+    }
+
+    // Load suggested users
+    const usersResult = await fetchAllUserProfile();
+    if (usersResult.success) {
+      const shuffled = usersResult.data.users.sort(() => 0.5 - Math.random());
+      setSuggestedUsers(shuffled.slice(0, 3));
+    }
+  };
 
   const trendingTopics = [
     { title: 'پیشنهاد های اولیه بنی هنا', image: 'https://picsum.photos/100/60?random=6' },
@@ -18,12 +38,12 @@ const Sidebar = ({ className = "" }) => {
   ];
 
   return (
-    <aside className={`w-96 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto ${className}`}>
+    <aside className={`w-96 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto hidden lg:block ${className}`}>
       <div className="p-6 space-y-8">
         {/* Featured Content */}
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">ویرگول برای کسب‌وکار</h3>
+            <h3 className="text-lg font-bold">پاراگراف برای کسب‌وکار</h3>
             <Coffee className="w-6 h-6" />
           </div>
           <p className="text-sm opacity-90 mb-4">
@@ -65,12 +85,13 @@ const Sidebar = ({ className = "" }) => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">موضوعات پربحث</h3>
           </div>
           <div className="space-y-2">
-            {popularTags.map((tag, index) => (
+            {popularTopics.map((topic) => (
               <button
-                key={index}
+                key={topic._id}
+                onClick={() => navigate(`/topics/${topic._id}`)}
                 className="block w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
-                #{tag}
+                #{topic.name}
               </button>
             ))}
           </div>
@@ -130,27 +151,23 @@ const Sidebar = ({ className = "" }) => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">پیشنهاد دنبال کردن</h3>
           </div>
           <div className="space-y-3">
-            {[
-              { name: 'علی احمدی', bio: 'توسعه‌دهنده فرانت‌اند', followers: '۱.۲ هزار', username: 'ali-ahmadi', avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' },
-              { name: 'مریم رضایی', bio: 'طراح رابط کاربری', followers: '۸۹۰', username: 'maryam-rezaei', avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' },
-              { name: 'حسین مرادی', bio: 'متخصص هوش مصنوعی', followers: '۲.۱ هزار', username: 'hossein-moradi', avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }
-            ].map((user, index) => (
+            {suggestedUsers.map((user, index) => (
               <div key={index} className="flex items-center space-x-3 space-x-reverse">
-                <button onClick={() => navigate(`/user/${user.username}`)}>
+                <button onClick={() => navigate(`/user/${user._id}`)}>
                   <img 
-                    src={user.avatar}
+                    src={user.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                     alt={user.name}
                     className="w-10 h-10 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
                   />
                 </button>
                 <div className="flex-1">
                   <button 
-                    onClick={() => navigate(`/user/${user.username}`)}
+                    onClick={() => navigate(`/user/${user._id}`)}
                     className="text-right hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     <h4 className="font-medium text-gray-900 dark:text-white text-sm">{user.name}</h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{user.bio}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{user.followers} دنبال‌کننده</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{user.bio || 'کاربر پاراگراف'}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{user.followersCount || 0} دنبال‌کننده</p>
                   </button>
                 </div>
                 <button className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full transition-colors">

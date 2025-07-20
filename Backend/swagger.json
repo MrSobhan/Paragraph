@@ -1,1974 +1,1194 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "title": "Virgool API",
-        "description": "API documentation for Virgool, a Persian blogging platform",
-        "version": "1.0.0"
-    },
-    "servers": [
-        {
-            "url": "https://virgool.onrender.com/v1",
-            "description": "Production server"
-        },
-        {
-            "url": "http://localhost:3000/v1",
-            "description": "Local development server"
-        }
-    ],
-    "paths": {
-        "/auth/register": {
-            "post": {
-                "summary": "Register a new user",
-                "tags": [
-                    "Auth"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "User registered successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/auth/login": {
-            "post": {
-                "summary": "Login user",
-                "tags": [
-                    "Auth"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Login successful",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/auth/me": {
-            "get": {
-                "summary": "Get current user",
-                "tags": [
-                    "Auth"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "summary": "Get all users (admin only)",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of users",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/User"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "summary": "Get user by ID",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update user",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateUserInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "User updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{id}/delete": {
-            "delete": {
-                "summary": "Delete user (admin only)",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User deleted"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{userId}/follow": {
-            "post": {
-                "summary": "Follow a user",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "userId",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID to follow"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User followed"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{id}/ban": {
-            "put": {
-                "summary": "Ban a user (admin only)",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User banned"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{id}/unban": {
-            "put": {
-                "summary": "Unban a user (admin only)",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User unbanned"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{id}/change-role": {
-            "patch": {
-                "summary": "Change user role (admin only)",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "User ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Role changed"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{topicId}/follow-topic": {
-            "post": {
-                "summary": "Follow a topic",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "topicId",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Topic ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Topic followed"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Topic not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/users/{topicId}/unfollow-topic": {
-            "post": {
-                "summary": "Unfollow a topic",
-                "tags": [
-                    "Users"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "topicId",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Topic ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Topic unfollowed"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Topic not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/comments": {
-            "post": {
-                "summary": "Create a new comment",
-                "tags": [
-                    "Comments"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateCommentInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Comment created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Comment"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/comments/{id}": {
-            "put": {
-                "summary": "Update a comment",
-                "tags": [
-                    "Comments"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Comment ID"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateCommentInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Comment updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Comment"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Comment not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete a comment",
-                "tags": [
-                    "Comments"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Comment ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Comment deleted"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Comment not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/comments/{id}/approve": {
-            "patch": {
-                "summary": "Approve a comment (admin only)",
-                "tags": [
-                    "Comments"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Comment ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Comment approved",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Comment"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Comment not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/likes": {
-            "post": {
-                "summary": "Toggle like on a post",
-                "tags": [
-                    "Likes"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "postId": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "postId"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Like toggled"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/lists": {
-            "post": {
-                "summary": "Create a new list",
-                "tags": [
-                    "Lists"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateListInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "List created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/List"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/lists/{id}": {
-            "put": {
-                "summary": "Update a list",
-                "tags": [
-                    "Lists"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "List ID"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateListInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "List updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/List"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "List not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete a list",
-                "tags": [
-                    "Lists"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "List ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List deleted"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "List not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/lists/{id}/posts": {
-            "post": {
-                "summary": "Add post to a list",
-                "tags": [
-                    "Lists"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "List ID"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "postId": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "postId"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Post added to list"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "List or post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/lists/{id}/posts/{postId}": {
-            "delete": {
-                "summary": "Remove post from a list",
-                "tags": [
-                    "Lists"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "List ID"
-                    },
-                    {
-                        "in": "path",
-                        "name": "postId",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Post ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Post removed from list"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "List or post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/notifications": {
-            "get": {
-                "summary": "Get notifications",
-                "tags": [
-                    "Notifications"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of notifications",
-                        "content": [
-                            "Notifications"
-                        ],
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "/components/schemas/Notification"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/notifications/{id}/read": {
-            "put": {
-                "summary": "Mark notification as read",
-                "tags": [
-                    "Notifications"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Notification ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Notification marked as read"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Notification not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/posts": {
-            "get": {
-                "summary": "Get a list of posts",
-                "tags": [
-                    "Posts"
-                ],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "page",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "Page number for pagination"
-                    },
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "Number of posts per page"
-                    },
-                    {
-                        "in": "query",
-                        "name": "title",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Filter posts by title (case-insensitive)"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of posts",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "posts": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "components#/components/schemas/Post"
-                                            }
-                                        },
-                                        "currentPage": {
-                                            "type": "integer"
-                                        },
-                                        "totalPages": {
-                                            "type": "integer"
-                                        },
-                                        "totalPosts": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create a new post",
-                "tags": "Posts",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#components/schemas/CreatePostInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Post created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#components/schemas/Post"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/posts/{id}": {
-            "get": {
-                "summary": "Get a post by ID",
-                "tags": [
-                    "Posts"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Post ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Post details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "post": {
-                                            "$ref": "#components/schemas/Post"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update a post",
-                "tags": [
-                    "Posts"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Post ID"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#components/schemas/UpdatePostInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Post updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#components/schemas/Post"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete a post",
-                "tags": [
-                    "Posts"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Post ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Post deleted"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/posts/{id}/publish": {
-            "put": {
-                "summary": "Publish a post (admin only)",
-                "tags": [
-                    "Posts"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Post ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Post published"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/topics": {
-            "get": {
-                "summary": "Get all topics",
-                "tags": [
-                    "Topics"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of topics",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#components/schemas/Topic"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create a new topic (admin only)",
-                "tags": [
-                    "Topics"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#components/schemas/CreateTopicInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Topic created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#components/schemas/Topic"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/topics/{id}": {
-            "put": {
-                "summary": "Update a topic (admin only)",
-                "tags": [
-                    "Topics"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Topic ID"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#components/schemas/UpdateTopicInput"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Topic updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#components/schemas/Topic"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Topic not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete a topic (admin only)",
-                "tags": [
-                    "Topics"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Topic ID"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Topic deleted"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Topic not found"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/upload": {
-            "post": {
-                "summary": "Upload a file",
-                "tags": [
-                    "Upload"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "File uploaded",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "fileUrl": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "User": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "role": {
-                        "type": "string",
-                        "enum": [
-                            "user",
-                            "admin"
-                        ]
-                    },
-                    "isBanned": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updateedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "RegisterInput": {
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "email"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "type": "string"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "socialLinks": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "email",
-                    "username",
-                    "password"
-                ]
-            },
-            "LoginInput": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "email",
-                    "password"
-                ]
-            },
-            "UpdateUserInput": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "phone": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Post": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "content": {
-                        "type": "string"
-                    },
-                    "author": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "avatar": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "topics": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "likeCount": {
-                        "type": "integer"
-                    },
-                    "comments": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#components/schemas/Comment"
-                        }
-                    },
-                    "isPublished": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "CreatePostInput": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    },
-                    "content": {
-                        "type": "string"
-                    },
-                    "topics": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "required": [
-                    "title",
-                    "content"
-                ]
-            },
-            "UpdatePostInput": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    },
-                    "content": {
-                        "type": "string"
-                    },
-                    "topics": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "Comment": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "string"
-                    },
-                    "content": {
-                        "type": "string"
-                    },
-                    "author": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "postId": {
-                        "type": "string"
-                    },
-                    "parentComment": {
-                        "type": "string"
-                    },
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "pending",
-                            "approved",
-                            "rejected"
-                        ]
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "CreateCommentInput": {
-                "type": "object",
-                "properties": {
-                    "content": {
-                        "type": "string"
-                    },
-                    "postId": {
-                        "type": "string"
-                    },
-                    "parentComment": {
-                        "type": "string"
-                    },
-                    "rating": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "content",
-                    "postId"
-                ]
-            },
-            "UpdateCommentInput": {
-                "type": "object",
-                "properties": {
-                    "content": {
-                        "type": "string"
-                    },
-                    "postId": {
-                        "type": "string"
-                    },
-                    "parentComment": {
-                        "type": "string"
-                    }
-                }
-            },
-            "List": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "posts": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#components/schemas/Post"
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "CreateListInput": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "title"
-                ]
-            },
-            "UpdateListInput": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    }
-                }
-            },
-            "Notification": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "string"
-                    },
-                    "recipient": {
-                        "type": "string"
-                    },
-                    "sender": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "type": "string"
-                    },
-                    "targetType": {
-                        "type": "string"
-                    },
-                    "targetId": {
-                        "type": "string"
-                    },
-                    "isRead": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "Topic": {
-                "type": "object",
-                "properties": {
-                    "_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                }
-            },
-            "CreateTopicInput": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "name"
-                ]
-            },
-            "UpdateTopicInput": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            }
-        }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paragraph API",
+    "description": "Persian blogging platform API documentation",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Paragraph Support",
+      "email": "support@paragraph.io"
     }
+  },
+  "servers": [
+    {
+      "url": "https://virgool.onrender.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:3000/v1",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "username": { "type": "string" },
+          "email": { "type": "string" },
+          "name": { "type": "string" },
+          "bio": { "type": "string" },
+          "avatar": { "type": "string" },
+          "role": { "type": "string", "enum": ["user", "admin"] },
+          "isBanned": { "type": "boolean" },
+          "followers": { "type": "array", "items": { "type": "string" } },
+          "followingUsers": { "type": "array", "items": { "type": "string" } },
+          "followingTopics": { "type": "array", "items": { "type": "string" } },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "summary": { "type": "string" },
+          "author": { "$ref": "#/components/schemas/User" },
+          "topics": { "type": "array", "items": { "$ref": "#/components/schemas/Topic" } },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "coverImage": { "type": "string" },
+          "estimatedReadTime": { "type": "number" },
+          "isPublished": { "type": "boolean" },
+          "views": { "type": "array", "items": { "type": "number" } },
+          "rating": { "type": "number" },
+          "ratingCount": { "type": "number" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "content": { "type": "string" },
+          "userId": { "$ref": "#/components/schemas/User" },
+          "postId": { "type": "string" },
+          "parentComment": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Topic": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "parentTopic": { "type": "string" },
+          "isMainTopic": { "type": "boolean" },
+          "followers": { "type": "array", "items": { "type": "string" } },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "List": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "user": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "posts": { "type": "array", "items": { "type": "string" } },
+          "isPrivate": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "user": { "type": "string" },
+          "type": { "type": "string", "enum": ["newFollower", "newComment", "newLike", "newPost"] },
+          "message": { "type": "string" },
+          "isRead": { "type": "boolean" },
+          "relatedPost": { "type": "string" },
+          "relatedUser": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "email", "password", "name", "phone"],
+                "properties": {
+                  "username": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 4 },
+                  "name": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "bio": { "type": "string" },
+                  "avatar": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get current user profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all users (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/User" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update user profile",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "name": { "type": "string" },
+                  "bio": { "type": "string" },
+                  "avatar": { "type": "string" },
+                  "socialLinks": {
+                    "type": "object",
+                    "properties": {
+                      "linkedin": { "type": "string" },
+                      "twitter": { "type": "string" },
+                      "github": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete user (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          }
+        }
+      }
+    },
+    "/auth/{userId}/follow": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Follow user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User followed successfully"
+          }
+        }
+      }
+    },
+    "/auth/{userId}/unfollow": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Unfollow user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User unfollowed successfully"
+          }
+        }
+      }
+    },
+    "/auth/{id}/ban": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Ban user (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User banned successfully"
+          }
+        }
+      }
+    },
+    "/auth/{id}/unban": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Unban user (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User unbanned successfully"
+          }
+        }
+      }
+    },
+    "/auth/{id}/change-role": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Change user role (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User role changed successfully"
+          }
+        }
+      }
+    },
+    "/auth/{topicId}/follow-topic": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Follow topic",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic followed successfully"
+          }
+        }
+      }
+    },
+    "/auth/{topicId}/unfollow-topic": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Unfollow topic",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic unfollowed successfully"
+          }
+        }
+      }
+    },
+    "/posts": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get posts with pagination",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 5 }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Search by title"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "posts": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Post" }
+                    },
+                    "currentPage": { "type": "integer" },
+                    "totalPages": { "type": "integer" },
+                    "totalPosts": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Create new post",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "content", "summary"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "content": { "type": "string" },
+                  "summary": { "type": "string" },
+                  "topics": { "type": "array", "items": { "type": "string" } },
+                  "tags": { "type": "array", "items": { "type": "string" } },
+                  "coverImage": { "type": "string" },
+                  "estimatedReadTime": { "type": "number" },
+                  "podcastUrl": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Post created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "post": { "$ref": "#/components/schemas/Post" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get post by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "post": { "$ref": "#/components/schemas/Post" },
+                    "comments": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Comment" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Update post",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "content": { "type": "string" },
+                  "summary": { "type": "string" },
+                  "topics": { "type": "array", "items": { "type": "string" } },
+                  "tags": { "type": "array", "items": { "type": "string" } },
+                  "coverImage": { "type": "string" },
+                  "estimatedReadTime": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Delete post",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post deleted successfully"
+          }
+        }
+      }
+    },
+    "/posts/{id}/publish": {
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Publish post (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post published successfully"
+          }
+        }
+      }
+    },
+    "/comments": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get comments (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of comments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Comment" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Create comment",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content", "postId"],
+                "properties": {
+                  "content": { "type": "string" },
+                  "postId": { "type": "string" },
+                  "parentComment": { "type": "string" },
+                  "rating": { "type": "number", "minimum": 1, "maximum": 5 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment created successfully"
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Update comment",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Delete comment",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully"
+          }
+        }
+      }
+    },
+    "/comments/{id}/approve": {
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Approve comment (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment approved successfully"
+          }
+        }
+      }
+    },
+    "/topics": {
+      "get": {
+        "tags": ["Topics"],
+        "summary": "Get all topics",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Search by name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of topics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "topics": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Topic" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Topics"],
+        "summary": "Create topic (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "parentTopic": { "type": "string" },
+                  "isMainTopic": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Topic created successfully"
+          }
+        }
+      }
+    },
+    "/topics/{id}": {
+      "put": {
+        "tags": ["Topics"],
+        "summary": "Update topic (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "parentTopic": { "type": "string" },
+                  "isMainTopic": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Topic updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Topics"],
+        "summary": "Delete topic (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic deleted successfully"
+          }
+        }
+      }
+    },
+    "/likes": {
+      "post": {
+        "tags": ["Likes"],
+        "summary": "Toggle like on post",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["postId"],
+                "properties": {
+                  "postId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Like toggled successfully"
+          }
+        }
+      }
+    },
+    "/lists": {
+      "get": {
+        "tags": ["Lists"],
+        "summary": "Get user lists",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User lists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lists": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/List" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Lists"],
+        "summary": "Create new list",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "isPrivate": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "List created successfully"
+          }
+        }
+      }
+    },
+    "/lists/{id}": {
+      "put": {
+        "tags": ["Lists"],
+        "summary": "Update list",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "isPrivate": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Lists"],
+        "summary": "Delete list",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List deleted successfully"
+          }
+        }
+      }
+    },
+    "/lists/{id}/posts": {
+      "post": {
+        "tags": ["Lists"],
+        "summary": "Add post to list",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["postId"],
+                "properties": {
+                  "postId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post added to list successfully"
+          }
+        }
+      }
+    },
+    "/lists/{id}/posts/{postId}": {
+      "delete": {
+        "tags": ["Lists"],
+        "summary": "Remove post from list",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post removed from list successfully"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": ["Notifications"],
+        "summary": "Get user notifications",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Notification" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{id}/read": {
+      "put": {
+        "tags": ["Notifications"],
+        "summary": "Mark notification as read",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification marked as read"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "tags": ["Upload"],
+        "summary": "Upload file",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "postId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "fileUrl": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

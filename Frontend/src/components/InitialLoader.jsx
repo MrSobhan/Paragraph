@@ -16,6 +16,7 @@ const InitialLoader = () => {
               </div>
             </div>
             <h1 className="text-4xl font-bold text-white moraba mb-2">ویرگول</h1>
+            <h1 className="text-4xl font-bold text-white moraba mb-2">پاراگراف</h1>
             <p className="text-white/80 text-lg">پلتفرم وبلاگ نویسی فارسی</p>
           </div>
         </div>

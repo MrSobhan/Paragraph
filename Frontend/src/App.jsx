@@ -22,6 +22,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import SavedPostsPage from './pages/SavedPostsPage';
 import SavedListPage from './pages/SavedListPage';
 import SearchPage from './pages/SearchPage';
+import FollowersPage from './pages/FollowersPage';
+import FollowingPage from './pages/FollowingPage';
 import DashboardOverview from './pages/dashboard/DashboardOverview';
 import UsersManagement from './pages/dashboard/UsersManagement';
 import PostsManagement from './pages/dashboard/PostsManagement';
@@ -40,6 +42,8 @@ const AppContent = () => {
     if (currentPath === '/topics') return <TopicsPage />;
     if (currentPath.startsWith('/topics/')) return <TopicPostsPage />;
     if (currentPath.startsWith('/user/')) return <UserPage />;
+      if (currentPath.includes('/followers')) return <FollowersPage />;
+      if (currentPath.includes('/following')) return <FollowingPage />;
     if (currentPath.startsWith('/search')) return <SearchPage />;
     if (currentPath === '/about') return <AboutPage />;
     if (currentPath === '/rules') return <RulesPage />;
@@ -55,7 +59,7 @@ const AppContent = () => {
     return <NotFoundPage />;
   };
 
-  const showSidebar = (currentPath === '/' || currentPath.startsWith('/post/')) && !currentPath.startsWith('/dashboard');
+  const showSidebar = currentPath === '/' && !currentPath.startsWith('/dashboard');
   const isDashboard = currentPath.startsWith('/dashboard');
 
   return (
@@ -64,7 +68,7 @@ const AppContent = () => {
       <div className="flex">
         {renderPage()}
         {showSidebar && (
-          <Sidebar className="hidden lg:block" />
+          <Sidebar />
         )}
       </div>
       <ToastContainer

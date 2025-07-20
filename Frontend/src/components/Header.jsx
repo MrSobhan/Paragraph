@@ -94,7 +94,7 @@ const Header = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white moraba flex items-center justify-center gap-x-2"><Newspaper className='w-5 h-5' /> ویرگول</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white moraba flex items-center justify-center gap-x-2"><Newspaper className='w-5 h-5' /> پاراگراف</h1>
             </div>
 
             <div className="relative hidden md:block">
