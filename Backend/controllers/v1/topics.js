@@ -14,9 +14,12 @@ exports.getTopics = async (req, res) => {
       .lean();
 
     const topicIds = topics.map((topic) => topic._id);
+
     const postCounts = await Post.aggregate([
       { $match: { topics: { $in: topicIds } } },
-      { $group: { _id: "$topic", count: { $sum: 1 } } },
+      { $unwind: "$topics" },
+      { $match: { topics: { $in: topicIds } } },
+      { $group: { _id: "$topics", count: { $sum: 1 } } },
     ]);
 
     const postCountMap = {};
@@ -48,7 +51,9 @@ exports.getTopics = async (req, res) => {
 
     res.status(200).json({ topics: result });
   } catch (error) {
-    res.status(500).json({ message: "خطا در دریافت موضوعات", error: error.message });
+    res
+      .status(500)
+      .json({ message: "خطا در دریافت موضوعات", error: error.message });
   }
 };
 
