@@ -1,27 +1,40 @@
 const Topic = require("../../models/Topic");
+const Post = require("../../models/Post");
 
 exports.getTopics = async (req, res) => {
   try {
     const { name } = req.query;
     let query = {};
     if (name) {
-      query.name = { $regex: name, $options: 'i' }; // Case-insensitive search
+      query.name = { $regex: name, $options: "i" };
     }
 
     const topics = await Topic.find(query)
-      .populate('parentTopic', 'name')
+      .populate("parentTopic", "name")
       .lean();
 
-    // Create a tree structure with parent and children
+    const topicIds = topics.map((topic) => topic._id);
+    const postCounts = await Post.aggregate([
+      { $match: { topic: { $in: topicIds } } },
+      { $group: { _id: "$topic", count: { $sum: 1 } } },
+    ]);
+
+    const postCountMap = {};
+    postCounts.forEach((item) => {
+      postCountMap[item._id.toString()] = item.count;
+    });
+
     const topicMap = {};
     const result = [];
 
-    // Initialize topic map
     topics.forEach((topic) => {
-      topicMap[topic._id.toString()] = { ...topic, children: [] };
+      topicMap[topic._id.toString()] = {
+        ...topic,
+        postsCount: postCountMap[topic._id.toString()] || 0,
+        children: [],
+      };
     });
 
-    // Build hierarchy
     topics.forEach((topic) => {
       if (topic.parentTopic) {
         const parentId = topic.parentTopic._id.toString();
@@ -35,9 +48,10 @@ exports.getTopics = async (req, res) => {
 
     res.status(200).json({ topics: result });
   } catch (error) {
-    res.status(500).json({ message: 'خطا در دریافت موضوعات', error: error.message });
+    res.status(500).json({ message: "خطا در دریافت موضوعات", error: error.message });
   }
 };
+
 exports.createTopic = async (req, res) => {
   try {
     const { name, description, parentTopic, isMainTopic } = req.body;
