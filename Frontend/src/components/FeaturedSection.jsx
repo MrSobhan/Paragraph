@@ -88,9 +88,9 @@ const FeaturedSection = () => {
               </div>
               
               <div className="p-5">
-                <h3 className="text-white font-semibold text-base mb-3 line-clamp-1 group-hover:text-yellow-200 transition-colors">
+                <p className="text-white font-semibold text-base mb-3 line-clamp-1 group-hover:text-yellow-200 transition-colors">
                   {article.title}
-                </h3>
+                </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-blue-200 line-clamp-1">{article.author}</span>
                   <div className="flex items-center space-x-2 space-x-reverse text-xs text-white/70">
