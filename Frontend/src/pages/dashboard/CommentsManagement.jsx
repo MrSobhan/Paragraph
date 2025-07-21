@@ -142,18 +142,18 @@ const CommentsManagement = () => {
         </div>
 
         {/* Comments List */}
-        <div className="space-y-4 overflow-x-auto">
+        <div className="space-y-4">
           {filteredComments.map((comment) => (
-            <div key={comment._id} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+            <div key={comment._id} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 overflow-hidden">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 sm:space-x-reverse mb-3">
                     <img
                       src={comment.userId?.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                       alt={comment.userId?.name}
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
                     />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         {comment.userId?.name}
                       </p>
@@ -161,7 +161,7 @@ const CommentsManagement = () => {
                         {new Date(comment.createdAt).toLocaleDateString('fa-IR')}
                       </p>
                     </div>
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${comment.status === 'approved'
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${comment.status === 'approved'
                         ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                         : comment.status === 'pending'
                           ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
@@ -172,20 +172,20 @@ const CommentsManagement = () => {
                     </span>
                   </div>
 
-                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
+                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3 break-words">
                     {comment.content}
                   </p>
 
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                    در پاسخ به: <span className="font-medium">{comment.postId?.title}</span>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
+                    در پاسخ به: <span className="font-medium">{comment.postId?.title || 'پست حذف شده'}</span>
                   </p>
                 </div>
 
-                <div className="flex space-x-2 space-x-reverse sm:flex-col sm:space-x-0 sm:space-y-2">
+                <div className="flex space-x-2 space-x-reverse sm:flex-col sm:space-x-0 sm:space-y-2 flex-shrink-0">
                   {comment.status === 'pending' && (
                     <button
                       onClick={() => handleApproveComment(comment._id)}
-                      className="p-2 text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                      className="p-2 text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors flex-shrink-0"
                       title="تایید"
                     >
                       <CheckCircle className="w-5 h-5" />
@@ -193,7 +193,7 @@ const CommentsManagement = () => {
                   )}
                   <button
                     onClick={() => handleDeleteComment(comment._id)}
-                    className="p-2 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
                     title="حذف"
                   >
                     <Trash2 className="w-5 h-5" />

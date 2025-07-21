@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Hash, ArrowRight } from 'lucide-react';
+import { Hash, ArrowRight, UserPlus, UserCheck } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
+import { useAuth } from '../contexts/AuthContext';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import ArticleCard from '../components/ArticleCard';
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const TopicPostsPage = () => {
   const { params, navigate } = useRouter();
-  const { fetchPostsByTopic, fetchTopics , fetchPosts } = useApi();
+  const { fetchPostsByTopic, fetchTopics, fetchPosts, followTopic, unfollowTopic } = useApi();
+  const { user: currentUser } = useAuth();
   const [topic, setTopic] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     if (params.topicId) {
@@ -27,9 +31,46 @@ const TopicPostsPage = () => {
     if (result.success) {
       const foundTopic = result.data.find(t => t._id === params.topicId);
       setTopic(foundTopic);
+      
+      // Check if current user is following this topic
+      if (currentUser && foundTopic && foundTopic.followers) {
+        setIsFollowing(foundTopic.followers.includes(currentUser._id));
+      }
     }
   };
 
+  const handleFollowTopic = async () => {
+    if (!currentUser) {
+      await Swal.fire({
+        title: 'خطا!',
+        text: 'برای دنبال کردن موضوعات ابتدا وارد شوید',
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
+      return;
+    }
+
+    const result = isFollowing 
+      ? await unfollowTopic(params.topicId)
+      : await followTopic(params.topicId);
+
+    if (result.success) {
+      setIsFollowing(!isFollowing);
+      await Swal.fire({
+        title: 'موفقیت!',
+        text: isFollowing ? 'موضوع از لیست دنبال شده‌ها حذف شد' : 'موضوع به لیست دنبال شده‌ها اضافه شد',
+        icon: 'success',
+        confirmButtonText: 'باشه'
+      });
+    } else {
+      await Swal.fire({
+        title: 'خطا!',
+        text: result.message,
+        icon: 'error',
+        confirmButtonText: 'باشه'
+      });
+    }
+  };
   const loadPosts = async () => {
     setLoading(true);
     const result = await fetchPosts(1, 10);
@@ -97,6 +138,21 @@ const TopicPostsPage = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {posts.length} پست در این موضوع
               </p>
+            </div>
+            
+            {/* Follow Topic Button */}
+            <div className="ml-auto">
+              <button
+                onClick={handleFollowTopic}
+                className={`flex items-center space-x-2 space-x-reverse px-4 py-2 rounded-lg font-medium transition-colors ${
+                  isFollowing
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              >
+                <Hash className="w-4 h-4" />
+                <span>{isFollowing ? 'دنبال می‌کنید' : 'دنبال کردن'}</span>
+              </button>
             </div>
           </div>
         </div>

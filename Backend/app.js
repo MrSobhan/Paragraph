@@ -12,6 +12,7 @@ const listsRoutes = require('./routes/v1/lists');
 const likesRoutes = require('./routes/v1/likes');
 const notificationsRoutes = require('./routes/v1/notifications');
 const uploadRoutes = require('./routes/v1/upload');
+const dashboardRoutes = require('./routes/v1/dashboard');
 
 dotenv.config();
 const app = express();
@@ -37,6 +38,7 @@ app.use('/v1/lists', listsRoutes);
 app.use('/v1/likes', likesRoutes);
 app.use('/v1/notifications', notificationsRoutes);
 app.use('/v1/upload', uploadRoutes);
+app.use('/v1/dashboard', dashboardRoutes);
 
 
 app.use((req, res) => {

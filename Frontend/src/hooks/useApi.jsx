@@ -458,6 +458,20 @@ export const useApi = () => {
     }
   };
 
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await axiosInstance.get('/dashboard/stats');
+      return {
+        success: true,
+        data: response.data.data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در دریافت آمار داشبورد'
+      };
+    }
+  };
 
   return {
     fetchPosts,
@@ -489,7 +503,8 @@ export const useApi = () => {
     followUser,
     unfollowUser,
     followTopic,
-    unfollowTopic
+    unfollowTopic,
+    fetchDashboardStats
   };
 };
 

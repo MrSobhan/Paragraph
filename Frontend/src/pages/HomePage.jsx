@@ -69,6 +69,7 @@ const HomePage = () => {
 
   const fetchMoreArticles = useCallback(async () => {
     if (!hasMore) return;
+    
     const result = await fetchPosts(page, 5);
     
     if (result.success) {
@@ -79,9 +80,9 @@ const HomePage = () => {
         setPage(prev => prev + 1);
       }
     }
-  }, [page, hasMore]);
+  }, [page, hasMore, fetchPosts]);
 
-  const [isFetching] = useInfiniteScroll(fetchMoreArticles);
+  const [isFetching] = useInfiniteScroll(fetchMoreArticles, hasMore);
 
   if (initialLoad && !isLogin) {
     return <InitialLoader />;

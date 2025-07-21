@@ -177,7 +177,7 @@ const CreatePostPage = () => {
 
       <div className="flex">
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-4 lg:p-6">
           {!preview ? (
             <form id="post-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
@@ -252,7 +252,7 @@ const CreatePostPage = () => {
                   modules={quillModules}
                   formats={quillFormats}
                   placeholder="محتوای پست خود را اینجا بنویسید... (از Markdown پشتیبانی می‌شود)"
-                  style={{ height: '400px', marginBottom: '50px' }}
+                  className="h-64 lg:h-96 mb-12 lg:mb-16"
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   زمان تخمینی مطالعه: {formData.estimatedReadTime} دقیقه
@@ -315,7 +315,7 @@ const CreatePostPage = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-80 bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 p-6">
+        <div className="w-full lg:w-80 bg-gray-50 dark:bg-gray-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 p-4 lg:p-6">
           {/* Topics */}
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
@@ -328,7 +328,7 @@ const CreatePostPage = () => {
                   topics.map((topic) => (
                     <label
                       key={topic._id}
-                      className="flex items-center space-x-3 space-x-reverse p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer"
+                      className="flex items-center space-x-3 space-x-reverse p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer text-sm lg:text-base"
                     >
                       <input
                         type="checkbox"
@@ -366,7 +366,7 @@ const CreatePostPage = () => {
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="w-full sm:w-auto px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="w-full sm:w-auto px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -392,7 +392,7 @@ const CreatePostPage = () => {
           </div>
 
           {/* Post Stats */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-sm lg:text-base">
             <h4 className="font-semibold text-gray-900 dark:text-white mb-3">آمار پست</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
