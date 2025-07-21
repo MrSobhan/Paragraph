@@ -146,12 +146,12 @@ const CreatePostPage = () => {
   ];
 
   return (
-    <div className="flex-1 max-w-6xl mx-auto">
+    <div className="flex-1 max-w-8xl mx-auto">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div className="p-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">نوشتن پست جدید</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white hidden md:block">نوشتن پست جدید</h1>
             <div className="flex items-center space-x-3 space-x-reverse">
               <button
                 type="button"
@@ -175,7 +175,7 @@ const CreatePostPage = () => {
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex flex-wrap">
         {/* Main Content */}
         <div className="flex-1 p-4 lg:p-6">
           {!preview ? (

@@ -6,37 +6,38 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap'); */
 
 @font-face {
-    font-family: "moraba";
-    src: url("./fonts/Morabba/woff2/Morabba-Medium.woff2");
-    /* IE9 Compat Modes */
+  font-family: "moraba";
+  src: url("./fonts/Morabba/woff2/Morabba-Medium.woff2");
+  /* IE9 Compat Modes */
 }
 
 @font-face {
-    font-family: "dana";
-    src: url("./fonts/Dana/woff2/DanaFaNum-Medium.woff2");
-    /* IE9 Compat Modes */
+  font-family: "dana";
+  src: url("./fonts/Dana/woff2/DanaFaNum-Medium.woff2");
+  /* IE9 Compat Modes */
 }
+
 @font-face {
-    font-family: "dana-blod";
-    src: url("./fonts/Dana/woff2/DanaFaNum-DemiBold.woff2");
-    /* IE9 Compat Modes */
+  font-family: "dana-blod";
+  src: url("./fonts/Dana/woff2/DanaFaNum-DemiBold.woff2");
+  /* IE9 Compat Modes */
 }
 
 body {
-    font-family: "dana-blod";
-    overflow-x: hidden;
+  font-family: "dana-blod";
+  overflow-x: hidden;
 }
 
 .moraba {
-    font-family: "moraba" !important;
+  font-family: "moraba" !important;
 }
 
 .dana-blod {
-    font-family: "dana-blod" !important;
+  font-family: "dana-blod" !important;
 }
 
 .dana {
-    font-family: "dana" !important;
+  font-family: "dana" !important;
 }
 
 /* Dark mode styles */
@@ -83,6 +84,7 @@ html[data-theme="dark"] {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -99,7 +101,7 @@ html[data-theme="dark"] {
 }
 
 /* RTL specific styles */
-[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+[dir="rtl"] .space-x-reverse> :not([hidden])~ :not([hidden]) {
   --tw-space-x-reverse: 1;
 }
 
@@ -108,7 +110,7 @@ html[data-theme="dark"] {
   .line-clamp-2 {
     -webkit-line-clamp: 1;
   }
-  
+
   .line-clamp-3 {
     -webkit-line-clamp: 2;
   }
@@ -135,9 +137,12 @@ textarea:focus {
 
 /* Loading animations */
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -175,6 +180,10 @@ textarea:focus {
   background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
 }
 
-.Toastify__toast{
+.Toastify__toast {
   font-family: "dana";
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

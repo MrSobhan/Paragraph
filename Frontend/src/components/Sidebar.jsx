@@ -38,8 +38,8 @@ const Sidebar = ({ className = "" }) => {
   ];
 
   return (
-    <aside className={`w-96 relative bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 h-full overflow-y-auto hidden lg:block ${className}`}>
-      <div className="p-6 space-y-8 sticky max-h-max top-20 left-0">
+    <aside className={`w-1/4 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 sticky max-h-screen top-14 pb-14 left-0 overflow-y-auto hidden lg:block no-scrollbar ${className}`}>
+      <div className="p-6 space-y-8">
         {/* Featured Content */}
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
@@ -59,14 +59,14 @@ const Sidebar = ({ className = "" }) => {
         <div>
           <div className="flex items-center mb-4 cursor-pointer" onClick={() => navigate('/topics')}>
             <Hash className="w-5 h-5 text-gray-600 dark:text-gray-400 ml-2" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">موضوعات پربحث</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">موضوعات پشنهادی</h3>
           </div>
           <div className="space-y-2">
             {popularTopics.map((topic) => (
               <button
                 key={topic._id}
                 onClick={() => navigate(`/topics/${topic._id}`)}
-                className="block w-full text-right px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="w-auto text-right ml-2 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-solid border-gray-800 dark:border-gray-500"
               >
                 #{topic.name}
               </button>
@@ -93,7 +93,7 @@ const Sidebar = ({ className = "" }) => {
                     {topic.title}
                   </p>
                 </div>
-                <Play className="w-4 h-4 text-blue-500" />
+                <Play className="p-1.5 rounded-full text-blue-500 border border-solid border-blue-500" />
               </div>
             ))}
           </div>
@@ -143,7 +143,7 @@ const Sidebar = ({ className = "" }) => {
                     className="text-right hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     <h4 className="font-medium text-gray-900 dark:text-white text-sm">{user.name}</h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{user.bio || 'کاربر پاراگراف'}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 my-2">{user.bio || 'کاربر پاراگراف'}</p>
                     <p className="text-xs text-gray-400 dark:text-gray-500">{user.followersCount || 0} دنبال‌کننده</p>
                   </button>
                 </div>

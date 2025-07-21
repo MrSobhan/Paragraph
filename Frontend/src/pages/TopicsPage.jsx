@@ -34,7 +34,7 @@ const TopicsPage = () => {
   }
 
   return (
-    <div className="flex-1 max-w-4xl mx-auto">
+    <div className="flex-1 max-w-8xl mx-auto">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white">
         <div className="p-8 md:p-12 text-center">
