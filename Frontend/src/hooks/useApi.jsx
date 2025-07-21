@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const useApi = () => {
-  const { axiosInstance } = useAuth();
-
+  const { axiosInstance ,isLogin } = useAuth();
+  
   const fetchPosts = async (page = 1, limit = 5, search = '') => {
     try {
       let url = `/posts?page=${page}&limit=${limit}`;
@@ -298,19 +298,22 @@ export const useApi = () => {
   };
 
   const fetchAllUserProfile = async () => {
-    try {
-      const response = await axiosInstance.get('/auth')
-      
-      return {
-        success: true,
-        data: response.data
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'خطا در دریافت پروفایل'
-      };
+    if (isLogin) {
+      try {
+        const response = await axiosInstance.get('/auth')
+
+        return {
+          success: true,
+          data: response.data
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: error.response?.data?.message || 'خطا در دریافت پروفایل'
+        };
+      }
     }
+    return false
   };
 
   const banUser = async (userId) => {

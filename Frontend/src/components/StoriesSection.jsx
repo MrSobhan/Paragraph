@@ -54,7 +54,7 @@ const StoriesSection = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-200 dark:border-gray-700 max-w-full mx-auto">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">موضوعات داغ</h3>
+        <p className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">موضوعات داغ</p>
         <div className="flex space-x-2 space-x-reverse">
           <button
             onClick={scrollRight}
