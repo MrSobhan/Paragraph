@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../hooks/useApi';
 import AuthModal from '../components/AuthModal';
 import Loader from '../components/Loader';
+import Sidebar from '../components/Sidebar';
 import Swal from 'sweetalert2';
 import { useRef } from 'react';
 
@@ -264,7 +265,7 @@ const PostPage = () => {
             </div>
 
             {/* Article Title */}
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+            <h1 className="text-3xl moraba md:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
               {article.title}
             </h1>
 
@@ -520,6 +521,7 @@ const PostPage = () => {
         onClose={() => setShowAuthModal(false)}
         initialMode="login"
       />
+      <Sidebar />
     </>
   );
 };

@@ -17,14 +17,9 @@
   /* IE9 Compat Modes */
 }
 
-@font-face {
-  font-family: "dana-blod";
-  src: url("./fonts/Dana/woff2/DanaFaNum-DemiBold.woff2");
-  /* IE9 Compat Modes */
-}
 
 body {
-  font-family: "dana-blod";
+  font-family: "dana";
   overflow-x: hidden;
 }
 
@@ -33,7 +28,7 @@ body {
 }
 
 .dana-blod {
-  font-family: "dana-blod" !important;
+  font-family: "dana" !important;
 }
 
 .dana {

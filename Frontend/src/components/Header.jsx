@@ -11,7 +11,7 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { navigate } = useRouter();
   const { isLogin, user, LogOutUser } = useAuth();
-  const { fetchNotifications, markNotificationAsRead , fetchPosts} = useApi();
+  const { fetchNotifications, markNotificationAsRead, fetchPosts } = useApi();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [searchTerm, setSearchTerm] = useState('');
@@ -233,6 +233,7 @@ const Header = () => {
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label='BtnDarkMode'
               >
                 {theme === 'dark' ?
                   <Sun className="w-5 h-5 text-gray-600 dark:text-gray-300" /> :
@@ -251,72 +252,72 @@ const Header = () => {
 
                   <div className="relative">
                     <button
-                    onClick={() => navigate('/notifications')}
-                    onMouseEnter={handleNotificationHover}
-                    // onMouseLeave={() => setShowNotifications(false)}
-                    className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    title="اعلان‌ها"
-                  >
-                    <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-                    {notifications.length > 0 && (
-                      <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    )}
-                  </button>
-
-                  {/* Notifications Dropdown */}
-                  {showNotifications && (
-                    <div 
-                      className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-y-auto"
-                      onMouseEnter={() => setShowNotifications(true)}
-                      onMouseLeave={() => setShowNotifications(false)}
+                      onClick={() => navigate('/notifications')}
+                      onMouseEnter={handleNotificationHover}
+                      // onMouseLeave={() => setShowNotifications(false)}
+                      className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      title="اعلان‌ها"
                     >
-                      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">اعلان‌های جدید</h3>
-                      </div>
-                      
-                      {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                          اعلان جدیدی ندارید
-                        </div>
-                      ) : (
-                        <div className="max-h-80 overflow-y-auto">
-                          {notifications.map((notification) => (
-                            <div key={notification._id} className="p-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <p className="text-sm text-gray-900 dark:text-white mb-1">
-                                    {notification.message}
-                                  </p>
-                                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {new Date(notification.createdAt).toLocaleDateString('fa-IR')}
-                                  </p>
-                                </div>
-                                <button
-                                  onClick={() => handleMarkAsRead(notification._id)}
-                                  className="text-xs text-blue-500 hover:text-blue-600 ml-2"
-                                >
-                                  دیدم
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                      <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                      {notifications.length > 0 && (
+                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                       )}
-                      
-                      <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-                        <button
-                          onClick={() => {
-                            setShowNotifications(false);
-                            navigate('/notifications');
-                          }}
-                          className="w-full text-center text-sm text-blue-500 hover:text-blue-600"
-                        >
-                          مشاهده همه اعلان‌ها
-                        </button>
+                    </button>
+
+                    {/* Notifications Dropdown */}
+                    {showNotifications && (
+                      <div
+                        className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-y-auto"
+                        onMouseEnter={() => setShowNotifications(true)}
+                        onMouseLeave={() => setShowNotifications(false)}
+                      >
+                        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                          <h3 className="font-semibold text-gray-900 dark:text-white">اعلان‌های جدید</h3>
+                        </div>
+
+                        {notifications.length === 0 ? (
+                          <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                            اعلان جدیدی ندارید
+                          </div>
+                        ) : (
+                          <div className="max-h-80 overflow-y-auto">
+                            {notifications.map((notification) => (
+                              <div key={notification._id} className="p-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <p className="text-sm text-gray-900 dark:text-white mb-1">
+                                      {notification.message}
+                                    </p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                      {new Date(notification.createdAt).toLocaleDateString('fa-IR')}
+                                    </p>
+                                  </div>
+                                  <button
+                                    onClick={() => handleMarkAsRead(notification._id)}
+                                    className="text-xs text-blue-500 hover:text-blue-600 ml-2"
+                                  >
+                                    دیدم
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="p-3 border-t border-gray-200 dark:border-gray-700">
+                          <button
+                            onClick={() => {
+                              setShowNotifications(false);
+                              navigate('/notifications');
+                            }}
+                            className="w-full text-center text-sm text-blue-500 hover:text-blue-600"
+                          >
+                            مشاهده همه اعلان‌ها
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
                   <div className="relative group">
                     <button
@@ -396,7 +397,7 @@ const Header = () => {
                   </button> */}
                   <button
                     onClick={() => handleAuthClick('login')}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                    className="bg-blue-600 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                   >
                     ورود / ثبت‌نام
                   </button>

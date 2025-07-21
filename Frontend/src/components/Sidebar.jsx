@@ -46,7 +46,7 @@ const Sidebar = ({ className = "" }) => {
             <h3 className="text-lg font-bold">پاراگراف برای کسب‌وکار</h3>
             <Coffee className="w-6 h-6" />
           </div>
-          <p className="text-sm opacity-90 mb-4">
+          <p className="text-sm mb-4">
             آموزش جامع بی نظیری برای شما
           </p>
           <button className="bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 rounded-lg text-sm">

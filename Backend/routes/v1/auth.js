@@ -12,7 +12,7 @@ router.post("/login", login);
 router.get("/me", authenticatedMiddleware, getMe);
 
 
-router.get('/', authenticatedMiddleware, adminMiddleware, getUsers);
+router.get('/', authenticatedMiddleware, getUsers);
 router.get('/:id', authenticatedMiddleware, getUserById);
 router.put('/:id', authenticatedMiddleware, updateUser);
 router.delete('/:id', authenticatedMiddleware, adminMiddleware, deleteUser);

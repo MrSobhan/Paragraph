@@ -46,7 +46,7 @@ const FeaturedSection = () => {
               <span className="text-2xl">🏆</span>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">پست‌های منتخب</h2>
+              <p className="text-2xl font-bold text-white">پست‌های منتخب</p>
               <p className="text-white/80 text-sm">بهترین مطالب هفته</p>
             </div>
           </div>
@@ -75,6 +75,8 @@ const FeaturedSection = () => {
                 <img 
                   src={article.image} 
                   alt={article.title}
+                  loading='lazy'
+                  fetchPriority='high'
                   className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute top-3 right-3">
@@ -86,11 +88,11 @@ const FeaturedSection = () => {
               </div>
               
               <div className="p-5">
-                <h3 className="text-white font-semibold text-base mb-3 line-clamp-2 group-hover:text-yellow-200 transition-colors">
+                <h3 className="text-white font-semibold text-base mb-3 line-clamp-1 group-hover:text-yellow-200 transition-colors">
                   {article.title}
                 </h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-200">{article.author}</span>
+                  <span className="text-xs text-blue-200 line-clamp-1">{article.author}</span>
                   <div className="flex items-center space-x-2 space-x-reverse text-xs text-white/70">
                     <span>۱ روز پیش</span>
                     <span>•</span>
@@ -109,7 +111,7 @@ const FeaturedSection = () => {
               <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
               <span>۱۲۰+ مقاله این هفته</span>
             </div>
-            <div className="flex items-center space-x-2 space-x-reverse">
+            <div className="hidden md:flex items-center space-x-2 space-x-reverse">
               <span className="w-2 h-2 bg-green-400 rounded-full"></span>
               <span>۵۰+ نویسنده فعال</span>
             </div>

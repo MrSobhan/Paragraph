@@ -113,7 +113,7 @@ const ArticleCard = ({
               <p className="text-xs text-gray-500 dark:text-gray-400">@{author.username || author.email}</p>
             </button>
           </div>
-          <div className="text-xs text-gray-400 dark:text-gray-500">
+          <div className="text-xs text-gray-600 dark:text-gray-500">
             <div>{publishedAt}</div>
             <div>{readTime} دقیقه مطالعه</div>
           </div>
@@ -125,9 +125,9 @@ const ArticleCard = ({
             onClick={() => navigate(`/post/${id}`)}
             className="text-right w-full hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
-            <h2 className="text-xl moraba font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-relaxed">
+            <h4 className="text-xl moraba font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-relaxed">
               {title}
-            </h2>
+            </h4>
             <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 leading-relaxed">
               {content}
             </p>
@@ -168,15 +168,15 @@ const ArticleCard = ({
           </div>
 
           <div className="flex items-center space-x-2 space-x-reverse">
-            <button 
+            <p 
               onClick={handleSaveClick}
-              className="p-1 text-gray-500 hover:text-blue-500 transition-colors"
+              className="p-1 text-gray-600 hover:text-blue-500 transition-colors cursor-pointer"
             >
               <Bookmark className="w-4 h-4" />
-            </button>
-            <button className="p-1 text-gray-500 hover:text-green-500 transition-colors">
+            </p>
+            <p className="p-1 text-gray-600 hover:text-green-500 transition-colors cursor-pointer">
               <Share className="w-4 h-4" />
-            </button>
+            </p>
           </div>
         </div>
       </div>
