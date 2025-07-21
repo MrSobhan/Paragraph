@@ -227,7 +227,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 📞 Support
 
 - **Email**: support@paragraph.io
-- **Documentation**: [API Docs](https://virgool-nine.vercel.app/api-docs)
+- **Documentation**: [API Docs](https://virgool.onrender.com/api-docs)
 - **Issues**: [GitHub Issues](https://github.com/your-username/paragraph/issues)
 
 ---
