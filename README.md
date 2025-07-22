@@ -2,7 +2,7 @@
 
 Welcome to **Paragraph**, a vibrant Persian blogging platform built to empower users to share their stories, engage with communities, and discover inspiring content! 🚀 Whether you're a writer, reader, or admin, Paragraph offers a seamless and modern experience with a robust API-driven backend. 
 
-**🌐 Live Demo**: [https://paragraph-ai.vercel.app/](https://paragraph-ai.vercel.app/)
+**🌐 Live Demo**: [https://paragraph-ai.vercel.app](https://paragraph-ai.vercel.app)
 
 ## 🎉 Features
 
