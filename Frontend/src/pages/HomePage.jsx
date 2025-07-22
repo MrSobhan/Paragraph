@@ -84,9 +84,9 @@ const HomePage = () => {
 
   const [isFetching] = useInfiniteScroll(fetchMoreArticles, hasMore);
 
-  if (initialLoad && !isLogin) {
-    return <InitialLoader />;
-  }
+  // if (initialLoad && !isLogin) {
+  //   return <InitialLoader />;
+  // }
 
   if (loading) {
     return (

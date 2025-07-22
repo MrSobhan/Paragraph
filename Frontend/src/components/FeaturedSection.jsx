@@ -11,23 +11,23 @@ const FeaturedSection = () => {
     {
       title: 'درآمد پست مدرن مقاوم لودا',
       author: 'AbolfaslHoni',
-      image: 'https://picsum.photos/300/200?random=3',
+      image: '/src/images/f1.jpg',
       category: 'فناوری',
       id: '1'
     },
     {
       title: 'طراحی سیستم‌های فناوری تیمچی تلگرام',
       author: 'حبیب فرابی',
-      image: 'https://picsum.photos/300/200?random=4',
+      image: '/src/images/f2.jpg',
       category: 'طراحی',
       id: '2'
     },
     {
       title: 'فلسفت رقابت',
       author: 'ستاره',
-      image: 'https://picsum.photos/300/200?random=5',
+      image: '/src/images/f3.jpg',
       category: 'فلسفه',
-      id: '1'
+      id: '3'
     }
   ];
 
@@ -75,8 +75,6 @@ const FeaturedSection = () => {
                 <img 
                   src={article.image} 
                   alt={article.title}
-                  loading="eager"
-                  fetchPriority='high'
                   className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute top-3 right-3">
