@@ -10,22 +10,22 @@ const FeaturedSection = () => {
   const featuredArticles = [
     {
       title: 'درآمد پست مدرن مقاوم لودا',
-      author: 'AbolfaslHoni',
-      image: '/images/f1.jpg',
+      author: 'Abolfasl',
+      image: 'https://ppt90.ir/wp-content/uploads/f122-%D9%85%D8%B9%D9%85%D8%A7%D8%B1%DB%8C-%D9%BE%D8%B3%D8%AA-%D9%85%D8%AF%D8%B1%D9%86-2.jpg',
       category: 'فناوری',
       id: '1'
     },
     {
       title: 'طراحی سیستم‌های فناوری تیمچی تلگرام',
       author: 'حبیب فرابی',
-      image: '/images/f2.jpg',
+      image: 'https://sinaezzati.ir/wp-content/uploads/2021/07/Gear-Beef-Up-Video-Editing-PC-1124258613.jpg',
       category: 'طراحی',
       id: '2'
     },
     {
       title: 'فلسفت رقابت',
       author: 'ستاره',
-      image: '/images/f3.jpg',
+      image: 'https://gozareha.com/wp-content/uploads/2014/04/Compttv-strtgy.jpg',
       category: 'فلسفه',
       id: '3'
     }
