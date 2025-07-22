@@ -43,7 +43,7 @@ const Sidebar = ({ className = "" }) => {
         {/* Featured Content */}
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">پاراگراف برای کسب‌وکار</h3>
+            <p className="text-lg font-bold">پاراگراف برای کسب‌وکار</p>
             <Coffee className="w-6 h-6" />
           </div>
           <p className="text-sm mb-4">
@@ -59,7 +59,7 @@ const Sidebar = ({ className = "" }) => {
         <div>
           <div className="flex items-center mb-4 cursor-pointer" onClick={() => navigate('/topics')}>
             <Hash className="w-5 h-5 text-gray-600 dark:text-gray-400 ml-2" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">موضوعات پشنهادی</h3>
+            <p className="text-lg font-semibold text-gray-900 dark:text-white">موضوعات پشنهادی</p>
           </div>
           <div className="space-y-2">
             {popularTopics.map((topic) => (
@@ -78,7 +78,7 @@ const Sidebar = ({ className = "" }) => {
         <div>
           <div className="flex items-center mb-4">
             <TrendingUp className="w-5 h-5 text-gray-600 dark:text-gray-400 ml-2" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">پربحث‌ترین امروز</h3>
+            <p className="text-lg font-semibold text-gray-900 dark:text-white">پربحث‌ترین امروز</p>
           </div>
           <div className="space-y-3">
             {trendingTopics.map((topic, index) => (
@@ -103,7 +103,7 @@ const Sidebar = ({ className = "" }) => {
         <div>
           <div className="flex items-center mb-4">
             <Play className="w-5 h-5 text-gray-600 dark:text-gray-400 ml-2" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">پادکست‌ها</h3>
+            <p className="text-lg font-semibold text-gray-900 dark:text-white">پادکست‌ها</p>
           </div>
           <div className="space-y-3">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
@@ -125,7 +125,7 @@ const Sidebar = ({ className = "" }) => {
         <div>
           <div className="flex items-center mb-4">
             <Users className="w-5 h-5 text-gray-600 dark:text-gray-400 ml-2" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">پیشنهاد دنبال کردن</h3>
+            <p className="text-lg font-semibold text-gray-900 dark:text-white">پیشنهاد دنبال کردن</p>
           </div>
           <div className="space-y-3">
             {suggestedUsers.map((user, index) => (
@@ -181,6 +181,8 @@ const Sidebar = ({ className = "" }) => {
             </button>
           </div>
         </div>
+
+        <p className='text-sm text-center'>ساخته شده با ❤️ توسط <a href="https://mrlegend.liara.run/" className='text-blue-600 dark:text-blue-400' target='blank'>سبحان موسی زاده</a></p>
       </div>
     </aside>
   );
