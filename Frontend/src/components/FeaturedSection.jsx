@@ -75,7 +75,7 @@ const FeaturedSection = () => {
                 <img 
                   src={article.image} 
                   alt={article.title}
-                  loading='lazy'
+                  loading="eager"
                   fetchPriority='high'
                   className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300"
                 />

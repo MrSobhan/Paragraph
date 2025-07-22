@@ -125,9 +125,9 @@ const ArticleCard = ({
             onClick={() => navigate(`/post/${id}`)}
             className="text-right w-full hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
-            <h4 className="text-xl moraba font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-relaxed">
+            <p className="text-xl moraba font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-relaxed">
               {title}
-            </h4>
+            </p>
             <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 leading-relaxed">
               {content}
             </p>
