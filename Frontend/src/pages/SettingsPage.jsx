@@ -9,7 +9,7 @@ import AnalyticsTab from '../components/AnalyticsTab';
 
 const SettingsPage = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, getMe } = useAuth();
+  const { user, getMe , baseUrl  } = useAuth();
   const { updateUserProfile } = useApi();
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
@@ -174,7 +174,7 @@ const SettingsPage = () => {
                       </label>
                       <div className="flex items-start space-x-4 space-x-reverse">
                         <img 
-                          src={settings.profile.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                          src={settings.profile.avatar ? (baseUrl + settings.profile.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                           alt="Profile" 
                           className="w-16 h-16 rounded-full object-cover"
                         />

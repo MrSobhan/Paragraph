@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const useApi = () => {
-  const { axiosInstance ,isLogin } = useAuth();
-  
+  const { axiosInstance, isLogin } = useAuth();
+
   const fetchPosts = async (page = 1, limit = 5, search = '') => {
     try {
       let url = `/posts?page=${page}&limit=${limit}`;
@@ -259,28 +259,39 @@ export const useApi = () => {
   const uploadFile = async (file, fieldname, postId = null) => {
     try {
       const formData = new FormData();
-      formData.append(fieldname, file);
-      if (postId) {
-        formData.append('postId', postId);
-      }
+      formData.append("files", file);
+      formData.append("fieldname", fieldname);
+      if (postId) formData.append("postId", postId);
 
-      const response = await axiosInstance.post('/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axiosInstance.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      return {
-        success: true,
-        data: response.data
-      };
+      // const tokene = localStorage.getItem('token');
+      
+      // let response
+      // await fetch('http://localhost:3000/v1/upload', {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "multipart/form-data",
+      //     "Authorization": `Bearer ${tokene}`
+
+      //   },
+      //   body: formData
+      // }).then(res => res.json()).then(data => {
+      //   // response = data
+      //   console.log(data)
+      // }).catch(err => console.log(err)   )
+
+      return { success: true, data: response.data };
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'خطا در آپلود فایل'
+        message: error.response?.data?.message || "خطا در آپلود فایل",
       };
     }
   };
+
 
   const updateUserProfile = async (userData, userId) => {
     try {

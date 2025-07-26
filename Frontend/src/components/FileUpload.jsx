@@ -71,7 +71,7 @@ const FileUpload = ({
     }
 
     setUploading(true);
-    
+
     try {
       const result = await uploadFile(file, fieldname, postId);
       if (result.success) {
@@ -81,7 +81,7 @@ const FileUpload = ({
         setPreview(null);
       }
     } catch (error) {
-      onUploadError?.('خطا در آپلود فایل');
+      onUploadError?.(`خطا در آپلود فایل: ${error.message}`);
       setPreview(null);
     } finally {
       setUploading(false);
@@ -141,7 +141,6 @@ const FileUpload = ({
         className="hidden"
       />
 
-      {/* Upload Area */}
       <div
         onClick={() => fileInputRef.current?.click()}
         onDrop={handleDrop}
@@ -174,7 +173,6 @@ const FileUpload = ({
         )}
       </div>
 
-      {/* Preview */}
       {preview && showPreview && (
         <div className="relative">
           <img
