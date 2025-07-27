@@ -5,6 +5,6 @@ const upload = require('../../utils/multerStorage');
 
 const router = express.Router();
 
-router.post('/', authenticatedMiddleware, upload.single('file'), uploadFile);
+router.post('/', authenticatedMiddleware, upload, uploadFile);
 
 module.exports = router;

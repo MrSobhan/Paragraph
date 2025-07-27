@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
 import { useApi } from '../../hooks/useApi';
+import { useAuth } from '../../contexts/AuthContext';
 
 const PostsManagement = () => {
-  const { fetchPosts, publishPost, deletePost } = useApi();
+  const { baseUrl  } = useAuth();
+  const { fetchPostsAdmin, publishPost, deletePost } = useApi();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,7 +18,7 @@ const PostsManagement = () => {
   const loadPosts = async () => {
     try {
       setLoading(true);
-      const result = await fetchPosts(1, 100);
+      const result = await fetchPostsAdmin(1, 100);
       if (result.success) {
         setPosts(result.data);
       }
@@ -189,7 +191,7 @@ const PostsManagement = () => {
                     <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <img
-                          src={post.author?.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                          src={post.author?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + post.author?.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                           alt={post.author?.name}
                           className="w-6 h-6 sm:w-8 sm:h-8 rounded-full ml-2 sm:ml-3"
                         />

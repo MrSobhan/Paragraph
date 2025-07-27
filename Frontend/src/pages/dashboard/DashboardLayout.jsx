@@ -16,7 +16,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const DashboardLayout = ({ children, activeTab }) => {
   const { navigate } = useRouter();
-  const { user, LogOutUser } = useAuth();
+  const { user, LogOutUser , baseUrl } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
@@ -85,7 +85,7 @@ const DashboardLayout = ({ children, activeTab }) => {
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center space-x-3 space-x-reverse mb-3">
               <img 
-                src={user?.avatar || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                 alt="Admin" 
                 className="w-10 h-10 rounded-full"
               />

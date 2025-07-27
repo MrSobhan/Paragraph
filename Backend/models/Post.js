@@ -65,7 +65,7 @@ const postSchema = new mongoose.Schema({
   ],
   isPublished: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   podcastUrl: {
     type: String,

@@ -23,7 +23,15 @@
 body {
   font-family: "dana";
   overflow-x: hidden;
+  cursor: url('./images/navigateDark.png'), auto !important;
 }
+
+.dark body{
+  cursor: url('./images/navigate.png'), auto !important;
+
+}
+
+
 
 .moraba {
   font-family: "moraba" !important;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Eye, X, Plus, Tag, Hash } from 'lucide-react';
+import { Save, Eye, X, Plus, Tag, Hash, Upload } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import FileUpload from '../components/FileUpload';
@@ -9,9 +9,11 @@ import Swal from 'sweetalert2';
 
 const CreatePostPage = () => {
   const { navigate } = useRouter();
-  const { createPost, fetchTopics } = useApi();
+  const { createPost, updatePost, uploadFile, fetchTopics } = useApi();
   const [loading, setLoading] = useState(false);
   const [topics, setTopics] = useState([]);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [postId, setPostId] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -24,6 +26,10 @@ const CreatePostPage = () => {
   });
   const [newTag, setNewTag] = useState('');
   const [preview, setPreview] = useState(false);
+  const [modalFiles, setModalFiles] = useState({
+    coverImage: null,
+    podcast: null
+  });
 
   useEffect(() => {
     loadTopics();
@@ -94,16 +100,22 @@ const CreatePostPage = () => {
     }
 
     setLoading(true);
-    const result = await createPost(formData);
+
+    const postData = {
+      title: formData.title,
+      content: formData.content,
+      summary: formData.summary,
+      topics: formData.topics,
+      tags: formData.tags,
+      estimatedReadTime: formData.estimatedReadTime
+    };
+
+    const result = await createPost(postData);
 
     if (result.success) {
-      await Swal.fire({
-        title: 'موفقیت!',
-        text: 'پست با موفقیت ایجاد شد',
-        icon: 'success',
-        confirmButtonText: 'باشه'
-      });
-      navigate(`/post/${result.data._id}`);
+
+      setPostId(result.data.post._id);
+      setShowUploadModal(true);
     } else {
       await Swal.fire({
         title: 'خطا!',
@@ -113,6 +125,60 @@ const CreatePostPage = () => {
       });
     }
     setLoading(false);
+  };
+
+  const handleModalSubmit = async () => {
+    setLoading(true);
+    const updates = {};
+
+    const uploadPromises = [];
+    if (modalFiles.coverImage) {
+      uploadPromises.push(uploadFile(modalFiles.coverImage, postId, 'coverImage'));
+    }
+    if (modalFiles.podcast) {
+      uploadPromises.push(uploadFile(modalFiles.podcast, postId, 'podcast'));
+    }
+
+    const uploadResults = await Promise.all(uploadPromises);
+    uploadResults.forEach((uploadResult) => {
+      if (uploadResult.success) {
+        if (uploadResult.data.fieldname === 'coverImage') {
+          updates.coverImage = uploadResult.data.fileUrl;
+        } else if (uploadResult.data.fieldname === 'podcast') {
+          updates.podcastUrl = uploadResult.data.fileUrl;
+        }
+      }
+    });
+
+    
+    if (Object.keys(updates).length > 0) {
+      const updateResult = await updatePost(postId, updates);
+      if (!updateResult.success) {
+        await Swal.fire({
+          title: 'خطا!',
+          text: 'خطا در به‌روزرسانی فایل‌های پست',
+          icon: 'error',
+          confirmButtonText: 'باشه'
+        });
+        setLoading(false);
+        return;
+      }
+    }
+
+    await Swal.fire({
+      title: 'موفقیت!',
+      text: 'پست با موفقیت منتشر شد',
+      icon: 'success',
+      confirmButtonText: 'باشه'
+    });
+    setShowUploadModal(false);
+    navigate(`/post/${postId}`);
+    setLoading(false);
+  };
+
+  const handleModalClose = async () => {
+    setShowUploadModal(false);
+    navigate(`/post/${postId}`);
   };
 
   const estimateReadTime = (content) => {
@@ -216,30 +282,6 @@ const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* Cover Image */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  تصویر کاور
-                </label>
-                <FileUpload
-                  fieldname="coverImage"
-                  postId={formData.postId || null}
-                  onUploadSuccess={(fileUrl) => {
-                    setFormData(prev => ({ ...prev, coverImage: fileUrl }));
-                  }}
-                  onUploadError={(error) => {
-                    Swal.fire({
-                      title: 'خطا!',
-                      text: error,
-                      icon: 'error',
-                      confirmButtonText: 'باشه'
-                    });
-                  }}
-                  accept="image/*"
-                  maxSize={5 * 1024 * 1024}
-                />
-              </div>
-
               {/* Content */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -257,31 +299,6 @@ const CreatePostPage = () => {
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   زمان تخمینی مطالعه: {formData.estimatedReadTime} دقیقه
                 </div>
-              </div>
-
-              {/* Podcast URL */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  فایل پادکست (اختیاری)
-                </label>
-                <FileUpload
-                  fieldname="podcast"
-                  postId={formData.postId || null}
-                  onUploadSuccess={(fileUrl) => {
-                    setFormData(prev => ({ ...prev, podcastUrl: fileUrl }));
-                  }}
-                  onUploadError={(error) => {
-                    Swal.fire({
-                      title: 'خطا!',
-                      text: error,
-                      icon: 'error',
-                      confirmButtonText: 'باشه'
-                    });
-                  }}
-                  accept="audio/*"
-                  maxSize={50 * 1024 * 1024} // 50MB for audio
-                  showPreview={false}
-                />
               </div>
             </form>
           ) : (
@@ -421,8 +438,85 @@ const CreatePostPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for File Upload */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">آپلود فایل‌ها</h2>
+              <button
+                onClick={handleModalClose}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-6">
+              {/* Cover Image Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  تصویر کاور (اختیاری)
+                </label>
+                <FileUpload
+                  fieldname="coverImage"
+                  postId={postId}
+                  onUploadSuccess={(fileUrl) => {
+                    setModalFiles(prev => ({ ...prev, coverImage: fileUrl }));
+                  }}
+                  onUploadError={(error) => {
+                    Swal.fire({
+                      title: 'خطا!',
+                      text: error,
+                      icon: 'error',
+                      confirmButtonText: 'باشه'
+                    });
+                  }}
+                  accept="image/*"
+                  maxSize={5 * 1024 * 1024}
+                />
+              </div>
+
+              {/* Podcast Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  فایل پادکست (اختیاری)
+                </label>
+                <FileUpload
+                  fieldname="podcast"
+                  postId={postId}
+                  onUploadSuccess={(fileUrl) => {
+                    setModalFiles(prev => ({ ...prev, podcast: fileUrl }));
+                  }}
+                  onUploadError={(error) => {
+                    Swal.fire({
+                      title: 'خطا!',
+                      text: error,
+                      icon: 'error',
+                      confirmButtonText: 'باشه'
+                    });
+                  }}
+                  accept="audio/*"
+                  maxSize={50 * 1024 * 1024}
+                  showPreview={false}
+                />
+              </div>
+
+              <button
+                onClick={handleModalSubmit}
+                disabled={loading}
+                className="w-full flex items-center justify-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-6 py-2 rounded-lg transition-colors"
+              >
+                <Upload className="w-4 h-4" />
+                <span>{loading ? 'در حال آپلود...' : 'تأیید و انتشار'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default CreatePostPage;
+

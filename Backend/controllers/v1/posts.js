@@ -12,6 +12,88 @@ exports.getPosts = async (req, res) => {
     if (title) {
       query.title = { $regex: title, $options: "i" };
     }
+    
+    if (req.user?.role !== "admin") {
+      query.isPublished = true;
+    }
+
+    const posts = await Post.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("author")
+      .populate("topics")
+      .lean();
+
+    const postIds = posts.map((post) => post._id);
+
+    // Get like counts
+    const likeCounts = await Like.aggregate([
+      { $match: { post: { $in: postIds } } },
+      { $group: { _id: "$post", count: { $sum: 1 } } },
+    ]);
+    const likeCountMap = likeCounts.reduce((map, item) => {
+      if (item._id) {
+        map[item._id.toString()] = item.count;
+      }
+      return map;
+    }, {});
+
+    // Get approved comments
+    let commentQuery = { post: { $in: postIds } };
+    if (req.user?.role !== "admin") {
+      commentQuery.status = "approved";
+    }
+    const commentDetails = await Comment.find(commentQuery);
+
+    const commentMap = commentDetails.reduce((map, comment) => {
+      if (comment.postId) {
+        const postId = comment.postId.toString();
+        if (!map[postId]) {
+          map[postId] = [];
+        }
+        map[postId].push({
+          content: comment.content,
+          userId: comment.userId,
+          createdAt: comment.createdAt,
+        });
+      }
+      return map;
+    }, {});
+
+    posts.forEach((post) => {
+      const postIdStr = post._id.toString();
+      post.likeCount = likeCountMap[postIdStr] || 0;
+      post.comments = commentMap[postIdStr] || [];
+    });
+
+    const totalPosts = await Post.countDocuments(query);
+
+    res.status(200).json({
+      posts,
+      currentPage: page,
+      totalPages: Math.ceil(totalPosts / limit),
+      totalPosts,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "خطا در دریافت پست‌ها", error: error.message });
+  }
+};
+
+exports.getPostsDashBoard = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+    const { title } = req.query;
+
+    let query = {};
+    if (title) {
+      query.title = { $regex: title, $options: "i" };
+    }
+    
     if (req.user?.role !== "admin") {
       query.isPublished = true;
     }
@@ -128,12 +210,29 @@ exports.createPost = async (req, res) => {
       title,
       content,
       summary,
-      topics,
-      tags,
-      coverImage,
-      estimatedReadTime,
-      podcastUrl,
+      topics = [],
+      tags = [],
+      coverImage = '',
+      estimatedReadTime = 1,
+      podcastUrl = '',
     } = req.body;
+
+
+    if (!title || !content || !summary) {
+      return res.status(400).json({ message: 'عنوان، محتوا و خلاصه الزامی هستند' });
+    }
+
+    if (title.length < 3) {
+      return res.status(400).json({ message: 'عنوان باید حداقل ۳ کاراکتر باشد' });
+    }
+    if (content.length < 10) {
+      return res.status(400).json({ message: 'محتوا باید حداقل ۱۰ کاراکتر باشد' });
+    }
+    if (summary.length < 10 || summary.length > 200) {
+      return res.status(400).json({ message: 'خلاصه باید بین ۱۰ تا ۲۰۰ کاراکتر باشد' });
+    }
+
+
     const post = await Post.create({
       title,
       content,
@@ -150,9 +249,10 @@ exports.createPost = async (req, res) => {
       views: Array(7).fill(0),
     });
 
-    res.status(201).json({ message: "پست با موفقیت ایجاد شد", post });
+    res.status(201).json({ message: 'پست با موفقیت ایجاد شد', post });
   } catch (error) {
-    res.status(500).json({ message: "خطا در ایجاد پست", error: error.message });
+    console.error('Error in createPost:', error);
+    res.status(500).json({ message: 'خطا در ایجاد پست', error: error.message });
   }
 };
 

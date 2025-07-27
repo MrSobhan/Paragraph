@@ -4,7 +4,7 @@ import axios from 'axios';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const baseUrl = 'http://localhost:3000/v1'; //ttps://virgool.onrender.com/v1
+  const baseUrl = 'https://virgool.onrender.com/v1';
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

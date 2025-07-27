@@ -10,7 +10,7 @@ import AuthModal from './AuthModal';
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { navigate } = useRouter();
-  const { isLogin, user, LogOutUser } = useAuth();
+  const { isLogin, user, LogOutUser , baseUrl } = useAuth();
   const { fetchNotifications, markNotificationAsRead, fetchPosts } = useApi();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -325,7 +325,7 @@ const Header = () => {
                       className="flex items-center space-x-2 space-x-reverse hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-1 transition-colors"
                     >
                       <img
-                        src={user?.avatar || "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop"}
+                        src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                         alt="Profile"
                         className="w-8 h-8 rounded-full"
                       />

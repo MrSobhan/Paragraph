@@ -56,6 +56,8 @@ const SettingsPage = () => {
       }
     }));
     setMessage(''); // Clear any previous messages
+    console.log("sfsdf1");
+    
   };
 
   const handleSave = async () => {
@@ -113,7 +115,7 @@ const SettingsPage = () => {
   return (
     <div className="flex-1 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-white my-5 mx-6 lg:my-0 rounded-xl lg:rounded-none dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="p-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">تنظیمات</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -124,7 +126,7 @@ const SettingsPage = () => {
 
       <div className="flex flex-col lg:flex-row">
         {/* Sidebar */}
-        <div className="lg:w-64 bg-white dark:bg-gray-800 border-b lg:border-b-0 lg:border-l border-gray-200 dark:border-gray-700">
+        <div className="lg:w-64 rounded-xl lg:rounded-none mx-6 bg-white dark:bg-gray-800 border-b lg:border-b-0 lg:border-l border-gray-200 dark:border-gray-700">
           <div className="p-6">
             <nav className="space-y-2">
               {tabs.map((tab) => (
@@ -174,7 +176,7 @@ const SettingsPage = () => {
                       </label>
                       <div className="flex items-start space-x-4 space-x-reverse">
                         <img 
-                          src={settings.profile.avatar ? (baseUrl + settings.profile.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
+                          src={settings.profile.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + settings.profile.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
                           alt="Profile" 
                           className="w-16 h-16 rounded-full object-cover"
                         />
@@ -184,6 +186,7 @@ const SettingsPage = () => {
                             postId={null}
                             onUploadSuccess={(fileUrl) => {
                               handleInputChange('profile', 'avatar', fileUrl);
+                              
                               Swal.fire({
                                 title: 'موفقیت!',
                                 text: 'تصویر پروفایل با موفقیت به‌روزرسانی شد',

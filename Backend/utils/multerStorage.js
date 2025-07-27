@@ -4,7 +4,6 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    
     let uploadPath;
     switch (file.fieldname) {
       case 'coverImage':
@@ -22,14 +21,12 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    
     const sha256 = crypto.createHash('sha256');
     const timestamp = Date.now();
     const hashedFileName = sha256.update(file.originalname + timestamp).digest('hex');
     cb(null, `${hashedFileName}${path.extname(file.originalname)}`);
   },
 });
-
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = {
@@ -45,11 +42,14 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-
 module.exports = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
-});
+}).fields([
+  { name: 'coverImage', maxCount: 1 },
+  { name: 'avatar', maxCount: 1 },
+  { name: 'podcast', maxCount: 1 },
+]);
