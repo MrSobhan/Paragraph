@@ -84,7 +84,7 @@ const AppContent = () => {
         pauseOnHover
         theme={theme === 'dark' ? 'dark' : 'light'}
       />
-      <BtnTop />
+      {isDashboard ? <BtnTop side='left' /> : <BtnTop />}
     </div>
   );
 };

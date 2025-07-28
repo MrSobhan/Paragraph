@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 
-const BtnTop = () => {
+const BtnTop = ({side = 'right'}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const BtnTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 z-50 p-2.5 bg-gray-50 dark:bg-gray-900 border border-solid border-gray-900 dark:border-white dark:text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none ${
+      className={`fixed bottom-6 ${side}-6 z-50 p-2.5 bg-gray-50 dark:bg-gray-900 border border-solid border-gray-900 dark:border-white dark:text-white rounded-full shadow-lg transition-all duration-300 ease-in-out focus:outline-none ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
       }`}
       aria-label="بازگشت به بالای صفحه"

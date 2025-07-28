@@ -134,7 +134,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
       <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white moraba">
             {mode === 'login' ? 'ورود به ویرگول' : 'ثبت‌نام در ویرگول'}
           </h2>
           <button
@@ -175,6 +175,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               <Github className="w-5 h-5 text-gray-700 dark:text-gray-300" />
               <span className="text-gray-700 dark:text-gray-300">ادامه با گیت‌هاب</span>
             </button>
+            <p className='text-xs text-red-500 text-center'>برای ورود با این دو vpn خود را روشن کنید.</p>
           </div>
 
           <div className="relative mb-6">
@@ -229,7 +230,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                ایمیل | شماره تلفن | نام کاربری
+               {mode == 'login' ? ' ایمیل | شماره تلفن | نام کاربری' : 'ایمیل'}
               </label>
               <div className="relative">
                 <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
