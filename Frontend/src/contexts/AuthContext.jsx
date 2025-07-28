@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { auth, googleProvider, githubProvider } from '../hooks/firebase';
+import { signInWithPopup, signOut } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -25,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     },
   });
 
-  axiosInstance.interceptors.request.use((config) => {
+  axiosInstance.interceptors.request.use(async (config) => {
     const token = getLocalStorage('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -37,16 +39,16 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axiosInstance.post('/auth/login', credentials);
       const { token } = response.data;
-      
+
       setLocalStorage('token', token);
       await getMe();
       setIsLogin(true);
-      
+
       return { success: true, data: response.data };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'خطا در ورود' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در ورود'
       };
     }
   };
@@ -55,16 +57,80 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axiosInstance.post('/auth/register', userData);
       const { token } = response.data;
-      
+
       setLocalStorage('token', token);
       await getMe();
       setIsLogin(true);
-      
+
       return { success: true, data: response.data };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'خطا در ثبت‌نام' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'خطا در ثبت‌نام'
+      };
+    }
+  };
+
+  const loginWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const firebaseUser = result.user;
+
+      const userData = {
+        email: firebaseUser.email,
+        username: firebaseUser.displayName || '',
+        name: firebaseUser.displayName || '',
+        avatar: firebaseUser.photoURL || '',
+        phone: firebaseUser.phoneNumber || '',
+        password: firebaseUser.uid
+      }
+
+
+      let response = await axiosInstance.post('/auth/register', userData);
+
+      console.log(response);
+      
+
+      if (!response) {
+        response = await axiosInstance.post('/auth/login', userData);
+      } 
+
+      const { token } = response.data;
+
+      setLocalStorage('token', token);
+      await getMe();
+      setIsLogin(true);
+
+      return { success: true, data: response.data };
+
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'خطا در ورود با گوگل'
+      };
+    }
+  };
+
+  const loginWithGithub = async () => {
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      const firebaseUser = result.user;
+      const token = await firebaseUser.getIdToken();
+
+      setLocalStorage('token', token);
+      setUser({
+        // uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName || '',
+        photoURL: firebaseUser.photoURL || '',
+        phone: firebaseUser.phoneNumber || ''
+      });
+      setIsLogin(true);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'خطا در ورود با گیت‌هاب'
       };
     }
   };
@@ -80,10 +146,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const LogOutUser = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setIsLogin(false);
+  const LogOutUser = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsLogin(false);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   useEffect(() => {
@@ -112,6 +183,8 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         LoginUser,
         RegisterUser,
+        loginWithGoogle,
+        loginWithGithub,
         LogOutUser,
         getMe,
         axiosInstance,

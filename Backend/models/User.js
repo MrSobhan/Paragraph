@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'رمز عبور الزامی است']
   },
-  phone: { type: String, unique: true, required: true },
+  phone: { type: String, unique: true },
   name: {
     type: String,
     required: [true, 'نام الزامی است'],

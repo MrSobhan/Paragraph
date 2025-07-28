@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, Github, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../hooks/firebase';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
-  const { LoginUser, RegisterUser } = useAuth();
+  const { LoginUser, RegisterUser, loginWithGoogle, loginWithGithub } = useAuth();
   const [mode, setMode] = useState(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -86,24 +88,51 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    console.log(`Login with ${provider}`);
-    onClose();
+  const handleSocialLogin = async (provider) => {
+    setLoading(true);
+    setError('');
+    try {
+      const result = provider === 'google' ? await loginWithGoogle() : await loginWithGithub();
+      
+      if (result.success) {
+        onClose();
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError('خطا در ورود با ' + (provider === 'google' ? 'گوگل' : 'گیت‌هاب'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!formData.email) {
+      setError('لطفاً ایمیل خود را وارد کنید');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      await sendPasswordResetEmail(auth, formData.email);
+      setError('لینک بازنشانی رمز عبور به ایمیل شما ارسال شد');
+    } catch (err) {
+      setError('خطا در ارسال ایمیل بازنشانی');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       ></div>
 
-      {/* Modal */}
       <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {mode === 'login' ? 'ورود به ویرگول' : 'ثبت‌نام در ویرگول'}
@@ -122,13 +151,12 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           </div>
         )}
 
-        {/* Content */}
         <div className="p-6">
-          {/* Social Login Buttons */}
           <div className="space-y-3 mb-6">
             <button
               onClick={() => handleSocialLogin('google')}
-              className="w-full flex items-center justify-center space-x-3 space-x-reverse px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              disabled={loading}
+              className="w-full flex items-center justify-center space-x-3 space-x-reverse px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -141,14 +169,14 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <button
               onClick={() => handleSocialLogin('github')}
-              className="w-full flex items-center justify-center space-x-3 space-x-reverse px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              disabled={loading}
+              className="w-full flex items-center justify-center space-x-3 space-x-reverse px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Github className="w-5 h-5 text-gray-700 dark:text-gray-300" />
               <span className="text-gray-700 dark:text-gray-300">ادامه با گیت‌هاب</span>
             </button>
           </div>
 
-          {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
@@ -158,8 +186,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             </div>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
             {mode === 'signup' && (
               <div className="space-y-4">
                 <div>
@@ -276,7 +303,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required
-                    className="w-full pl-4 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-12 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="رمز عبور را مجدداً وارد کنید"
                   />
                 </div>
@@ -286,6 +313,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             <button
               type="submit"
               disabled={loading}
+              onClick={handleSubmit}
               className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
             >
               {loading ? (
@@ -294,9 +322,8 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 mode === 'login' ? 'ورود' : 'ثبت‌نام'
               )}
             </button>
-          </form>
+          </div>
 
-          {/* Switch Mode */}
           <div className="mt-6 text-center">
             <p className="text-gray-600 dark:text-gray-400">
               {mode === 'login' ? 'حساب کاربری ندارید؟' : 'قبلاً ثبت‌نام کرده‌اید؟'}
@@ -311,7 +338,11 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
           {mode === 'login' && (
             <div className="mt-4 text-center">
-              <button className="text-sm text-blue-500 hover:text-blue-600 transition-colors">
+              <button
+                onClick={handleForgotPassword}
+                disabled={loading}
+                className="text-sm text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 رمز عبور خود را فراموش کرده‌اید؟
               </button>
             </div>
