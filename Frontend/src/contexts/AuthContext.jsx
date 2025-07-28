@@ -72,65 +72,53 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = async () => {
-      const result = await signInWithPopup(auth, googleProvider);
-      const firebaseUser = result.user;
+    const result = await signInWithPopup(auth, googleProvider);
+    const firebaseUser = result.user;
 
-      const userData = {
-        username: firebaseUser.displayName || '',
-        name: firebaseUser.displayName || '',
-        email: firebaseUser.email,
-        avatar: firebaseUser.photoURL || '',
-        phone: firebaseUser.phoneNumber || '',
-        password: firebaseUser.uid
-      }
-      const userDataLogin = {
-        email: firebaseUser.email,
-        password: firebaseUser.uid
-      }
-      
-      let response = null
-
-      try {
-         response = await axiosInstance.post('/auth/register', userData);
-      } catch (error) {
-        response = await axiosInstance.post('/auth/login', userDataLogin);
-      }
-
-      const { token } = response.data;
-
-      setLocalStorage('token', token);
-      await getMe();
-      setIsLogin(true);
-
-      return { success: true, data: response.data };
+    return await loginWithFireBase(firebaseUser)
 
   };
 
   const loginWithGithub = async () => {
-    try {
-      const result = await signInWithPopup(auth, githubProvider);
-      const firebaseUser = result.user;
-      console.log(firebaseUser);
-      
-      // const token = await firebaseUser.getIdToken();
 
-      // setLocalStorage('token', token);
-      // setUser({
-      //   // uid: firebaseUser.uid,
-      //   email: firebaseUser.email,
-      //   displayName: firebaseUser.displayName || '',
-      //   photoURL: firebaseUser.photoURL || '',
-      //   phone: firebaseUser.phoneNumber || ''
-      // });
-      // setIsLogin(true);
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message || 'خطا در ورود با گیت‌هاب'
-      };
-    }
+    const result = await signInWithPopup(auth, githubProvider);
+    const firebaseUser = result.user;
+
+    return await loginWithFireBase(firebaseUser)
+
   };
+
+  const loginWithFireBase = async (firebaseUser) => {
+    const userData = {
+      username: firebaseUser.displayName || firebaseUser.email,
+      name: firebaseUser.displayName || firebaseUser.email,
+      email: firebaseUser.email,
+      avatar: firebaseUser.photoURL || '',
+      phone: firebaseUser.phoneNumber || '',
+      password: firebaseUser.uid
+    }
+    const userDataLogin = {
+      email: firebaseUser.email,
+      password: firebaseUser.uid
+    }    
+    
+
+    let response = null
+
+    try {
+      response = await axiosInstance.post('/auth/register', userData);
+    } catch (error) {
+      response = await axiosInstance.post('/auth/login', userDataLogin);
+    }
+
+    const { token } = response.data;
+
+    setLocalStorage('token', token);
+    await getMe();
+    setIsLogin(true);
+
+    return { success: true, data: response.data };
+  }
 
   const getMe = async () => {
     try {
