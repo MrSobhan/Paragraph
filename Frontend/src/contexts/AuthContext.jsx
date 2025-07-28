@@ -77,14 +77,16 @@ export const AuthProvider = ({ children }) => {
       const firebaseUser = result.user;
 
       const userData = {
-        email: firebaseUser.email,
         username: firebaseUser.displayName || '',
         name: firebaseUser.displayName || '',
+        email: firebaseUser.email,
         avatar: firebaseUser.photoURL || '',
         phone: firebaseUser.phoneNumber || '',
         password: firebaseUser.uid
       }
 
+      console.log(userData);
+      
 
       let response = await axiosInstance.post('/auth/register', userData);
 
