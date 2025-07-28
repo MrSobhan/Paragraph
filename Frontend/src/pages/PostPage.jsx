@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Heart, MessageCircle, Bookmark, Share, Eye, MoreHorizontal, Edit, Flag } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,8 +6,8 @@ import { useApi } from '../hooks/useApi';
 import AuthModal from '../components/AuthModal';
 import Loader from '../components/Loader';
 import Sidebar from '../components/Sidebar';
+import ProgressBar from '../components/ProgressBar';
 import Swal from 'sweetalert2';
-import { useRef } from 'react';
 
 const PostPage = () => {
   const { params, navigate } = useRouter();
@@ -41,24 +40,17 @@ const PostPage = () => {
   }, [params.postId]);
 
   const loadPost = async () => {
-    // if(article?.length == 0){
-      const result = await fetchPost(params.postId);
-  
-      if (result.success) {
-        setArticle(result.data.post);
-        setComments(result.data.comments)
-      }
-    // }
-
-    console.log(result.data.comments);
-    
+    const result = await fetchPost(params.postId);
+    if (result.success) {
+      setArticle(result.data.post);
+      setComments(result.data.comments);
+    }
     setLoading(false);
   };
 
   const loadRelatedPosts = async () => {
     const result = await fetchPosts(1, 10);
     if (result.success) {
-      // Get 3 random posts
       const shuffled = result.data.sort(() => 0.5 - Math.random());
       setRelatedPosts(shuffled.slice(0, 3));
     }
@@ -135,7 +127,6 @@ const PostPage = () => {
       const newLikedState = !liked;
       setLiked(newLikedState);
 
-      // Update localStorage
       const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
       if (newLikedState) {
         likedPosts.push(params.postId);
@@ -145,7 +136,6 @@ const PostPage = () => {
       }
       localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
 
-      // Update article stats
       setArticle(prev => ({
         ...prev,
         likesCount: newLikedState ? (prev.likesCount || 0) + 1 : Math.max(0, (prev.likesCount || 0) - 1)
@@ -179,7 +169,6 @@ const PostPage = () => {
     const result = await createComment(commentData);
     if (result.success) {
       setNewComment('');
-      // setShowCommentForm(false);
       setRating(5);
       await Swal.fire({
         title: 'موفقیت!',
@@ -202,7 +191,6 @@ const PostPage = () => {
         showConfirmButton: false
       });
     } catch (err) {
-      // Fallback for older browsers
       const textArea = document.createElement('textarea');
       textArea.value = url;
       document.body.appendChild(textArea);
@@ -223,6 +211,7 @@ const PostPage = () => {
 
   return (
     <>
+      <ProgressBar /> {/* افزودن نوار پیشرفت */}
       <div className="flex-1 max-w-4xl mx-auto">
         {/* Article Header */}
         <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -303,9 +292,9 @@ const PostPage = () => {
         <div className="bg-white dark:bg-gray-800">
           <div className="p-6">
             {/* Featured Image */}
-            {article.coverImage && (
+            {article.featureImage && (
               <img
-                src={article.coverImage}
+                src={article.featureImage}
                 alt={article.title}
                 className="w-full h-64 md:h-96 object-cover rounded-xl mb-8"
               />
@@ -381,9 +370,9 @@ const PostPage = () => {
                     onClick={() => navigate(`/post/${post._id}`)}
                     className="text-right hover:shadow-lg transition-shadow bg-gray-50 dark:bg-gray-700 rounded-xl overflow-hidden"
                   >
-                    {post.coverImage && (
+                    {post.featureImage && (
                       <img
-                        src={post.coverImage}
+                        src={post.featureImage}
                         alt={post.title}
                         className="w-full h-32 object-cover"
                       />
@@ -406,6 +395,7 @@ const PostPage = () => {
             </div>
           </div>
         )}
+
         {/* Comment Form */}
         {showCommentForm && (
           <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-6">

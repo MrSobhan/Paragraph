@@ -69,9 +69,9 @@ const HomePage = () => {
 
   const fetchMoreArticles = useCallback(async () => {
     if (!hasMore) return;
-    
+
     const result = await fetchPosts(page, 5);
-    
+
     if (result.success) {
       if (result.data.length === 0) {
         setHasMore(false);
@@ -97,7 +97,16 @@ const HomePage = () => {
   }
 
   return (
-    <main className="flex-1 max-w-4xl mx-auto p-6 overflow-x-hidden">
+    <main className="flex-1 max-w-4xl mx-auto p-6 overflow-x-hidden z-40">
+      <div
+        className="fixed -right-48 top-36 -z-50 transform-gpu overflow-hidden blur-2xl"
+        aria-hidden="true"
+      >
+        <div
+          className="w-80 h-80 rounded-full bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20"
+        />
+      </div>
+
       <StoriesSection />
       <FeaturedSection />
 
@@ -134,6 +143,7 @@ const HomePage = () => {
           </p>
         </div>
       )}
+
     </main>
   );
 };

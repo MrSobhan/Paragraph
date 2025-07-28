@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { Search, Bell, Settings, Moon, Sun, User, Home, Bookmark, Edit, Newspaper, LayoutDashboard, DoorOpen, FileText, Hash } from 'lucide-react';
+import { Search, Bell, Settings, Moon, Sun, User, Home, Bookmark, Edit, Newspaper, LayoutDashboard, DoorOpen, FileText, Hash, Eye, ChevronDown } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRouter } from '../hooks/useRouter';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,7 +10,7 @@ import AuthModal from './AuthModal';
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { navigate } = useRouter();
-  const { isLogin, user, LogOutUser , baseUrl } = useAuth();
+  const { isLogin, user, LogOutUser, baseUrl } = useAuth();
   const { fetchNotifications, markNotificationAsRead, fetchPosts } = useApi();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -296,7 +296,7 @@ const Header = () => {
                                     onClick={() => handleMarkAsRead(notification._id)}
                                     className="text-xs text-blue-500 hover:text-blue-600 ml-2"
                                   >
-                                    دیدم
+                                    <Eye />
                                   </button>
                                 </div>
                               </div>
@@ -322,20 +322,33 @@ const Header = () => {
                   <div className="relative group">
                     <button
                       // onClick={() => navigate(`/user/${user?._id || 'profile'}`)}
-                      className="flex items-center space-x-2 space-x-reverse hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-1 transition-colors"
+                      className="flex items-center space-x-2 space-x-reverse bg-gray-200 dark:bg-gray-800 rounded-full transition-colors pr-2"
                     >
-                      <img
-                        src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="hidden md:block text-right">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">{user?.name || 'کاربر'}</div>
+                      <div className="block text-right">
+                        <ChevronDown className='w-3'/>
                       </div>
+                      <img
+                        src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                        alt="Profile"
+                        className="w-9 h-9 rounded-full"
+                      />
+                      
                     </button>
 
                     <div className="absolute left-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       <div className="p-2">
+                        <button
+                          className="flex items-center space-x-2 space-x-reverse hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-3 transition-colors"
+                        >
+                          <img
+                            src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                            alt="Profile"
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <div className="text-right">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">{user?.name || 'کاربر'}</div>
+                          </div>
+                        </button>                        <hr className="my-1 border-gray-200 dark:border-gray-600" />
                         <button
                           onClick={() => navigate(`/user/${user?._id || 'profile'}`)}
                           className="flex items-center gap-x-1 w-full text-right px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
@@ -356,6 +369,13 @@ const Header = () => {
                         >
                           <Bookmark className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                           ذخیره ها
+                        </button>
+                        <button
+                          onClick={() => navigate('/notifications')}
+                          className="flex items-center gap-x-1 w-full text-right px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                        >
+                          <Bell className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                          اعلان ها
                         </button>
                         {user?.role === 'admin' && (
                           <button

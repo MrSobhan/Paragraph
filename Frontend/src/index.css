@@ -19,7 +19,6 @@
   /* IE9 Compat Modes */
 }
 
-
 body {
   font-family: "dana";
   overflow-x: hidden;
@@ -31,7 +30,9 @@ body {
 
 }
 
-
+button:focus {
+  outline: none !important;
+}
 
 .moraba {
   font-family: "moraba" !important;
@@ -186,7 +187,7 @@ textarea:focus {
 }
 
 .Toastify__toast {
-  font-family: "dana";
+  font-family: "dana" !important;
 }
 
 .no-scrollbar::-webkit-scrollbar {

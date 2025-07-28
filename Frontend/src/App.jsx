@@ -29,6 +29,7 @@ import UsersManagement from './pages/dashboard/UsersManagement';
 import PostsManagement from './pages/dashboard/PostsManagement';
 import CommentsManagement from './pages/dashboard/CommentsManagement';
 import TopicsManagement from './pages/dashboard/TopicsManagement';
+import BtnTop from './components/BtnTop';
 
 const AppContent = () => {
   const { currentPath } = useRouter();
@@ -42,8 +43,8 @@ const AppContent = () => {
     if (currentPath === '/topics') return <TopicsPage />;
     if (currentPath.startsWith('/topics/')) return <TopicPostsPage />;
     if (currentPath.startsWith('/user/')) return <UserPage />;
-      if (currentPath.includes('/followers')) return <FollowersPage />;
-      if (currentPath.includes('/following')) return <FollowingPage />;
+    if (currentPath.includes('/followers')) return <FollowersPage />;
+    if (currentPath.includes('/following')) return <FollowingPage />;
     if (currentPath.startsWith('/search')) return <SearchPage />;
     if (currentPath === '/about') return <AboutPage />;
     if (currentPath === '/rules') return <RulesPage />;
@@ -83,6 +84,7 @@ const AppContent = () => {
         pauseOnHover
         theme={theme === 'dark' ? 'dark' : 'light'}
       />
+      <BtnTop />
     </div>
   );
 };

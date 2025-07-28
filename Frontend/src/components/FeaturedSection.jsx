@@ -82,11 +82,11 @@ const FeaturedSection = () => {
                     {article.category}
                   </span>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute -inset-2 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               
               <div className="p-5">
-                <p className="text-white font-semibold text-base mb-3 line-clamp-1 group-hover:text-yellow-200 transition-colors">
+                <p className="text-white font-semibold text-base mb-3 line-clamp-1 transition-colors">
                   {article.title}
                 </p>
                 <div className="flex items-center justify-between">
