@@ -6,7 +6,7 @@ import { signInWithPopup, signOut } from 'firebase/auth';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const baseUrl = 'https://virgool.onrender.com/v1';
+  const baseUrl = 'http://localhost:3000/v1'; //https://virgool.onrender.com/v1
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,7 +72,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = async () => {
-    try {
       const result = await signInWithPopup(auth, googleProvider);
       const firebaseUser = result.user;
 
@@ -84,18 +83,18 @@ export const AuthProvider = ({ children }) => {
         phone: firebaseUser.phoneNumber || '',
         password: firebaseUser.uid
       }
-
-      console.log(userData);
+      const userDataLogin = {
+        email: firebaseUser.email,
+        password: firebaseUser.uid
+      }
       
+      let response = null
 
-      let response = await axiosInstance.post('/auth/register', userData);
-
-      console.log(response);
-      
-
-      if (!response) {
-        response = await axiosInstance.post('/auth/login', userData);
-      } 
+      try {
+         response = await axiosInstance.post('/auth/register', userData);
+      } catch (error) {
+        response = await axiosInstance.post('/auth/login', userDataLogin);
+      }
 
       const { token } = response.data;
 
@@ -105,29 +104,25 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, data: response.data };
 
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message || 'خطا در ورود با گوگل'
-      };
-    }
   };
 
   const loginWithGithub = async () => {
     try {
       const result = await signInWithPopup(auth, githubProvider);
       const firebaseUser = result.user;
-      const token = await firebaseUser.getIdToken();
+      console.log(firebaseUser);
+      
+      // const token = await firebaseUser.getIdToken();
 
-      setLocalStorage('token', token);
-      setUser({
-        // uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        displayName: firebaseUser.displayName || '',
-        photoURL: firebaseUser.photoURL || '',
-        phone: firebaseUser.phoneNumber || ''
-      });
-      setIsLogin(true);
+      // setLocalStorage('token', token);
+      // setUser({
+      //   // uid: firebaseUser.uid,
+      //   email: firebaseUser.email,
+      //   displayName: firebaseUser.displayName || '',
+      //   photoURL: firebaseUser.photoURL || '',
+      //   phone: firebaseUser.phoneNumber || ''
+      // });
+      // setIsLogin(true);
       return { success: true };
     } catch (error) {
       return {

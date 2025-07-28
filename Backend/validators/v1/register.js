@@ -8,7 +8,7 @@ const schema = {
   password: { type: 'string', min: 4, max: 36 },
   email: { type: 'email' },
   bio: { type: 'string', min: 0, max: 500, optional: true },
-  phone: { type: 'string',length :11 , optional: true},
+  phone: { type: 'string'},
   avatar: { type: 'url', optional: true },
   socialLinks: {
     type: 'object',

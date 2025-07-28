@@ -102,8 +102,8 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     } catch (err) {
       setError('خطا در ورود با ' + (provider === 'google' ? 'گوگل' : 'گیت‌هاب'));
     } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleForgotPassword = async () => {
