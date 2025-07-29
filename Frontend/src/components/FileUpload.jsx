@@ -75,7 +75,6 @@ const FileUpload = ({
     try {
       const result = await uploadFile(file, fieldname, postId);
       if (result.success) {
-        console.log(result.data);
         
         onUploadSuccess?.(result.data.fileUrl || result.data.url, file);
       } else {

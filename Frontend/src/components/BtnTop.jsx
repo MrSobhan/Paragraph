@@ -24,8 +24,6 @@ const BtnTop = ({side = 'right'}) => {
       behavior: 'smooth',
     });
   };
-
-  console.log(side);
   
 
   return (

@@ -6,7 +6,7 @@ import { signInWithPopup, signOut } from 'firebase/auth';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const baseUrl = 'https://virgool.onrender.com/v1'; //https://virgool.onrender.com/v1
+  const baseUrl = 'https://virgool.onrender.com/v1'; //https://virgool.onrender.com/v1 http://localhost:3000/v1
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

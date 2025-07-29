@@ -56,7 +56,6 @@ const SettingsPage = () => {
       }
     }));
     setMessage(''); // Clear any previous messages
-    console.log("sfsdf1");
     
   };
 
