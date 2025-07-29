@@ -10,8 +10,10 @@ exports.uploadFile = async (req, res) => {
     const file = req.files[fieldname][0];
     let fileUrl;
 
+    const baseUrlFile = "https://virgool.onrender.com"
+
     if (fieldname === 'coverImage') {
-      fileUrl = `/posts/covers/${file.filename}`;
+      fileUrl = `${baseUrlFile}/posts/covers/${file.filename}`;
       const postId = req.body.postId;
       if (!postId) {
         return res.status(400).json({ message: 'postId الزامی است' });
@@ -26,7 +28,7 @@ exports.uploadFile = async (req, res) => {
       post.coverImage = fileUrl;
       await post.save();
     } else if (fieldname === 'avatar') {
-      fileUrl = `/users/avatars/${file.filename}`;
+      fileUrl = `${baseUrlFile}/users/avatars/${file.filename}`;
       const user = await User.findById(req.user._id);
       if (!user) {
         return res.status(404).json({ message: 'کاربر یافت نشد' });
@@ -34,7 +36,7 @@ exports.uploadFile = async (req, res) => {
       user.avatar = fileUrl;
       await user.save();
     } else if (fieldname === 'podcast') {
-      fileUrl = `/posts/podcasts/${file.filename}`;
+      fileUrl = `${baseUrlFile}/posts/podcasts/${file.filename}`;
       const postId = req.body.postId;
       if (!postId) {
         return res.status(400).json({ message: 'postId الزامی است' });

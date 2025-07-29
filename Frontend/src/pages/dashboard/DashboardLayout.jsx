@@ -16,7 +16,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const DashboardLayout = ({ children, activeTab }) => {
   const { navigate } = useRouter();
-  const { user, LogOutUser, baseUrl } = useAuth();
+  const { user, LogOutUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
@@ -43,7 +43,7 @@ const DashboardLayout = ({ children, activeTab }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`relative inset-y-0 right-0 z-50 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+      <div className={`fixed inset-y-0 right-0 z-50 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
         <div className="sticky top-0 left-0 h-[100vh] w-full">
           <div className="flex flex-col h-full">
@@ -84,7 +84,7 @@ const DashboardLayout = ({ children, activeTab }) => {
             <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-3 space-x-reverse mb-3">
                 <img
-                  src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                  src={user?.avatar ? user?.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                   alt="Admin"
                   className="w-10 h-10 rounded-full"
                 />

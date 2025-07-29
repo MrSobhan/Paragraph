@@ -82,7 +82,7 @@ const AppContent = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme={theme === 'dark' ? 'dark' : 'light'}
+        theme={theme == 'dark' ? 'dark' : 'light'}
       />
       {isDashboard ? <BtnTop side='left' /> : <BtnTop />}
     </div>

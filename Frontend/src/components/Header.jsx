@@ -10,7 +10,7 @@ import AuthModal from './AuthModal';
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { navigate } = useRouter();
-  const { isLogin, user, LogOutUser, baseUrl } = useAuth();
+  const { isLogin, user, LogOutUser } = useAuth();
   const { fetchNotifications, markNotificationAsRead, fetchPosts } = useApi();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -328,7 +328,7 @@ const Header = () => {
                         <ChevronDown className='w-3'/>
                       </div>
                       <img
-                        src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                        src={user?.avatar ? user?.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                         alt="Profile"
                         className="w-9 h-9 rounded-full"
                       />
@@ -341,7 +341,7 @@ const Header = () => {
                           className="flex items-center space-x-2 space-x-reverse hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-3 transition-colors"
                         >
                           <img
-                            src={user?.avatar ? (baseUrl.replace(new RegExp('/v1', 'g'), '') + user?.avatar) : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                            src={user?.avatar ? user?.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                             alt="Profile"
                             className="w-6 h-6 rounded-full"
                           />
