@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, CheckCircle, XCircle, Trash2, MessageCircle } from 'lucide-react';
+import { Search, CheckCircle, XCircle, Trash2, MessageCircle, Edit, X, Save } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
 import useAxios from '../../hooks/useAxios';
 
@@ -9,6 +9,11 @@ const CommentsManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [editingComment, setEditingComment] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    content: ''
+  });
 
   useEffect(() => {
     loadComments();
@@ -46,6 +51,33 @@ const CommentsManagement = () => {
         console.error('خطا در حذف نظر:', error);
       }
     }
+  };
+
+  const handleEditComment = (comment) => {
+    setEditingComment(comment);
+    setEditFormData({
+      content: comment.content || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateComment = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosInstance.put(`/comments/${editingComment._id}`, editFormData);
+      loadComments();
+      closeEditModal();
+    } catch (error) {
+      console.error('خطا در بروزرسانی نظر:', error);
+    }
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingComment(null);
+    setEditFormData({
+      content: ''
+    });
   };
 
   const filteredComments = comments?.filter(comment => {
@@ -192,6 +224,13 @@ const CommentsManagement = () => {
                     </button>
                   )}
                   <button
+                    onClick={() => handleEditComment(comment)}
+                    className="p-2 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors flex-shrink-0"
+                    title="ویرایش"
+                  >
+                    <Edit className="w-5 h-5" />
+                  </button>
+                  <button
                     onClick={() => handleDeleteComment(comment._id)}
                     className="p-2 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
                     title="حذف"
@@ -216,8 +255,58 @@ const CommentsManagement = () => {
           </div>
         )}
       </div>
+
+      {/* Edit Comment Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={closeEditModal}></div>
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                ویرایش نظر
+              </h2>
+              <button onClick={closeEditModal} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateComment} className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    متن نظر
+                  </label>
+                  <textarea
+                    value={editFormData.content}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, content: e.target.value }))}
+                    rows="4"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    required
+                  />
+                </div>
+              </div>
     </DashboardLayout>
   );
 };
 
+              <div className="flex space-x-3 space-x-reverse mt-6">
+                <button
+                  type="submit"
+                  className="flex-1 flex items-center justify-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg transition-colors"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>ذخیره تغییرات</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="px-6 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+                >
+                  انصراف
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 export default CommentsManagement;

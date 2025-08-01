@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle, X, Save, Hash } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
 import { useApi } from '../../hooks/useApi';
+import useAxios from '../../hooks/useAxios';
 import { useAuth } from '../../contexts/AuthContext';
 
 const PostsManagement = () => {
   const { baseUrl  } = useAuth();
-  const { fetchPostsAdmin, publishPost, deletePost } = useApi();
+  const { fetchPostsAdmin, publishPost, deletePost, fetchTopics } = useApi();
+  const axiosInstance = useAxios();
   const [posts, setPosts] = useState([]);
+  const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingPost, setEditingPost] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    content: '',
+    summary: '',
+    topics: [],
+    tags: [],
+    estimatedReadTime: 1
+  });
 
   useEffect(() => {
     loadPosts();
+    loadTopics();
   }, []);
 
   const loadPosts = async () => {
@@ -26,6 +40,13 @@ const PostsManagement = () => {
       console.error('خطا در بارگذاری پست‌ها:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadTopics = async () => {
+    const result = await fetchTopics();
+    if (result.success) {
+      setTopics(result.data);
     }
   };
 
@@ -47,6 +68,52 @@ const PostsManagement = () => {
         console.error(result.message);
       }
     }
+  };
+
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setEditFormData({
+      title: post.title || '',
+      content: post.content || '',
+      summary: post.summary || '',
+      topics: post.topics?.map(t => t._id) || [],
+      tags: post.tags || [],
+      estimatedReadTime: post.estimatedReadTime || 1
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosInstance.put(`/posts/${editingPost._id}`, editFormData);
+      loadPosts();
+      closeEditModal();
+    } catch (error) {
+      console.error('خطا در بروزرسانی پست:', error);
+    }
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingPost(null);
+    setEditFormData({
+      title: '',
+      content: '',
+      summary: '',
+      topics: [],
+      tags: [],
+      estimatedReadTime: 1
+    });
+  };
+
+  const handleTopicToggle = (topicId) => {
+    setEditFormData(prev => ({
+      ...prev,
+      topics: prev.topics.includes(topicId)
+        ? prev.topics.filter(id => id !== topicId)
+        : [...prev.topics, topicId]
+    }));
   };
 
   const getAllViews = () => {
@@ -220,6 +287,13 @@ const PostsManagement = () => {
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-1 sm:space-x-2 space-x-reverse">
                         <button
+                          onClick={() => handleEditPost(post)}
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                          title="ویرایش"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
                           onClick={() => window.open(`/post/${post._id}`, '_blank')}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           title="مشاهده"
@@ -251,6 +325,118 @@ const PostsManagement = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Post Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={closeEditModal}></div>
+          <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                ویرایش پست
+              </h2>
+              <button onClick={closeEditModal} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdatePost} className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    عنوان پست
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.title}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, title: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    خلاصه
+                  </label>
+                  <textarea
+                    value={editFormData.summary}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, summary: e.target.value }))}
+                    rows="3"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    محتوا
+                  </label>
+                  <textarea
+                    value={editFormData.content}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, content: e.target.value }))}
+                    rows="6"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    موضوعات
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg p-3">
+                    {topics.map((topic) => (
+                      <label
+                        key={topic._id}
+                        className="flex items-center space-x-2 space-x-reverse cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={editFormData.topics.includes(topic._id)}
+                          onChange={() => handleTopicToggle(topic._id)}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-900 dark:text-white">{topic.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    زمان تخمینی مطالعه (دقیقه)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={editFormData.estimatedReadTime}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, estimatedReadTime: parseInt(e.target.value) }))}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-3 space-x-reverse mt-6">
+                <button
+                  type="submit"
+                  className="flex-1 flex items-center justify-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg transition-colors"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>ذخیره تغییرات</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="px-6 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+                >
+                  انصراف
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
