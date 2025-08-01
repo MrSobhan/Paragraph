@@ -69,8 +69,8 @@ const DashboardLayout = ({ children, activeTab }) => {
                       setSidebarOpen(false);
                     }}
                     className={`w-full flex items-center space-x-3 space-x-reverse px-3 py-3 rounded-lg text-sm font-medium transition-colors ${activeTab === item.id
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                       }`}
                   >
                     <item.icon className="w-5 h-5" />
@@ -130,7 +130,8 @@ const DashboardLayout = ({ children, activeTab }) => {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               داشبورد مدیریت پاراگراف
             </h2>
-            <div className="hidden sm:flex items-center space-x-4 space-x-reverse">
+            <div className="hidden sm:flex items-center space-x-2 space-x-reverse">
+              <span className='w-2 h-2 rounded-full bg-green-500'></span>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {user?.name} خوش آمدید
               </span>

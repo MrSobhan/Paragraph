@@ -55,7 +55,6 @@ exports.createComment = async (req, res) => {
     });
     await comment.save();
 
-
     // Update post rating
     const postDoc = await Post.findById(postId);
     if (!postDoc) {
@@ -68,12 +67,10 @@ exports.createComment = async (req, res) => {
     postDoc.ratingCount = newRatingCount;
     await postDoc.save();
 
-    res
-      .status(201)
-      .json({
-        message: "نظر با موفقیت ایجاد شد و در انتظار تأیید است",
-        comment,
-      });
+    res.status(201).json({
+      message: "نظر با موفقیت ایجاد شد و در انتظار تأیید است",
+      comment,
+    });
   } catch (error) {
     res.status(500).json({ message: "خطا در ایجاد نظر", error: error.message });
   }
@@ -86,10 +83,12 @@ exports.updateComment = async (req, res) => {
     if (!comment) {
       return res.status(404).json({ message: "نظر یافت نشد" });
     }
-    if (comment.userId.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ message: "فقط نویسنده می‌تواند نظر را ویرایش کند" });
+    if (req.user.role != "admin") {
+      if (comment.userId.toString() !== req.user._id.toString()) {
+        return res
+          .status(403)
+          .json({ message: "فقط نویسنده می‌تواند نظر را ویرایش کند" });
+      }
     }
     const { content, postId, parentComment } = req.body;
     Object.assign(comment, {
@@ -98,12 +97,10 @@ exports.updateComment = async (req, res) => {
       parentComment,
     });
     await comment.save();
-    res
-      .status(200)
-      .json({
-        message: "نظر با موفقیت به‌روزرسانی شد و در انتظار تأیید است",
-        comment,
-      });
+    res.status(200).json({
+      message: "نظر با موفقیت به‌روزرسانی شد و در انتظار تأیید است",
+      comment,
+    });
   } catch (error) {
     res
       .status(500)
@@ -138,7 +135,6 @@ exports.deleteComment = async (req, res) => {
     }
 
     await Comment.deleteOne({ _id: id });
-
 
     res.status(200).json({ message: "نظر با موفقیت حذف شد" });
   } catch (error) {
