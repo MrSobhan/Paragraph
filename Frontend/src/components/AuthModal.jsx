@@ -1,4 +1,4 @@
-import React, { useState , useRef , useEffect  } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, Mail, Lock, User, Phone, Github, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { sendPasswordResetEmail } from 'firebase/auth';
@@ -23,26 +23,26 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const turnstileRef = useRef(null);
 
   useEffect(() => {
-  const loadTurnstile = () => {
-    if (turnstileRef.current && window.turnstile) {
-      window.turnstile.render(turnstileRef.current, {
-        sitekey: '0x4AAAAAABoAfJMRNnWmS1mR',
-        callback: (token) => setTurnstileToken(token),
-        language: 'fa',
-      });
-    } else {
-      setTimeout(loadTurnstile, 100);
-    }
-  };
+    const loadTurnstile = () => {
+      if (turnstileRef.current && window.turnstile) {
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: '0x4AAAAAABoAfJMRNnWmS1mR',
+          callback: (token) => setTurnstileToken(token),
+          language: 'fa',
+        });
+      } else {
+        setTimeout(loadTurnstile, 100);
+      }
+    };
 
-  loadTurnstile();
+    loadTurnstile();
 
-  return () => {
-    if (turnstileRef.current && window.turnstile) {
-      window.turnstile.reset(turnstileRef.current);
-    }
-  };
-}, []);
+    return () => {
+      if (turnstileRef.current && window.turnstile) {
+        window.turnstile.reset(turnstileRef.current);
+      }
+    };
+  }, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setError('');
@@ -56,9 +56,12 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    console.log(turnstileToken);
     
+    if (!turnstileToken) {
+      setError('لطفاً تأیید کنید که ربات نیستید.');
+      return;
+    }
+
 
     try {
       if (mode === 'login') {
@@ -120,7 +123,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     setError('');
     try {
       const result = provider === 'google' ? await loginWithGoogle() : await loginWithGithub();
-      
+
       if (result.success) {
         onClose();
       } else {
@@ -257,7 +260,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-               {mode == 'login' ? ' ایمیل | شماره تلفن | نام کاربری' : 'ایمیل'}
+                {mode == 'login' ? ' ایمیل | شماره تلفن | نام کاربری' : 'ایمیل'}
               </label>
               <div className="relative">
                 <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
