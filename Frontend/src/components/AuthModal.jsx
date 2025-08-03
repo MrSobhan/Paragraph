@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useRef , useEffect  } from 'react';
 import { X, Mail, Lock, User, Phone, Github, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { sendPasswordResetEmail } from 'firebase/auth';
@@ -19,6 +19,30 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     confirmPassword: ''
   });
 
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileRef = useRef(null);
+
+  useEffect(() => {
+  const loadTurnstile = () => {
+    if (turnstileRef.current && window.turnstile) {
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: '0x4AAAAAABoAfJMRNnWmS1mR',
+        callback: (token) => setTurnstileToken(token),
+        language: 'fa',
+      });
+    } else {
+      setTimeout(loadTurnstile, 100);
+    }
+  };
+
+  loadTurnstile();
+
+  return () => {
+    if (turnstileRef.current && window.turnstile) {
+      window.turnstile.reset(turnstileRef.current);
+    }
+  };
+}, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setError('');
@@ -32,6 +56,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    console.log(turnstileToken);
+    
 
     try {
       if (mode === 'login') {
@@ -310,6 +337,8 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
               </div>
             )}
+
+            <div ref={turnstileRef} className="cf-turnstile"></div>
 
             <button
               type="submit"
