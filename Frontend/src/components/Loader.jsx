@@ -8,12 +8,20 @@ const Loader = ({ size = 'md', text = 'در حال بارگذاری...' }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-8">
-      <div className={`${sizeClasses[size]} animate-spin rounded-full border-4 border-gray-200 border-t-blue-500 dark:border-gray-700 dark:border-t-blue-400`}></div>
-      {text && (
-        <p className="mt-4 text-gray-600 dark:text-gray-400 text-sm">{text}</p>
-      )}
-    </div>
+    <>
+      {/* <div className="flex flex-col items-center justify-center py-8">
+        <div className={`${sizeClasses[size]} animate-spin rounded-full border-4 border-gray-200 border-t-blue-500 dark:border-gray-700 dark:border-t-blue-400`}></div>
+        {text && (
+          <p className="mt-4 text-gray-600 dark:text-gray-400 text-sm">{text}</p>
+        )}
+      </div> */}
+      {/* Loading Animation */}
+      < div className="flex items-center justify-center space-x-2 space-x-reverse mb-6 mt-10">
+        <div className="w-4 h-4 dark:bg-gray-200 bg-gray-900 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+        <div className="w-4 h-4 dark:bg-gray-200 bg-gray-900 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+        <div className="w-4 h-4 dark:bg-gray-200 bg-gray-900 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+      </div>
+    </>
   );
 };
 

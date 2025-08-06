@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Bell, Shield, Palette, Globe, Download, Trash2, Save, BarChart3, Linkedin, Twitter, Github } from 'lucide-react';
+import { User, Bell, Shield, Palette, Settings, Download, Trash2, Save, BarChart3, Linkedin, Twitter, Github, Upload } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../hooks/useApi';
@@ -9,7 +9,7 @@ import AnalyticsTab from '../components/AnalyticsTab';
 
 const SettingsPage = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, getMe  } = useAuth();
+  const { user, getMe } = useAuth();
   const { updateUserProfile } = useApi();
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
@@ -56,16 +56,16 @@ const SettingsPage = () => {
       }
     }));
     setMessage(''); // Clear any previous messages
-    
+
   };
 
   const handleSave = async () => {
     if (activeTab === 'profile') {
       setLoading(true);
       setMessage('');
-      
+
       try {
-        const result = await updateUserProfile(settings.profile , user._id);
+        const result = await updateUserProfile(settings.profile, user._id);
         if (result.success) {
           await Swal.fire({
             title: 'موفقیت!',
@@ -116,7 +116,7 @@ const SettingsPage = () => {
       {/* Header */}
       <div className="bg-white my-5 mx-6 lg:my-0 rounded-xl lg:rounded-none dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="p-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">تنظیمات</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white"><Settings className='inline'/> تنظیمات </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             مدیریت حساب کاربری و تنظیمات شخصی
           </p>
@@ -132,11 +132,10 @@ const SettingsPage = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg text-right transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
+                  className={`w-full flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg text-right transition-colors ${activeTab === tab.id
+                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
                 >
                   <tab.icon className="w-5 h-5" />
                   <span>{tab.label}</span>
@@ -151,11 +150,10 @@ const SettingsPage = () => {
           <div className="p-6">
             {/* Success/Error Message */}
             {message && (
-              <div className={`mb-6 p-4 rounded-lg ${
-                message.includes('موفقیت') 
-                  ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
-                  : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
-              }`}>
+              <div className={`mb-6 p-4 rounded-lg ${message.includes('موفقیت')
+                ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
+                : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
+                }`}>
                 {message}
               </div>
             )}
@@ -167,16 +165,16 @@ const SettingsPage = () => {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                     اطلاعات پروفایل
                   </h2>
-                  
+
                   <div className="space-y-4">
-                    <div>
+                    <div className='my-7'>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         تصویر پروفایل
                       </label>
                       <div className="flex items-start space-x-4 space-x-reverse">
-                        <img 
-                          src={settings.profile.avatar ? settings.profile.avatar :  "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"} 
-                          alt="Profile" 
+                        <img
+                          src={settings.profile.avatar ? settings.profile.avatar : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                          alt="Profile"
                           className="w-16 h-16 rounded-full object-cover"
                         />
                         <div className="flex-1">
@@ -185,7 +183,7 @@ const SettingsPage = () => {
                             postId={null}
                             onUploadSuccess={(fileUrl) => {
                               handleInputChange('profile', 'avatar', fileUrl);
-                              
+
                               Swal.fire({
                                 title: 'موفقیت!',
                                 text: 'تصویر پروفایل با موفقیت به‌روزرسانی شد',
@@ -205,9 +203,13 @@ const SettingsPage = () => {
                             maxSize={2 * 1024 * 1024} // 2MB
                             showPreview={false}
                           >
-                            <div className="text-sm text-blue-500 hover:text-blue-600 cursor-pointer">
-                              تغییر تصویر پروفایل
-                            </div>
+                            <button
+                              className="flex-shrink-0 flex flex-col items-center group snap-start"
+                            >
+                              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-400 dark:border-gray-500 group-hover:border-blue-500 transition-colors">
+                                <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
+                              </div>
+                            </button>
                           </FileUpload>
                         </div>
                       </div>
@@ -255,7 +257,7 @@ const SettingsPage = () => {
                       </label>
                       <div className="space-y-3">
                         <div className="flex items-center space-x-3 space-x-reverse">
-                          <Linkedin className="w-5 h-5 text-blue-600" />
+                          <Linkedin className="w-5 h-5 text-gray-800 dark:text-gray-200" />
                           <input
                             type="url"
                             value={settings.profile.socialLinks.linkedin}
@@ -274,7 +276,7 @@ const SettingsPage = () => {
                           />
                         </div>
                         <div className="flex items-center space-x-3 space-x-reverse">
-                          <Twitter className="w-5 h-5 text-blue-400" />
+                          <Twitter className="w-5 h-5 text-gray-800 dark:text-gray-200" />
                           <input
                             type="url"
                             value={settings.profile.socialLinks.twitter}
@@ -330,7 +332,7 @@ const SettingsPage = () => {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                     تنظیمات اعلان‌ها
                   </h2>
-                  
+
                   <div className="space-y-4">
                     {Object.entries(settings.notifications).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between">
@@ -367,7 +369,7 @@ const SettingsPage = () => {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                     تنظیمات حریم خصوصی
                   </h2>
-                  
+
                   <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -443,7 +445,7 @@ const SettingsPage = () => {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                     تنظیمات عمومی
                   </h2>
-                  
+
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -452,11 +454,10 @@ const SettingsPage = () => {
                       </div>
                       <button
                         onClick={toggleTheme}
-                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                          theme === 'dark'
-                            ? 'bg-gray-700 text-white'
-                            : 'bg-gray-200 text-gray-900'
-                        }`}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${theme === 'dark'
+                          ? 'bg-gray-700 text-white'
+                          : 'bg-gray-200 text-gray-900'
+                          }`}
                       >
                         {theme === 'dark' ? 'روشن' : 'تاریک'}
                       </button>
@@ -511,7 +512,7 @@ const SettingsPage = () => {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                     مدیریت داده‌ها
                   </h2>
-                  
+
                   <div className="space-y-4">
                     <button className="flex items-center space-x-3 space-x-reverse w-full p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
                       <Download className="w-5 h-5" />

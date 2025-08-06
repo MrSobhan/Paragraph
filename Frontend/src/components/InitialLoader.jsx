@@ -12,7 +12,6 @@ const InitialLoader = () => {
               <div className="absolute inset-0 bg-white rounded-full animate-pulse"></div>
               <div className="absolute inset-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Newspaper className='w-7 h-7 text-white' />
-                {/* <img src="../images/logo.webp" alt="fegsdsdf" /> */}
               </div>
             </div>
             <h1 className="text-4xl font-bold text-white moraba mb-2">پاراگراف</h1>

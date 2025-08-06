@@ -57,10 +57,10 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     setLoading(true);
     setError('');
     
-    if (!turnstileToken) {
-      setError('لطفاً تأیید کنید که ربات نیستید.');
-      return;
-    }
+    // if (!turnstileToken) {
+    //   setError('لطفاً تأیید کنید که ربات نیستید.');
+    //   return;
+    // }
 
 
     try {

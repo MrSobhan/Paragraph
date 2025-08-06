@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Eye, X, Plus, Tag, Hash, Upload } from 'lucide-react';
+import { Save, Eye, X, Plus, Tag, Hash, Upload, FilePlus2 } from 'lucide-react';
 import { useRouter } from '../hooks/useRouter';
 import { useApi } from '../hooks/useApi';
 import FileUpload from '../components/FileUpload';
@@ -150,7 +150,7 @@ const CreatePostPage = () => {
       }
     });
 
-    
+
     if (Object.keys(updates).length > 0) {
       const updateResult = await updatePost(postId, updates);
       if (!updateResult.success) {
@@ -199,7 +199,7 @@ const CreatePostPage = () => {
     toolbar: [
       [{ 'header': [1, 2, 3, false] }],
       ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       [{ 'align': [] }],
       ['link', 'image'],
       ['clean']
@@ -217,7 +217,7 @@ const CreatePostPage = () => {
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div className="p-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white hidden md:block">نوشتن پست جدید</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white hidden md:block"><FilePlus2 className="inline" /> نوشتن پست جدید</h1>
             <div className="flex items-center space-x-3 space-x-reverse">
               <button
                 type="button"
@@ -257,7 +257,7 @@ const CreatePostPage = () => {
                   value={formData.title}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 text-xl border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 text-xl border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="عنوان جذاب برای پست خود بنویسید..."
                 />
               </div>
@@ -274,7 +274,7 @@ const CreatePostPage = () => {
                   required
                   rows="3"
                   maxLength="200"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   placeholder="خلاصه‌ای از محتوای پست خود بنویسید... (حداکثر ۲۰۰ کاراکتر)"
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -287,14 +287,25 @@ const CreatePostPage = () => {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   محتوای پست *
                 </label>
-                <ReactQuill
+                {/* <ReactQuill
                   theme="snow"
                   value={formData.content}
                   onChange={(content) => setFormData(prev => ({ ...prev, content }))}
                   modules={quillModules}
                   formats={quillFormats}
                   placeholder="محتوای پست خود را اینجا بنویسید... (از Markdown پشتیبانی می‌شود)"
-                  className="h-64 lg:h-96 mb-12 lg:mb-16"
+                  className="h-64 lg:h-96 mb-12 lg:mb-16 text-black dark:text-white dana"
+                /> */}
+
+                <textarea
+                  name="content"
+                  value={formData.content}
+                  onChange={handleInputChange}
+                  required
+                  rows="13"
+                  maxLength="200"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  placeholder="محتوای پست خود را بنویسید ... "
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   زمان تخمینی مطالعه: {formData.estimatedReadTime} دقیقه
@@ -321,9 +332,9 @@ const CreatePostPage = () => {
               </p>
 
               <div className="prose prose-lg max-w-none dark:prose-invert">
-                <div 
-                  dangerouslySetInnerHTML={{ 
-                    __html: formData.content || 'محتوای پست اینجا نمایش داده می‌شود...' 
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: formData.content || 'محتوای پست اینجا نمایش داده می‌شود...'
                   }}
                 />
               </div>
